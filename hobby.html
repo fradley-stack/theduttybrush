@@ -40,28 +40,42 @@
             <button onclick="document.getElementById('admin-panel').style.display='none'" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px]">✕ Close</button>
             <div class="grid lg:grid-cols-2 gap-12">
                 <div class="space-y-6">
-                    <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
+                        <button onclick="resetForm()" class="text-[9px] font-black uppercase text-zinc-500 hover:text-white border border-white/10 px-3 py-1 rounded-md tracking-tighter">New Project</button>
+                    </div>
+                    
                     <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600">
+                    
                     <div class="flex gap-2">
                         <button id="btn-p" onclick="setEditType('Personal')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase active-type">Personal</button>
                         <button id="btn-c" onclick="setEditType('Commission')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase">Commission</button>
                     </div>
+
                     <input type="text" id="edit-img" placeholder="Image Path (models/pic.jpg)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs">
+                    
+                    <textarea id="edit-notes" placeholder="Notes (Lore, special techniques, etc.)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs h-20 resize-none focus:border-red-600" spellcheck="false"></textarea>
+
                     <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
                         <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Recipe Builder</p>
                         <div id="paint-list-editor" class="space-y-2 max-h-40 overflow-y-auto"></div>
                         <div class="flex gap-2">
-                            <select id="paint-type" class="bg-zinc-900 text-[10px] p-2 rounded border border-white/10 uppercase font-bold"><option value="primer">Primer</option><option value="base">Base</option><option value="layer">Layer</option><option value="highlight">Highlight</option></select>
+                            <select id="paint-type" class="bg-zinc-900 text-[10px] p-2 rounded border border-white/10 uppercase font-bold text-white"><option value="primer">Primer</option><option value="base">Base</option><option value="layer">Layer</option><option value="highlight">Highlight</option></select>
                             <input type="text" id="paint-name" class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none">
                             <button onclick="addPaint()" class="bg-red-600 px-4 rounded font-bold text-white">+</button>
                         </div>
                     </div>
+
                     <div class="space-y-2">
                         <div class="flex justify-between text-[10px] font-black uppercase text-zinc-500"><span>Completion</span><span id="val" class="text-red-600">0%</span></div>
                         <input type="range" id="edit-perc" min="0" max="100" class="w-full accent-red-600" oninput="document.getElementById('val').innerText = this.value + '%'">
                     </div>
+
                     <button id="commit-btn" onclick="applyAndPush()" class="w-full bg-white text-black py-5 rounded-2xl font-900 uppercase text-[11px] tracking-widest hover:bg-red-600 hover:text-white transition-all">Commit Changes</button>
+                    
+                    <button id="del-btn" onclick="deleteProject()" class="w-full py-3 text-zinc-700 hover:text-red-600 text-[9px] font-black uppercase tracking-widest transition-all hidden">Delete Project Permanently</button>
                 </div>
+
                 <div class="space-y-6 border-l border-white/5 pl-10">
                     <h2 class="text-2xl font-900 italic uppercase text-zinc-600 tracking-tighter">Archives</h2>
                     <div id="admin-list" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
@@ -79,51 +93,70 @@
 
         function authenticate() {
             const entry = prompt("Enter Studio Access Key:");
-            if (entry) { sessionKey = entry.trim(); document.getElementById('admin-panel').style.display = 'flex'; renderAdminList(); }
+            if (entry) { 
+                sessionKey = entry.trim(); 
+                document.getElementById('admin-panel').style.display = 'flex'; 
+                renderAdminList(); 
+            }
         }
 
-        async function applyAndPush() {
+        async function applyAndPush(isDelete = false) {
             const btn = document.getElementById('commit-btn');
             btn.innerText = "SYNCHRONIZING...";
             btn.disabled = true;
 
-            const update = {
-                name: document.getElementById('edit-name').value || "Unnamed",
-                percentage: parseInt(document.getElementById('edit-perc').value),
-                type: currentEditType,
-                image: document.getElementById('edit-img').value || "avatar.jpg",
-                recipe: currentRecipe
-            };
-            
-            if(editingIndex !== null) projects[editingIndex] = update;
-            else projects.unshift(update);
+            if(!isDelete) {
+                const update = {
+                    name: document.getElementById('edit-name').value || "Unnamed Project",
+                    percentage: parseInt(document.getElementById('edit-perc').value),
+                    type: currentEditType,
+                    image: document.getElementById('edit-img').value || "avatar.jpg",
+                    notes: document.getElementById('edit-notes').value || "",
+                    recipe: currentRecipe
+                };
+                if(editingIndex !== null) projects[editingIndex] = update;
+                else projects.unshift(update);
+            }
 
             try {
-                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?t=${Date.now()}`, {
-                    headers: { 'Authorization': `Bearer ${sessionKey}`, 'Accept': 'application/vnd.github+json' }
+                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { 'Authorization': `token ${sessionKey}` }
                 });
-                
-                if (!getRes.ok) throw new Error(`Access Denied: ${getRes.status}`);
                 const fileData = await getRes.json();
                 
                 const putRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
                     method: 'PUT',
-                    headers: { 
-                        'Authorization': `Bearer ${sessionKey}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github+json'
-                    },
+                    headers: { 'Authorization': `token ${sessionKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: "Forge Update",
+                        message: isDelete ? `Studio: Removed Project` : `Studio: ${document.getElementById('edit-name').value}`,
                         content: btoa(unescape(encodeURIComponent(JSON.stringify(projects, null, 2)))),
                         sha: fileData.sha
                     })
                 });
 
-                if (putRes.ok) { alert("Forge Synced!"); location.reload(); }
+                if (putRes.ok) { alert("Studio Synced!"); location.reload(); }
                 else { throw new Error("Sync Failed."); }
-            } catch (e) { alert("ERROR: " + e.message); }
+            } catch (e) { alert("Access Denied: Connection Error."); }
             finally { btn.innerText = "Commit Changes"; btn.disabled = false; }
+        }
+
+        function deleteProject() {
+            if (editingIndex !== null && confirm("Confirm Permanent Deletion?")) {
+                projects.splice(editingIndex, 1);
+                applyAndPush(true);
+            }
+        }
+
+        function resetForm() {
+            editingIndex = null;
+            document.getElementById('edit-name').value = "";
+            document.getElementById('edit-img').value = "";
+            document.getElementById('edit-notes').value = "";
+            document.getElementById('edit-perc').value = 0;
+            document.getElementById('val').innerText = '0%';
+            currentRecipe = [];
+            renderRecipeEditor();
+            document.getElementById('del-btn').classList.add('hidden');
         }
 
         async function loadData() { try { const r = await fetch('data.json?t=' + Date.now()); projects = await r.json(); renderGallery(); } catch(e) {} }
@@ -136,6 +169,7 @@
                     <div class="p-8 space-y-6">
                         <div class="flex justify-between items-center"><span class="text-[8px] font-900 uppercase px-2 py-1 border border-white/10 rounded ${p.type === 'Commission' ? 'text-red-500 border-red-500/30' : 'text-zinc-500'}">${p.type}</span><span class="text-xs font-900 text-red-600 italic tracking-tighter">${p.percentage}%</span></div>
                         <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-tight">${p.name}</h3>
+                        ${p.notes ? `<p class="text-[11px] text-zinc-500 leading-relaxed italic border-l border-red-600/30 pl-3">${p.notes}</p>` : ''}
                         <div class="space-y-2 pt-4 border-t border-white/5">${(p.recipe || []).map(paint => `<div class="flex items-center text-[10px] text-zinc-400 font-bold uppercase tracking-wide"><span class="text-[7px] px-1.5 py-0.5 rounded border mr-3 tag-${paint.type}">${paint.type}</span>${paint.name}</div>`).join('')}</div>
                     </div>
                 </div>
@@ -148,11 +182,13 @@
             editingIndex = idx; const p = projects[idx]; 
             document.getElementById('edit-name').value = p.name; 
             document.getElementById('edit-img').value = p.image; 
+            document.getElementById('edit-notes').value = p.notes || "";
             document.getElementById('edit-perc').value = p.percentage; 
             document.getElementById('val').innerText = p.percentage + '%'; 
             currentRecipe = p.recipe || []; 
             setEditType(p.type); 
-            renderRecipeEditor(); 
+            renderRecipeEditor();
+            document.getElementById('del-btn').classList.remove('hidden');
         }
 
         function addPaint() { const type = document.getElementById('paint-type').value; const name = document.getElementById('paint-name').value; if(!name) return; currentRecipe.push({type, name}); document.getElementById('paint-name').value = ''; renderRecipeEditor(); }
