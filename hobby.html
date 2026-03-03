@@ -48,8 +48,11 @@
     </main>
 
     <div id="project-modal" onclick="closeModal()">
-        <div class="glass p-10 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scroll border border-white/10 relative" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px] z-50">✕ Close</button>
+        <button onclick="closeModal()" class="fixed top-6 right-6 md:top-10 md:right-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-red-600 transition-all z-[250] group">
+            <span class="text-xl font-light group-hover:scale-110 transition-transform">✕</span>
+        </button>
+
+        <div class="glass p-6 md:p-12 rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-y-auto custom-scroll border border-white/10 relative" onclick="event.stopPropagation()">
             <div id="modal-content"></div>
         </div>
     </div>
@@ -203,7 +206,7 @@
                         <img src="${mainImg}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
                     </div>
-                    <div class="p-8 space-y-4">
+                    <div class="p-8 space-y-4 text-left">
                         <div class="flex justify-between items-center"><span class="text-[8px] font-900 uppercase px-2 py-1 border border-white/10 rounded ${p.type === 'Commission' ? 'text-red-500 border-red-500/30' : 'text-zinc-500'}">${p.type}</span><span class="text-xs font-900 text-red-600 italic tracking-tighter">${p.percentage}%</span></div>
                         <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-tight">${p.name}</h3>
                     </div>
@@ -238,7 +241,7 @@
                                 </button>
                                 
                                 <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                                    <span class="bg-black/60 backdrop-blur-md text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full text-white/50">
+                                    <span class="bg-black/60 backdrop-blur-md text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full text-white/50 whitespace-nowrap">
                                         <span class="md:hidden">Swipe</span><span class="hidden md:inline">Use Arrows</span> For Gallery
                                     </span>
                                 </div>
