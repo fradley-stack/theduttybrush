@@ -1,10 +1,10 @@
 [
   {
-    "id": 1772554354289,
     "name": "Night Lord",
-    "status": "WIP",
-    "notes": "Primer: Vallejo Primers Black",
-    "img": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554426/xv9xqmtjfprfj3zvtflb.jpg"
+    "percentage": 50,
+    "type": "Personal",
+    "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554708/aavsoxdehbwl6tjkxyi7.jpg",
+    "recipe": []
   },
   {
     "id": 1772550030121,
