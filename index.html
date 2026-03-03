@@ -18,19 +18,22 @@
 <body class="hero-gradient min-h-screen flex flex-col items-center justify-center p-6 text-white">
 
     <script>
-        // CHANGE THIS TO YOUR ACTUAL EMAIL
-        const MY_EMAIL = "your-email@example.com"; 
-        
+        const MY_EMAIL = "dom@theduttybrush.com"; 
+        const MY_DISCORD_ID = "1118558966377623582"; 
+
         const commissionBody = `Project Name: %0D%0AModel Scale: %0D%0AQuantity: %0D%0AStandard: Tabletop / Tabletop+ / Display %0D%0ADeadline:`;
         const commissionLink = `mailto:${MY_EMAIL}?subject=Commission Inquiry - The Dutty Brush&body=${commissionBody}`;
+        const discordLink = `https://discord.com/users/${MY_DISCORD_ID}`;
+
+        function openDiscord() {
+            window.open(discordLink, '_blank');
+        }
     </script>
 
     <main class="max-w-md w-full text-center space-y-8">
         <div class="space-y-6">
             <div class="relative inline-block">
-                <img src="avatar.jpg" 
-                     alt="Duttyclem" 
-                     class="w-24 h-24 rounded-full mx-auto avatar-glow object-cover bg-zinc-900">
+                <img src="avatar.jpg" alt="Duttyclem" class="w-24 h-24 rounded-full mx-auto avatar-glow object-cover bg-zinc-900">
             </div>
             
             <div class="space-y-1">
@@ -38,8 +41,7 @@
                     THE <span class="accent-red">DUTTY</span> BRUSH
                 </h1>
                 <div class="flex items-center justify-center">
-                    <a href="#" onclick="window.location.href=commissionLink; return false;" 
-                       class="flex items-center hover:opacity-80 transition-all transform hover:scale-105">
+                    <a href="#" onclick="window.location.href=commissionLink; return false;" class="flex items-center hover:opacity-80 transition-all transform hover:scale-105">
                         <span class="status-dot animate-pulse"></span>
                         <span class="text-[8px] uppercase font-bold tracking-[0.2em] text-zinc-500 border-b border-zinc-800 hover:border-zinc-500 pb-0.5">Commissions Open</span>
                     </a>
@@ -48,19 +50,15 @@
         </div>
 
         <div class="flex flex-col gap-3">
-            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
-                TikTok
-            </a>
-            <a href="https://instagram.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
-                Instagram
-            </a>
-            <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
-                Baselair
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
-                Facebook
-            </a>
+            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-[0.2em]">TikTok</a>
+            <a href="https://instagram.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-[0.2em]">Instagram</a>
+            <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-[0.2em]">Baselair</a>
+            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-[0.2em]">Facebook</a>
             
+            <button onclick="openDiscord()" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-[0.2em] w-full">
+                Message on Discord
+            </button>
+
             <a href="hobby.html" class="mt-4 bg-white text-black py-4 rounded-xl text-[10px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl shadow-white/5">
                 Workbench
             </a>
@@ -68,7 +66,7 @@
 
         <div class="pt-6">
             <a href="#" onclick="window.location.href=`mailto:${MY_EMAIL}`; return false;" class="text-zinc-600 hover:text-white transition-colors duration-300">
-                <span class="text-[10px] uppercase font-bold tracking-[0.4em] border-b border-zinc-900 hover:border-red-600 pb-1">Contact Me</span>
+                <span class="text-[10px] uppercase font-bold tracking-[0.4em] border-b border-zinc-900 hover:border-red-600 pb-1">Email Inquiry</span>
             </a>
         </div>
     </main>
