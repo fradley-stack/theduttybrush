@@ -8,47 +8,66 @@
     <style>
         body { background: #050505; color: white; font-family: sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
-        .red-glow { box-shadow: 0 0 20px rgba(220, 38, 38, 0.4); }
+        
+        /* The Glowing Commission Button */
+        .glow-btn { 
+            position: relative;
+            background: #dc2626;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.7); }
+            100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
+        }
+        .glow-btn:hover { background: #ef4444; transform: scale(1.02); }
+        .closed { background: #27272a; box-shadow: none; animation: none; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
-    <main class="max-w-md w-full text-center space-y-8">
-        <div class="space-y-2">
-            <h1 class="text-5xl font-black italic uppercase tracking-tighter leading-none">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
-            <p class="text-[9px] uppercase tracking-[0.4em] text-zinc-500 font-bold">Grimdark Miniature Studio</p>
-        </div>
-
-        <div id="featured-area" class="hidden space-y-4">
-            <div class="glass rounded-3xl overflow-hidden aspect-square border-white/5 relative">
-                <img id="feat-img" src="" class="w-full h-full object-cover">
-                <div class="absolute bottom-4 left-4"><span class="text-[8px] font-black uppercase bg-red-600 px-3 py-1 rounded-full">Current Work</span></div>
-            </div>
-
-            <div class="glass p-6 rounded-3xl text-left space-y-4 border-l-4 border-l-zinc-800">
-                <div class="flex justify-between items-end">
-                    <div class="flex flex-col gap-1">
-                        <span id="p-tag" class="text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border"></span>
-                        <span class="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Live in the Forge</span>
-                    </div>
-                    <span id="p-percent" class="text-lg font-black text-red-600 italic">0%</span>
-                </div>
-                <div class="w-full bg-zinc-950 h-2 rounded-full overflow-hidden">
-                    <div id="p-bar" class="bg-red-600 h-full red-glow transition-all duration-1000" style="width: 0%"></div>
-                </div>
-                <p id="p-name" class="text-[11px] text-zinc-300 font-bold uppercase italic tracking-[0.1em]"></p>
-            </div>
+    <main class="max-w-md w-full text-center space-y-6">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
+            <p class="text-[9px] uppercase tracking-[0.4em] text-zinc-500 font-bold mt-2">Grimdark Miniature Studio</p>
         </div>
 
         <div class="grid gap-3">
-            <a href="mailto:your-email@example.com" class="bg-red-600 text-white py-4 rounded-xl font-black uppercase text-xs hover:bg-red-700 transition shadow-lg">Contact for Commissions</a>
-            
-            <a href="hobby.html" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition">Enter Workbench</a>
-            
-            <div class="flex gap-3">
-                <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="flex-1 glass py-4 rounded-xl font-bold uppercase text-[9px] hover:bg-zinc-900 transition">Facebook</a>
-                <a href="https://instagram.com/duttyclem" target="_blank" class="flex-1 glass py-4 rounded-xl font-bold uppercase text-[9px] hover:bg-zinc-900 transition">Instagram</a>
+            <a href="mailto:your-email@example.com?subject=Commission Request" id="comm-btn" class="glow-btn py-5 rounded-2xl font-black uppercase text-xs tracking-widest text-white block">
+                Commissions Open
+            </a>
+
+            <a href="hobby.html" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
+                <span>Enter Workbench</span> <span class="opacity-30">→</span>
+            </a>
+
+            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
+                <span>Facebook</span> <span class="opacity-30">→</span>
+            </a>
+
+            <a href="https://instagram.com/duttyclem" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
+                <span>Instagram</span> <span class="opacity-30">→</span>
+            </a>
+
+            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
+                <span>TikTok</span> <span class="opacity-30">→</span>
+            </a>
+        </div>
+
+        <div id="forge-card" class="hidden glass p-5 rounded-2xl text-left space-y-3 border-l-4 border-l-zinc-800">
+            <div class="flex justify-between items-end">
+                <div class="flex flex-col gap-1">
+                    <span id="p-tag" class="text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border"></span>
+                    <span class="text-[9px] uppercase font-bold text-zinc-600 tracking-widest">Live in the Forge</span>
+                </div>
+                <span id="p-percent" class="text-sm font-black text-red-600 italic">0%</span>
             </div>
+            <div class="w-full bg-zinc-950 h-1.5 rounded-full overflow-hidden">
+                <div id="p-bar" class="bg-red-600 h-full transition-all duration-1000" style="width: 0%"></div>
+            </div>
+            <p id="p-name" class="text-[10px] text-zinc-400 font-bold uppercase italic tracking-widest"></p>
         </div>
     </main>
 
@@ -59,8 +78,7 @@
                 const data = await r.json();
                 const p = data[0];
                 if(p) {
-                    document.getElementById('featured-area').classList.remove('hidden');
-                    document.getElementById('feat-img').src = p.image;
+                    document.getElementById('forge-card').classList.remove('hidden');
                     document.getElementById('p-name').innerText = p.name;
                     document.getElementById('p-percent').innerText = p.percentage + '%';
                     document.getElementById('p-bar').style.width = p.percentage + '%';
@@ -70,6 +88,11 @@
                     tag.className = p.type === "Commission" 
                         ? "text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border border-red-600/50 text-red-500 bg-red-500/5"
                         : "text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border border-white/10 text-zinc-500 bg-white/5";
+
+                    // Handle Glow Button State (optional: add 'status' to JSON later if you want to automate this)
+                    const commBtn = document.getElementById('comm-btn');
+                    // commBtn.innerText = "Commissions Closed"; // Toggle logic if needed
+                    // commBtn.classList.add('closed');
                 }
             } catch(e) {}
         }
