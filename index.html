@@ -5,57 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Dutty Brush | Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; }
         .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
         .accent-red { color: #ff3e3e; }
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #22c55e; }
+        .status-dot { height: 6px; width: 6px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 10px #22c55e; }
+        .avatar-glow { box-shadow: 0 0 20px rgba(255, 62, 62, 0.15); border: 2px solid rgba(255, 255, 255, 0.05); }
     </style>
 </head>
 <body class="hero-gradient min-h-screen flex flex-col items-center justify-center p-6">
 
-    <main class="max-w-2xl w-full text-center space-y-12">
-        <div class="space-y-4">
-            <h1 class="text-6xl md:text-8xl font-800 uppercase tracking-tighter italic">
-                THE <span class="accent-red">DUTTY</span> BRUSH
-            </h1>
-            <div class="flex items-center justify-center gap-4">
-                <span class="text-zinc-500 uppercase tracking-[0.4em] text-[10px] font-bold border-r border-zinc-800 pr-4">Studio</span>
-                <div class="flex items-center">
-                    <span class="status-dot"></span>
-                    <span class="text-[9px] uppercase font-bold tracking-widest text-zinc-400">Commissions: Open</span>
+    <main class="max-w-md w-full text-center space-y-8">
+        <div class="space-y-6">
+            <div class="relative inline-block">
+                <img src="https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/v1234567/your-avatar.jpg" 
+                     alt="Duttyclem" 
+                     class="w-24 h-24 rounded-full mx-auto avatar-glow object-cover">
+            </div>
+            
+            <div class="space-y-1">
+                <h1 class="text-4xl font-900 uppercase tracking-tighter italic">
+                    THE <span class="accent-red">DUTTY</span> BRUSH
+                </h1>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="flex items-center">
+                        <span class="status-dot"></span>
+                        <span class="text-[8px] uppercase font-bold tracking-[0.2em] text-zinc-500">Commissions Open</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-col gap-4 max-w-sm mx-auto">
-            <a href="hobby.html" class="group relative bg-white text-black font-800 py-5 rounded-xl text-xs uppercase tracking-[0.3em] overflow-hidden transition-all hover:scale-105 active:scale-95">
-                <span class="relative z-10">Enter Workbench</span>
-                <div class="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        <div class="flex flex-col gap-3">
+            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
+                TikTok
+            </a>
+            <a href="https://www.instagram.com/YOUR_INSTAGRAM" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
+                Instagram
+            </a>
+            <a href="https://baselayer.xyz/YOUR_PROFILE" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
+                BaseLayer
+            </a>
+            <a href="https://www.facebook.com/YOUR_FACEBOOK" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
+                Facebook
             </a>
             
-            <div class="grid grid-cols-2 gap-4">
-                <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-widest border border-zinc-800">
-                    TikTok
-                </a>
-                <a href="https://www.facebook.com/YOUR_FACEBOOK_PAGE" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-widest border border-zinc-800">
-                    Facebook
-                </a>
-            </div>
+            <a href="hobby.html" class="mt-4 bg-white text-black py-4 rounded-xl text-[10px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all transform hover:scale-[1.02] active:scale-95">
+                Workbench Data
+            </a>
         </div>
 
-        <div class="pt-12">
-            <a href="mailto:your-email@example.com" class="group text-zinc-600 hover:text-white transition-colors duration-300">
-                <p class="text-[10px] uppercase font-bold tracking-[0.5em] mb-2">Inquiries</p>
-                <span class="text-sm font-light border-b border-zinc-900 group-hover:border-red-600 pb-1 transition-all">Contact Me</span>
+        <div class="pt-6">
+            <a href="mailto:your-email@example.com" class="text-zinc-600 hover:text-white transition-colors duration-300">
+                <span class="text-[10px] uppercase font-bold tracking-[0.4em] border-b border-zinc-900 hover:border-red-600 pb-1">Contact Me</span>
             </a>
         </div>
     </main>
 
-    <footer class="fixed bottom-8 opacity-20 hover:opacity-100 transition-opacity">
-        <p class="text-[8px] uppercase tracking-[1em]">London // Studio // 2026</p>
+    <footer class="mt-20 opacity-20">
+        <p class="text-[7px] uppercase tracking-[0.8em]">The Dutty Brush Studio // 2026</p>
     </footer>
 
 </body>
