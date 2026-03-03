@@ -40,18 +40,18 @@
             <div class="grid lg:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
-                    <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600 text-white">
+                    <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600">
                     <div class="flex gap-2">
                         <button id="btn-p" onclick="setEditType('Personal')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase active-type">Personal</button>
                         <button id="btn-c" onclick="setEditType('Commission')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase">Commission</button>
                     </div>
-                    <input type="text" id="edit-img" placeholder="Image Path (models/pic.jpg)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs text-white">
+                    <input type="text" id="edit-img" placeholder="Image Path (models/pic.jpg)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs">
                     <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
                         <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Recipe Builder</p>
                         <div id="paint-list-editor" class="space-y-2 max-h-40 overflow-y-auto"></div>
                         <div class="flex gap-2">
                             <select id="paint-type" class="bg-zinc-900 text-[10px] p-2 rounded border border-white/10 uppercase font-bold text-white"><option value="primer">Primer</option><option value="base">Base</option><option value="layer">Layer</option><option value="highlight">Highlight</option></select>
-                            <input type="text" id="paint-name" class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none text-white">
+                            <input type="text" id="paint-name" class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none">
                             <button onclick="addPaint()" class="bg-red-600 px-4 rounded font-bold text-white">+</button>
                         </div>
                     </div>
@@ -78,8 +78,13 @@
         const FILE_PATH = "data.json";
 
         function authenticate() {
+            // REMOVED PAT REFERENCE HERE
             const entry = prompt("Enter Studio Access Key:");
-            if (entry) { sessionKey = entry; document.getElementById('admin-panel').style.display = 'flex'; renderAdminList(); }
+            if (entry) { 
+                sessionKey = entry; 
+                document.getElementById('admin-panel').style.display = 'flex'; 
+                renderAdminList(); 
+            }
         }
 
         async function applyAndPush(isDelete = false) {
@@ -109,20 +114,19 @@
                     method: 'PUT',
                     headers: { 'Authorization': `token ${sessionKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: isDelete ? "Studio: Archive Purge" : `Studio: Forge Update ${document.getElementById('edit-name').value}`,
+                        message: isDelete ? "Studio: Project Removed" : `Studio: Forge Update ${document.getElementById('edit-name').value}`,
                         content: btoa(unescape(encodeURIComponent(JSON.stringify(projects, null, 2)))),
                         sha: fileData.sha
                     })
                 });
 
-                if (putRes.ok) { alert("Forge Synced."); location.reload(); }
-                else { throw new Error("Unauthorized Key"); }
-            } catch (e) { alert("Access Denied: Key Incorrect or No Permission."); }
+                if (putRes.ok) { alert("Studio Synced!"); location.reload(); }
+                else { throw new Error("Unauthorized Access"); }
+            } catch (e) { alert("Access Denied: Key Incorrect."); }
             finally { btn.innerText = "Commit Changes"; btn.disabled = false; }
         }
 
-        function deleteProject() { if(editingIndex !== null && confirm("Purge this project from history?")) { projects.splice(editingIndex, 1); applyAndPush(true); } }
-
+        function deleteProject() { if(editingIndex !== null && confirm("Purge this project?")) { projects.splice(editingIndex, 1); applyAndPush(true); } }
         async function loadData() { try { const r = await fetch('data.json?t=' + Date.now()); projects = await r.json(); renderGallery(); } catch(e) {} }
 
         function renderGallery() {
