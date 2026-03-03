@@ -12,10 +12,18 @@
         .accent-red { color: #ff3e3e; }
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .status-dot { height: 6px; width: 6px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 10px #22c55e; }
-        .avatar-glow { box-shadow: 0 0 20px rgba(255, 62, 62, 0.15); border: 2px solid rgba(255, 255, 255, 0.1); }
+        .avatar-glow { box-shadow: 0 0 25px rgba(255, 62, 62, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 <body class="hero-gradient min-h-screen flex flex-col items-center justify-center p-6 text-white">
+
+    <script>
+        // CHANGE THIS TO YOUR ACTUAL EMAIL
+        const MY_EMAIL = "your-email@example.com"; 
+        
+        const commissionBody = `Project Name: %0D%0AModel Scale: %0D%0AQuantity: %0D%0AStandard: Tabletop / Tabletop+ / Display %0D%0ADeadline:`;
+        const commissionLink = `mailto:${MY_EMAIL}?subject=Commission Inquiry - The Dutty Brush&body=${commissionBody}`;
+    </script>
 
     <main class="max-w-md w-full text-center space-y-8">
         <div class="space-y-6">
@@ -30,10 +38,10 @@
                     THE <span class="accent-red">DUTTY</span> BRUSH
                 </h1>
                 <div class="flex items-center justify-center">
-                    <a href="mailto:your-email@example.com?subject=Commission Inquiry&body=Project Name:%0D%0AModel Scale:%0D%0AQuantity:%0D%0ADesired Standard (Battle Ready/Parade):%0D%0ADeadline:" 
-                       class="flex items-center hover:opacity-80 transition-opacity">
+                    <a href="#" onclick="window.location.href=commissionLink; return false;" 
+                       class="flex items-center hover:opacity-80 transition-all transform hover:scale-105">
                         <span class="status-dot animate-pulse"></span>
-                        <span class="text-[8px] uppercase font-bold tracking-[0.2em] text-zinc-500 border-b border-transparent hover:border-zinc-500 pb-0.5">Commissions Open</span>
+                        <span class="text-[8px] uppercase font-bold tracking-[0.2em] text-zinc-500 border-b border-zinc-800 hover:border-zinc-500 pb-0.5">Commissions Open</span>
                     </a>
                 </div>
             </div>
@@ -46,20 +54,20 @@
             <a href="https://instagram.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
                 Instagram
             </a>
-            <a href="https://baselair.com/theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
+            <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
                 Baselair
             </a>
             <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition text-[10px] font-bold uppercase tracking-[0.2em]">
                 Facebook
             </a>
             
-            <a href="hobby.html" class="mt-4 bg-white text-black py-4 rounded-xl text-[10px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all transform hover:scale-[1.02] active:scale-95">
+            <a href="hobby.html" class="mt-4 bg-white text-black py-4 rounded-xl text-[10px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl shadow-white/5">
                 Workbench
             </a>
         </div>
 
         <div class="pt-6">
-            <a href="mailto:your-email@example.com" class="text-zinc-600 hover:text-white transition-colors duration-300">
+            <a href="#" onclick="window.location.href=`mailto:${MY_EMAIL}`; return false;" class="text-zinc-600 hover:text-white transition-colors duration-300">
                 <span class="text-[10px] uppercase font-bold tracking-[0.4em] border-b border-zinc-900 hover:border-red-600 pb-1">Contact Me</span>
             </a>
         </div>
