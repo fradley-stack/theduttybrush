@@ -1,5 +1,13 @@
 [
   {
+    "name": "Saturnine Praetor",
+    "percentage": 10,
+    "type": "Personal",
+    "image": "",
+    "notes": "",
+    "recipe": []
+  },
+  {
     "name": "Night Lord",
     "percentage": 10,
     "type": "Personal",
