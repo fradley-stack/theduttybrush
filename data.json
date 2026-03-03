@@ -12,6 +12,36 @@
     "percentage": 100,
     "type": "Personal",
     "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772549499/hpsbmiawe7xb28qle8ac.jpg",
-    "recipe": []
+    "notes": "",
+    "recipe": [
+      {
+        "type": "primer",
+        "name": "Vallejo Primers Black"
+      },
+      {
+        "type": "base",
+        "name": "Caliban Green"
+      },
+      {
+        "type": "layer",
+        "name": "Warpstone Glow"
+      },
+      {
+        "type": "highlight",
+        "name": "Moot Green"
+      },
+      {
+        "type": "base",
+        "name": "Khorne Red"
+      },
+      {
+        "type": "layer",
+        "name": "Mephiston Red"
+      },
+      {
+        "type": "highlight",
+        "name": "Evil Sunz Scarlet"
+      }
+    ]
   }
 ]
