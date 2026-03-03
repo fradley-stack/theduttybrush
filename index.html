@@ -13,16 +13,22 @@
         .accent-red { color: #ff3e3e; }
         .progress-glow { box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
         
-        /* Enhanced Glow Dot */
         .glow-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
         @keyframes pulse { 
             0% { opacity: 1; transform: scale(1); } 
             50% { opacity: 0.5; transform: scale(1.2); } 
             100% { opacity: 1; transform: scale(1); } 
         }
+
+        #toast { visibility: hidden; min-width: 180px; background-color: #ff3e3e; color: #fff; text-align: center; border-radius: 8px; padding: 10px; position: fixed; z-index: 100; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body class="hero-gradient min-h-screen flex flex-col items-center p-6 pt-12 md:pt-24">
+
+    <div id="toast">Email Copied to Clipboard</div>
 
     <main class="max-w-md w-full text-center space-y-8 mb-20">
         <div class="space-y-5">
@@ -42,10 +48,21 @@
                 <span id="workbench-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded border-2 border-[#050505] hidden">0 ACTIVE</span>
             </a>
 
-            <a href="mailto:commissions@theduttybrush.com?subject=Commission Inquiry&body=Project Name:%0D%0AQuantity:%0D%0ADetails:" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-white hover:text-black transition group">
-                <span class="text-[10px] font-bold uppercase tracking-widest">Contact Me</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-black transition-colors"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </a>
+            <div class="glass-card rounded-xl flex items-center overflow-hidden">
+                <a href="mailto:commissions@theduttybrush.com?subject=Commission Inquiry&body=Project Name:%0D%0AQuantity:%0D%0ADetails:" class="flex-1 py-4 px-6 flex items-center justify-between hover:bg-white/5 transition group text-left">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Contact Me</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white transition-colors"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <button onclick="copyEmail()" class="border-l border-white/5 py-4 px-5 hover:bg-red-600 transition-colors group" title="Copy Email">
+                    <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg id="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
+            </div>
 
             <a href="https://baselair.com/theduttybrush" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition group">
                 <span class="text-[10px] font-bold uppercase tracking-widest">Baselair</span>
@@ -96,9 +113,28 @@
     </footer>
 
     <script>
+        // Copy Email Logic
+        function copyEmail() {
+            const email = "commissions@theduttybrush.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const toast = document.getElementById("toast");
+                const copyIcon = document.getElementById("copy-icon");
+                const checkIcon = document.getElementById("check-icon");
+
+                toast.className = "show";
+                copyIcon.classList.add("hidden");
+                checkIcon.classList.remove("hidden");
+
+                setTimeout(() => { 
+                    toast.className = toast.className.replace("show", ""); 
+                    copyIcon.classList.remove("hidden");
+                    checkIcon.classList.add("hidden");
+                }, 3000);
+            });
+        }
+
         async function syncForge() {
             try {
-                // Aggressive cache busting
                 const res = await fetch('data.json?v=' + Date.now(), {
                     cache: "no-store",
                     headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
@@ -106,16 +142,13 @@
                 
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
-                console.log("Forge Data Synced:", data); // Check your browser console to see this
 
-                // Update Workbench Status Badge
                 if (data.length > 0) {
                     const badge = document.getElementById('workbench-count');
                     badge.innerText = `${data.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
 
-                // Update Progress Card for the top project
                 const active = data[0];
                 if (active) {
                     document.getElementById('forge-card').classList.remove('hidden');
