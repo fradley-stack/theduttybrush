@@ -11,59 +11,62 @@
         .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
         .glow-green { box-shadow: 0 0 8px #22c55e; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        footer { font-size: 8px; letter-spacing: 0.6em; opacity: 0.2; font-weight: 900; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex flex-col items-center justify-between p-8">
 
-    <main class="max-w-md w-full text-center space-y-6">
-        <div class="space-y-4">
-            <img src="https://res.cloudinary.com/dt9p8v9px/image/upload/v1740941910/370258169_122100806120038838_435017109249764516_n_p78i8u.jpg" 
-                 class="w-24 h-24 rounded-full mx-auto border-2 border-red-600 object-cover shadow-lg shadow-red-600/20">
-            <div>
-                <h1 class="text-3xl font-black italic uppercase tracking-tighter">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
-                <div class="flex items-center justify-center gap-2 mt-2">
-                    <div class="w-2 h-2 bg-green-500 rounded-full glow-green"></div>
-                    <span class="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Commissions Open</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid gap-3">
-            <a href="mailto:your-email@example.com" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
-                <i class="fa-solid fa-envelope text-red-600 w-6 text-base"></i>
-                <span class="flex-1">Request Quote</span>
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
-                <i class="fa-brands fa-facebook text-[#1877F2] w-6 text-base"></i>
-                <span class="flex-1">Facebook</span>
-            </a>
-            <a href="https://instagram.com/duttyclem" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
-                <i class="fa-brands fa-instagram text-[#E4405F] w-6 text-base"></i>
-                <span class="flex-1">Instagram</span>
-            </a>
-            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
-                <i class="fa-brands fa-tiktok text-[#ff0050] w-6 text-base"></i>
-                <span class="flex-1">TikTok</span>
-            </a>
-            <a href="hobby.html" class="bg-white text-black py-4 rounded-xl font-black uppercase text-[10px] hover:bg-red-600 hover:text-white transition shadow-xl">
-                Enter Workbench
+    <header class="w-full max-w-md text-center space-y-4 pt-4">
+        <img src="https://res.cloudinary.com/dt9p8v9px/image/upload/v1740941910/370258169_122100806120038838_435017109249764516_n_p78i8u.jpg" 
+             class="w-24 h-24 rounded-full mx-auto border-2 border-red-600 object-cover shadow-lg shadow-red-600/20">
+        <div>
+            <h1 class="text-3xl font-black italic uppercase tracking-tighter leading-none">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
+            
+            <a href="mailto:theduttybrush@gmail.com?subject=Commission Request&body=Project Name:%0D%0AQuantity:%0D%0ADeadline (approx):%0D%0ALocation (for shipping):" 
+               class="inline-flex items-center justify-center gap-2 mt-3 group">
+                <div class="w-1.5 h-1.5 bg-green-500 rounded-full glow-green"></div>
+                <span class="text-[9px] uppercase font-black tracking-[0.2em] text-zinc-400 group-hover:text-white transition">Commissions Open</span>
             </a>
         </div>
+    </header>
 
+    <div class="w-full max-w-md grid gap-3">
+        <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+            <i class="fa-brands fa-facebook text-[#1877F2] w-6 text-base text-left"></i>
+            <span class="flex-1 text-center pr-6">Facebook</span>
+        </a>
+        <a href="https://instagram.com/duttyclem" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+            <i class="fa-brands fa-instagram text-[#E4405F] w-6 text-base text-left"></i>
+            <span class="flex-1 text-center pr-6">Instagram</span>
+        </a>
+        <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+            <i class="fa-brands fa-tiktok text-[#ff0050] w-6 text-base text-left"></i>
+            <span class="flex-1 text-center pr-6">TikTok</span>
+        </a>
+        <a href="hobby.html" class="bg-white text-black py-4 rounded-xl font-black uppercase text-[10px] hover:bg-red-600 hover:text-white transition shadow-xl text-center">
+            Enter Workbench
+        </a>
+    </div>
+
+    <div class="w-full max-w-md space-y-8 pb-4">
         <div id="forge-card" class="hidden glass p-5 rounded-2xl text-left space-y-3 border-l-4 border-l-zinc-800">
             <div class="flex justify-between items-end">
                 <div class="flex flex-col gap-1">
                     <span id="p-tag" class="text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border"></span>
-                    <span class="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Live in the Forge</span>
+                    <span class="text-[9px] uppercase font-bold text-zinc-600 tracking-widest text-left">Live in the Forge</span>
                 </div>
                 <span id="p-percent" class="text-sm font-black text-red-600 italic">0%</span>
             </div>
-            <div class="w-full bg-zinc-950 h-1.5 rounded-full overflow-hidden">
+            <div class="w-full bg-zinc-950 h-1 rounded-full overflow-hidden">
                 <div id="p-bar" class="bg-red-600 h-full transition-all duration-1000" style="width: 0%"></div>
             </div>
             <p id="p-name" class="text-[10px] text-zinc-400 font-bold uppercase italic tracking-widest"></p>
         </div>
-    </main>
+
+        <footer class="text-center uppercase text-zinc-900">
+            BASELAIR
+        </footer>
+    </div>
 
     <script>
         async function init() {
