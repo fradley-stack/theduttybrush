@@ -34,12 +34,15 @@
 <body class="min-h-screen">
 
     <main class="max-w-6xl mx-auto p-8 space-y-12">
-        <header class="flex justify-between items-end border-b border-white/5 pb-10">
+        <header class="flex flex-col md:flex-row md:justify-between md:items-end border-b border-white/5 pb-10">
             <div>
-                <h1 class="text-5xl font-900 uppercase italic tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
+                <h1 class="text-4xl md:text-5xl font-900 uppercase italic tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
                 <p class="text-[10px] uppercase tracking-[0.4em] text-zinc-500 font-bold mt-3">Recipe Archives</p>
             </div>
-            <a href="index.html" class="text-[10px] font-900 uppercase tracking-widest bg-white/5 px-8 py-4 rounded-full hover:bg-red-600 transition-all">Return Hub</a>
+            <a href="index.html" class="flex items-center justify-center gap-2 text-[10px] font-900 uppercase tracking-widest bg-white/5 px-8 py-4 rounded-full hover:bg-red-600 transition-all mt-6 md:mt-0 w-fit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Return Home
+            </a>
         </header>
         <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20"></div>
     </main>
