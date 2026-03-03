@@ -12,44 +12,42 @@
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
         
-        /* Smooth Slide Panel */
         #project-detail-panel {
             transform: translateX(100%);
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #050505;
         }
         #project-detail-panel.open { transform: translateX(0); }
 
-        /* Custom Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .project-card:hover img { transform: scale(1.02); }
     </style>
 </head>
 <body class="hero-gradient min-h-screen">
 
-    <header class="max-w-2xl mx-auto p-6 pt-12 mb-8 flex justify-between items-end">
+    <header class="max-w-2xl mx-auto p-6 pt-12 mb-8 flex justify-between items-end border-b border-white/5 pb-8">
         <div>
             <a href="index.html" class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-colors">← Back to Studio</a>
             <h1 class="text-4xl font-900 uppercase italic tracking-tighter mt-2 leading-none">The <span class="accent-red">Forge</span></h1>
         </div>
-        <div class="text-right pb-1">
-            <span id="project-count" class="text-[9px] font-black bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-500 uppercase tracking-widest">0 Projects</span>
+        <div class="text-right flex flex-col items-end gap-3">
+            <a href="login.html" class="text-[8px] font-black uppercase tracking-widest text-zinc-600 hover:text-red-500 transition-colors">Admin Login</a>
+            <span id="project-count" class="text-[9px] font-black bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-400 uppercase tracking-widest">0 Projects</span>
         </div>
     </header>
 
     <div id="project-list" class="max-w-2xl mx-auto p-6 space-y-12">
         </div>
 
-    <div id="project-detail-panel" class="fixed inset-0 z-50 bg-[#050505] overflow-y-auto no-scrollbar">
-        <div class="max-w-2xl mx-auto p-6 pt-12 min-h-screen flex flex-col">
+    <div id="project-detail-panel" class="fixed inset-0 z-50 overflow-y-auto no-scrollbar">
+        <div class="max-w-2xl mx-auto p-6 pt-12 min-h-screen">
             
-            <button onclick="closeProject()" class="flex items-center gap-2 text-zinc-500 hover:text-white transition group mb-8">
+            <button onclick="closeProject()" class="flex items-center gap-2 text-zinc-500 hover:text-white transition group mb-10">
                 <span class="text-[20px] group-hover:-translate-x-1 transition-transform">←</span>
-                <span class="text-[10px] font-black uppercase tracking-[0.3em]">Back to Forge</span>
+                <span class="text-[10px] font-black uppercase tracking-[0.3em]">Return to Forge</span>
             </button>
 
-            <div id="detail-content" class="space-y-8 pb-20">
+            <div id="detail-content" class="space-y-10 pb-24">
                 </div>
         </div>
     </div>
@@ -65,7 +63,6 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now(), { cache: "no-store" });
                 allProjects = await res.json();
-                
                 document.getElementById('project-count').innerText = `${allProjects.length} Projects`;
                 renderList();
             } catch (e) { console.error("Forge load failed", e); }
@@ -80,25 +77,23 @@
                 const cover = images[0];
 
                 const card = document.createElement('div');
-                card.className = 'project-card cursor-pointer space-y-4 group';
+                card.className = 'cursor-pointer space-y-4 group';
                 card.onclick = () => openProject(index);
 
                 card.innerHTML = `
                     <div class="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900 aspect-[16/9]">
-                        <img src="${cover}" class="w-full h-full object-cover transition-transform duration-700 ease-out">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+                        <img src="${cover}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
                         <div class="absolute bottom-4 left-4">
-                            <span class="text-[8px] font-black uppercase tracking-[0.2em] text-red-500 bg-black/40 backdrop-blur-md px-2 py-1 rounded-sm">${project.type || 'Personal'}</span>
+                            <span class="text-[8px] font-black uppercase tracking-[0.2em] text-red-500 bg-black/60 backdrop-blur-md px-2 py-1 rounded-sm">${project.type || 'Personal'}</span>
                         </div>
                     </div>
                     <div class="flex justify-between items-end px-1">
                         <div>
-                            <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-none group-hover:accent-red transition-colors">${project.name}</h3>
-                            <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-2">Tap to View Project Details</p>
+                            <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-none group-hover:text-red-500 transition-colors">${project.name}</h3>
+                            <p class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest mt-2">View Technical Log & Gallery</p>
                         </div>
-                        <div class="text-right">
-                             <span class="text-[10px] font-black text-red-600">${project.percentage}%</span>
-                        </div>
+                        <div class="text-right font-black text-red-600 text-sm">${project.percentage}%</div>
                     </div>
                 `;
                 list.appendChild(card);
@@ -106,47 +101,60 @@
         }
 
         function openProject(index) {
-            const project = allProjects[index];
-            const images = Array.isArray(project.images) ? project.images : [project.image || project.images];
+            const p = allProjects[index];
+            const images = Array.isArray(p.images) ? p.images : [p.image || p.images];
+            const paints = Array.isArray(p.paints) ? p.paints : [];
             const detailContainer = document.getElementById('detail-content');
             
             detailContainer.innerHTML = `
-                <div class="space-y-6">
-                    <div class="space-y-2">
-                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-red-600">${project.type || 'Personal'}</span>
-                        <h2 class="text-4xl font-900 uppercase italic tracking-tighter">${project.name}</h2>
+                <div class="space-y-8">
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-red-600">${p.type || 'Personal'}</span>
+                        <h2 class="text-5xl font-900 uppercase italic tracking-tighter leading-none">${p.name}</h2>
                     </div>
 
-                    <div class="glass-card p-4 rounded-xl border-white/10">
-                         <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2">
-                            <span>Project Completion</span>
-                            <span class="text-red-500">${project.percentage}%</span>
-                        </div>
-                        <div class="w-full bg-black h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-red-600 h-full" style="width: ${project.percentage}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-4">
+                    <div class="flex flex-col gap-6">
                         ${images.map(img => `
-                            <img src="${img}" class="w-full rounded-2xl border border-white/10 shadow-2xl">
+                            <div class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                                <img src="${img}" class="w-full h-auto object-cover" loading="lazy">
+                            </div>
                         `).join('')}
                     </div>
 
-                    <div class="space-y-4 pt-4 border-t border-white/5">
-                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Project Briefing</h4>
-                        <p class="text-zinc-300 text-sm leading-relaxed">${project.description || 'No detailed log available for this project yet.'}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                        <div class="glass-card p-6 rounded-2xl space-y-4">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Project Briefing</h4>
+                            <p class="text-zinc-300 text-sm leading-relaxed italic">${p.description || 'No data recorded.'}</p>
+                        </div>
+                        
+                        <div class="glass-card p-6 rounded-2xl space-y-4">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Supplies & Paints</h4>
+                            <ul class="text-xs text-zinc-400 space-y-2">
+                                ${paints.length > 0 ? paints.map(paint => `<li class="flex items-center gap-2"><span class="w-1 h-1 bg-red-600 rounded-full"></span>${paint}</li>`).join('') : '<li class="opacity-30">No paints listed.</li>'}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
+                         <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Current Progress</span>
+                         <div class="flex items-center gap-4 flex-1 max-w-[200px] ml-10">
+                            <div class="flex-1 bg-black h-1 rounded-full overflow-hidden">
+                                <div class="bg-red-600 h-full" style="width: ${p.percentage}%"></div>
+                            </div>
+                            <span class="text-red-500 font-black text-xs">${p.percentage}%</span>
+                         </div>
                     </div>
                 </div>
             `;
 
             document.getElementById('project-detail-panel').classList.add('open');
-            document.body.style.overflow = 'hidden'; // Stop scrolling background
+            window.scrollTo(0,0);
+            document.body.style.overflow = 'hidden';
         }
 
         function closeProject() {
             document.getElementById('project-detail-panel').classList.remove('open');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
+            document.body.style.overflow = 'auto';
         }
 
         loadWorkbench();
