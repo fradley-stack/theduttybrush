@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Dutty Brush | Miniature Studio</title>
+    <title>The Dutty Brush | Studio</title>
     
     <link rel="icon" type="image/jpeg" href="avatar.jpg">
     <link rel="apple-touch-icon" href="avatar.jpg">
@@ -24,6 +24,9 @@
             100% { opacity: 1; transform: scale(1); } 
         }
 
+        .timeline-line { position: absolute; left: 7px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, rgba(255, 62, 62, 0.2) 15%, rgba(255, 62, 62, 0.2) 85%, transparent); }
+        .timeline-dot { position: absolute; left: 0; top: 6px; width: 15px; height: 15px; background: #050505; border: 2px solid #ff3e3e; border-radius: 50%; z-index: 10; }
+
         #toast { visibility: hidden; min-width: 180px; background-color: #ff3e3e; color: #fff; text-align: center; border-radius: 8px; padding: 10px; position: fixed; z-index: 100; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
@@ -34,7 +37,7 @@
 
     <div id="toast">Email Copied to Clipboard</div>
 
-    <main class="max-w-md w-full text-center space-y-8 mb-20">
+    <main class="max-w-md w-full text-center space-y-8 mb-12">
         <div class="space-y-5">
             <img src="avatar.jpg" alt="The Dutty Brush" class="w-24 h-24 rounded-full mx-auto border border-white/10 shadow-2xl object-cover hover:scale-105 transition-transform duration-500">
             <h1 class="text-4xl font-900 uppercase italic tracking-tighter leading-none">THE <span class="accent-red">DUTTY</span> BRUSH</h1>
@@ -46,7 +49,6 @@
         </div>
 
         <div class="flex flex-col gap-3">
-            
             <a href="hobby.html" class="relative bg-white text-black py-6 rounded-xl text-[11px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all block shadow-lg group">
                 Enter Workbench
                 <span id="workbench-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded border-2 border-[#050505] hidden">0 ACTIVE</span>
@@ -70,7 +72,7 @@
 
             <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition group">
                 <span class="text-[10px] font-bold uppercase tracking-widest">Baselair</span>
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEYUlEQVR4Ab2WA5AsSRRFz6uu2T/8XNu2bdu2zdDatm3btu39ts3xdGe+QXZGRtZ0r3dvoLKecQsCwPSfF4bcNSCbAwvgpIgIioII+KuH4O6FcmgCxqF8jCaP0HO5zygB6UpeSH4G6SsCKpHWV0KXDodQkDOKChYADXYBr2KTIzsKmRYXMP6XJxA5ADRKGAeMu5dEiik0KiD291MiKBNGkqSbUr3MuCAd+8sEYAHfIUJAdvRSdirl15SdmMgP9GxaH1k770xG/aRRQN+UuC4zfAhyn0wynFAnjxvK3Aun0WelW9zt8B9VAtkQQqJwzXTj5XFxcaJYF3zFtc3cKy/hREN+VO2SB8fAAS8L+rD/ENP5hyaQsmsJBWmyMgus1F8Y+L3GewtGcSFxwHj/AF5XbgpkyboHC676UooBEfVCFFBRpJjM3fsgFsT3Ghcq4pnhdCRhKiqUIKytBUgxFhWJukdA1WYmoEU90NA0p+taW93T+4VCnECthkfYJ48bmegKsCGBIKhYQIIs41z5yjszK295qA9A82mHz2zZbZs+obuQ1CcKUyKc0QKFws+uue++USUo4/1n5dB7z2OQxiaXrqaG2S/fG+lLPX4+XkDyFsutvkNxBcXaAw+QaHRKWA8+uRM1NhL5e2fx+RUNa/fxLIleQBGpGk84b2CDh7+E0ZGFGkvwF2TK5Gm1N9w3N0DjWUdP0/nmnduvAyARrrArrPEtgJ9ATCJjmivffr8VEW3ZbqtK0lyVit9ldwR/13HdudfNnRs7HoDac66bu/6eq1FRz4k77Wrrng8BqViNSFNz5Y0VFT/+WgWQ+/6XfMO5Z0aEykIMqASy+uQUz2pCbBJ5DY8wAbrgE1T80j/FoeP8W4VYwuhF6Qar4S0plNT7DGJ5tYP0V9gRoy5i332NX4FnsUtgLHgYixZcYSKUhtGQvJRRQQkr0EThvFxl9QYGti6S0EZvvSzEOk2ZBGHEZUgqNn6JVT7x7Kweb36wFSusc/6sgd9emooBpGhAd2hrvl4q0joALeTrgbqYAwqiSJkAvkHfXuWLb/TGWGjkvLkXWv7pzArohuonns43H3SA6To/+XS+/Ao0nlBUIEEVVjyXtXpSSqiwlD893v+g71yff+GCtbT0LVHA7/pjwycqa6DKOqk3KEMyn5hyCP6lWRSTWMlgsYQ2MxOjbpRthXr+AnwCjMXFsGQhnTGNogWFDj4Ro19S9eKzeQrGkre25rln+asQq2CL+7B0Q9VTT+cpWCNGTdWTz+SJMUX6zL+cao9KF6y1hb+KWbfc0UQuVw2AtU29Tzmhmgy0srLMKvW1NE7811H5wQf1LVtuXd11/uj9eqD6z3JIkRc6J1AAcvwDmPkWACA3eSJ/AaNm9kuX6yhg2d9AVuL/hZFEdpwxYdA7iai8+L8nFzmxMzlAUpmrvRK0P/8PRnV1PnHQPdEf/dxzL1dnUq4GdgIW5d9DHpgE+nMn4Wb1Sx+nf/82AmgHp3JI1c28tfIAAAAASUVORK5CYII=" class="w-5 h-5 rounded-sm grayscale group-hover:grayscale-0 transition-all">
+                <img src="baselair.png" alt="Baselair" class="w-5 h-5 rounded-sm grayscale group-hover:grayscale-0 transition-all">
             </a>
 
             <a href="https://instagram.com/theduttybrush" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
@@ -102,6 +104,34 @@
             </div>
             <p id="project-name" class="text-[9px] text-zinc-400 uppercase font-semibold italic">Current Project</p>
         </div>
+
+        <section class="pt-8 space-y-6">
+            <div class="flex items-center gap-3">
+                <h2 class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600 whitespace-nowrap">System Updates</h2>
+                <div class="h-[1px] w-full bg-white/5"></div>
+            </div>
+
+            <div class="relative pl-8 space-y-8 text-left">
+                <div class="timeline-line"></div>
+                <div class="relative">
+                    <div class="timeline-dot"></div>
+                    <div class="space-y-1">
+                        <span class="text-[8px] font-black text-red-600 uppercase">Mar 03, 2026</span>
+                        <h4 class="text-[10px] font-bold uppercase italic text-zinc-300">UX & Forge Calibration</h4>
+                        <p class="text-[9px] text-zinc-500 leading-relaxed">Integrated project navigation and mobile spacing refits in the Workbench archive.</p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="timeline-dot"></div>
+                    <div class="space-y-1">
+                        <span class="text-[8px] font-black text-red-600 uppercase">Feb 28, 2026</span>
+                        <h4 class="text-[10px] font-bold uppercase italic text-zinc-300">Forge API Live</h4>
+                        <p class="text-[9px] text-zinc-500 leading-relaxed">Secure GitHub API synchronization live for real-time project tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="w-full max-w-md border-t border-white/5 pt-8 pb-12 text-center space-y-4">
@@ -123,11 +153,9 @@
                 const toast = document.getElementById("toast");
                 const copyIcon = document.getElementById("copy-icon");
                 const checkIcon = document.getElementById("check-icon");
-
                 toast.className = "show";
                 copyIcon.classList.add("hidden");
                 checkIcon.classList.remove("hidden");
-
                 setTimeout(() => { 
                     toast.className = toast.className.replace("show", ""); 
                     copyIcon.classList.remove("hidden");
@@ -142,16 +170,13 @@
                     cache: "no-store",
                     headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
                 });
-                
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
-
                 if (data.length > 0) {
                     const badge = document.getElementById('workbench-count');
                     badge.innerText = `${data.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
-
                 const active = data[0];
                 if (active) {
                     document.getElementById('forge-card').classList.remove('hidden');
@@ -168,4 +193,3 @@
     </script>
 </body>
 </html>
-
