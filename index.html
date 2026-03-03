@@ -3,35 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duttyclem | Miniature Artist</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <title>The Dutty Brush | Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #050505; --accent: #ff3e3e; --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; min-height: 100vh; text-align: center; }
-        .container { max-width: 480px; width: 90%; padding: 60px 0; }
-        .profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent); margin: 0 auto 20px auto; display: block; object-fit: cover; }
-        h1 { font-size: 2.5rem; margin: 0; letter-spacing: -1px; font-weight: 600; }
-        .subtitle { color: var(--accent); text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; margin-bottom: 40px; display: block; }
-        .links-container { display: flex; flex-direction: column; gap: 12px; }
-        .link-card { background: #111; padding: 18px; border-radius: 10px; text-decoration: none; color: var(--text); font-weight: 500; border: 1px solid #222; transition: 0.3s; }
-        .link-card:hover { border-color: var(--accent); background: #181818; }
-        .workbench-link { border-color: var(--accent); color: var(--accent); text-transform: uppercase; font-size: 0.85rem; }
-        .footer { margin-top: 80px; font-size: 0.65rem; color: #888; letter-spacing: 3px; }
+        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #ffffff; }
+        .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
+        .accent-red { color: #ff3e3e; }
+        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #22c55e; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <img src="avatar.jpg" alt="Duttyclem" class="profile-pic">
-        <h1>Duttyclem</h1>
-        <span class="subtitle">Miniature Artist</span>
-        <div class="links-container">
-            <a href="hobby.html" class="link-card workbench-link">Artist Workbench</a>
-            <a href="https://thebaselair.com/duttyclem" class="link-card" target="_blank">Full Gallery</a>
-            <a href="https://www.instagram.com/duttyclem/" class="link-card" target="_blank">Instagram</a>
-            <a href="mailto:dom@theduttybrush.com" class="link-card">dom@theduttybrush.com</a>
+<body class="hero-gradient min-h-screen flex flex-col items-center justify-center p-6">
+
+    <main class="max-w-2xl w-full text-center space-y-12">
+        <div class="space-y-4">
+            <h1 class="text-6xl md:text-8xl font-800 uppercase tracking-tighter italic">
+                THE <span class="accent-red">DUTTY</span> BRUSH
+            </h1>
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-zinc-500 uppercase tracking-[0.4em] text-[10px] font-bold border-r border-zinc-800 pr-4">Studio</span>
+                <div class="flex items-center">
+                    <span class="status-dot"></span>
+                    <span class="text-[9px] uppercase font-bold tracking-widest text-zinc-400">Commissions: Open</span>
+                </div>
+            </div>
         </div>
-        <div class="footer">THE DUTTY BRUSH &bull; 2026</div>
-    </div>
+
+        <div class="flex flex-col gap-4 max-w-sm mx-auto">
+            <a href="hobby.html" class="group relative bg-white text-black font-800 py-5 rounded-xl text-xs uppercase tracking-[0.3em] overflow-hidden transition-all hover:scale-105 active:scale-95">
+                <span class="relative z-10">Enter Workbench</span>
+                <div class="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </a>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-widest border border-zinc-800">
+                    TikTok
+                </a>
+                <a href="https://www.facebook.com/YOUR_FACEBOOK_PAGE" target="_blank" class="glass-card py-4 rounded-xl hover:bg-zinc-900 transition text-[10px] font-bold uppercase tracking-widest border border-zinc-800">
+                    Facebook
+                </a>
+            </div>
+        </div>
+
+        <div class="pt-12">
+            <a href="mailto:your-email@example.com" class="group text-zinc-600 hover:text-white transition-colors duration-300">
+                <p class="text-[10px] uppercase font-bold tracking-[0.5em] mb-2">Inquiries</p>
+                <span class="text-sm font-light border-b border-zinc-900 group-hover:border-red-600 pb-1 transition-all">Contact Me</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-8 opacity-20 hover:opacity-100 transition-opacity">
+        <p class="text-[8px] uppercase tracking-[1em]">London // Studio // 2026</p>
+    </footer>
+
 </body>
 </html>
