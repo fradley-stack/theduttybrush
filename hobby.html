@@ -5,34 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Workbench | The Dutty Brush</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); }
-        .admin-trigger { position: fixed; bottom: 15px; right: 15px; opacity: 0.1; cursor: pointer; font-weight: 900; font-size: 10px; z-index: 50; }
+        
+        /* The Admin Trigger - Hidden 'D' in bottom right */
+        .admin-trigger { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            opacity: 0.05; 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-size: 12px; 
+            z-index: 100; 
+            transition: opacity 0.3s;
+        }
         .admin-trigger:hover { opacity: 1; color: #ff3e3e; }
-        #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+
+        /* Admin Overlay */
+        #admin-panel { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.98); 
+            z-index: 200; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        
+        .active-type { background: #ff3e3e !important; border-color: #ff3e3e !important; color: white !important; }
+        
+        /* Paint Category Tags */
+        .tag-primer { border-color: #52525b; color: #a1a1aa; }
+        .tag-base { border-color: #991b1b; color: #fca5a5; }
+        .tag-layer { border-color: #1e40af; color: #93c5fd; }
+        .tag-highlight { border-color: #166534; color: #86efac; }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
+
     <main class="max-w-6xl mx-auto p-8 space-y-12">
-        <header class="flex justify-between items-end border-b border-white/10 pb-8">
-            <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
-            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest opacity-50">Return Hub</a>
+        <header class="flex justify-between items-end border-b border-white/5 pb-10">
+            <div>
+                <h1 class="text-5xl font-900 uppercase italic tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
+                <p class="text-[10px] uppercase tracking-[0.4em] text-zinc-500 font-bold mt-3">Recipe Archives & Project Gallery</p>
+            </div>
+            <a href="index.html" class="text-[10px] font-900 uppercase tracking-widest bg-white/5 px-8 py-4 rounded-full hover:bg-red-600 transition-all">Return Hub</a>
         </header>
-        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20">
+            </div>
     </main>
 
     <div class="admin-trigger" onclick="toggleAdmin()">D</div>
 
-    <div id="admin-panel">... (Admin content from previous build) ...</div>
+    <div id="admin-panel">
+        <div class="glass p-10 rounded-3xl w-full max-w-5xl space-y-8 relative max-h-[90vh] overflow-y-auto border border-white/10">
+            <button onclick="toggleAdmin()" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white">✕ CLOSE</button>
+            
+            <div class="grid lg:grid-cols-2 gap-12 text-left">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
+                    
+                    <div class="space-y-4">
+                        <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600 transition">
+                        
+                        <div class="flex gap-2">
+                            <button id="btn-p" onclick="setEditType('Personal')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase active-type">Personal</button>
+                            <button id="btn-c" onclick="setEditType('Commission')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase">Commission</button>
+                        </div>
+
+                        <input type="text" id="edit-img" placeholder="Cloudinary Image URL" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600 transition text-xs">
+                        
+                        <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
+                            <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Paint Recipe Builder</p>
+                            <div id="paint-list-editor" class="space-y-2 max-h-40 overflow-y-auto pr-2"></div>
+                            
+                            <div class="flex gap-2">
+                                <select id="paint-type" class="bg-zinc-900 text-[10px] p-2 rounded border border-white/10 text-white uppercase font-bold">
+                                    <option value="primer">Primer</option>
+                                    <option value="base">Base</option>
+                                    <option value="layer">Layer</option>
+                                    <option value="highlight">Highlight</option>
+                                </select>
+                                <input type="text" id="paint-name" placeholder="Paint Name" class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none">
+                                <button onclick="addPaint()" class="bg-red-600 px-4 rounded font-bold text-white hover:bg-red-50 hover:text-red-600 transition">+</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[10px] font-black uppercase text-zinc-500">
+                                <span>Completion</span>
+                                <span id="val" class="text-red-600">0%</span>
+                            </div>
+                            <input type="range" id="edit-perc" min="0" max="100" value="0" class="w-full accent-red-600" oninput="document.getElementById('val').innerText = this.value + '%'">
+                        </div>
+
+                        <button onclick="applyChanges()" class="w-full bg-white text-black py-5 rounded-2xl font-900 uppercase text-[11px] tracking-widest hover:bg-red-600 hover:text-white transition-all shadow-xl">Copy Data (JSON)</button>
+                    </div>
+                </div>
+
+                <div class="space-y-6 border-l border-white/5 pl-10">
+                    <h2 class="text-2xl font-900 italic uppercase text-zinc-600 tracking-tighter">Archives</h2>
+                    <div id="admin-list" class="space-y-3 overflow-y-auto max-h-[500px] pr-4">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Gallery loading logic and Admin toggle
-        function toggleAdmin() {
-            const p = document.getElementById('admin-panel');
-            p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+        let projects = [];
+        let editingIndex = null;
+        let currentEditType = "Personal";
+        let currentRecipe = [];
+
+        async function loadData() {
+            try {
+                const r = await fetch('data.json?t=' + Date.now());
+                projects = await r.json();
+                renderGallery();
+            } catch(e) { console.error("Could not load data.json"); }
         }
-        // ... (Gallery rendering script)
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = projects.map(p => `
+                <div class="glass rounded-3xl overflow-hidden flex flex-col border border-white/5 group">
+                    <div class="relative overflow-hidden aspect-[4/5]">
+                        <img src="${p.image}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="p-8 space-y-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[8px] font-900 uppercase px-2 py-1 border border-white/10 rounded tracking-tighter ${p.type === 'Commission' ? 'text-red-500 border-red-500/30' : 'text-zinc-500'}">${p.type}</span>
+                            <span class="text-xs font-900 text-red-600 italic tracking-tighter">${p.percentage}%</span>
+                        </div>
+                        <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-tight">${p.name}</h3>
+                        
+                        <div class="space-y-2 pt-4 border-t border-white/5">
+                            ${(p.recipe || []).map(paint => `
+                                <div class="flex items-center text-[10px] text-zinc-400 font-bold uppercase tracking-wide">
+                                    <span class="text-[7px] px-1.5 py-0.5 rounded border mr-3 tag-${paint.type}">${paint.type}</span>
+                                    ${paint.name}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('admin-panel');
+            const isVisible = panel.style.display === 'flex';
+            panel.style.display = isVisible ? 'none' : 'flex';
+            if(!isVisible) renderAdminList();
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = projects.map((p, i) => `
+                <div class="p-4 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:border-red-600 transition flex justify-between items-center" onclick="editProject(${i})">
+                    <span class="text-[10px] font-bold uppercase tracking-widest truncate mr-4">${p.name}</span>
+                    <span class="text-[10px] font-black text-red-600">${p.percentage}%</span>
+                </div>
+            `).join('');
+        }
+
+        function editProject(idx) {
+            editingIndex = idx;
+            const p = projects[idx];
+            document.getElementById('edit-name').value = p.name;
+            document.getElementById('edit-img').value = p.image;
+            document.getElementById('edit-perc').value = p.percentage;
+            document.getElementById('val').innerText = p.percentage + '%';
+            currentRecipe = p.recipe || [];
+            setEditType(p.type);
+            renderRecipeEditor();
+        }
+
+        function addPaint() {
+            const type = document.getElementById('paint-type').value;
+            const name = document.getElementById('paint-name').value;
+            if(!name) return;
+            currentRecipe.push({ type, name });
+            document.getElementById('paint-name').value = '';
+            renderRecipeEditor();
+        }
+
+        function renderRecipeEditor() {
+            const list = document.getElementById('paint-list-editor');
+            list.innerHTML = currentRecipe.map((p, i) => `
+                <div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded-lg border border-white/5">
+                    <span class="font-bold uppercase"><span class="text-red-500 mr-2">${p.type}</span> ${p.name}</span>
+                    <button onclick="currentRecipe.splice(${i},1);renderRecipeEditor()" class="text-zinc-600 hover:text-white">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function setEditType(t) {
+            currentEditType = t;
+            document.getElementById('btn-p').classList.toggle('active-type', t === 'Personal');
+            document.getElementById('btn-c').classList.toggle('active-type', t === 'Commission');
+        }
+
+        function applyChanges() {
+            const updatedProject = {
+                name: document.getElementById('edit-name').value || "Unnamed Project",
+                percentage: parseInt(document.getElementById('edit-perc').value),
+                type: currentEditType,
+                image: document.getElementById('edit-img').value || "avatar.jpg",
+                recipe: currentRecipe
+            };
+
+            if(editingIndex !== null) {
+                projects[editingIndex] = updatedProject;
+            } else {
+                projects.unshift(updatedProject);
+            }
+
+            // Copy to clipboard for easy updating of data.json
+            navigator.clipboard.writeText(JSON.stringify(projects, null, 2));
+            alert("Updated JSON copied to clipboard! Paste it into your data.json file.");
+            renderGallery();
+        }
+
+        loadData();
     </script>
 </body>
 </html>
