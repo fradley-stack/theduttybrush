@@ -7,95 +7,146 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; overflow-x: hidden; }
         .hero-gradient { background: radial-gradient(circle at top right, #111111 0%, #050505 100%); }
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
-        /* Custom Scrollbar for Gallery */
+        
+        /* Smooth Slide Panel */
+        #project-detail-panel {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #project-detail-panel.open { transform: translateX(0); }
+
+        /* Custom Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .project-card:hover img { transform: scale(1.02); }
     </style>
 </head>
-<body class="hero-gradient min-h-screen p-6">
+<body class="hero-gradient min-h-screen">
 
-    <header class="max-w-2xl mx-auto mb-12 flex justify-between items-center">
+    <header class="max-w-2xl mx-auto p-6 pt-12 mb-8 flex justify-between items-end">
         <div>
             <a href="index.html" class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-colors">← Back to Studio</a>
-            <h1 class="text-3xl font-900 uppercase italic tracking-tighter mt-2">The <span class="accent-red">Forge</span></h1>
+            <h1 class="text-4xl font-900 uppercase italic tracking-tighter mt-2 leading-none">The <span class="accent-red">Forge</span></h1>
         </div>
-        <div class="text-right">
-            <span id="project-count" class="text-[10px] font-black bg-white/5 border border-white/10 px-3 py-1 rounded-full text-zinc-400 uppercase tracking-widest">0 Projects</span>
+        <div class="text-right pb-1">
+            <span id="project-count" class="text-[9px] font-black bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-zinc-500 uppercase tracking-widest">0 Projects</span>
         </div>
     </header>
 
-    <div id="project-list" class="max-w-2xl mx-auto space-y-12">
+    <div id="project-list" class="max-w-2xl mx-auto p-6 space-y-12">
         </div>
 
-    <footer class="max-w-2xl mx-auto py-20 text-center opacity-20 italic text-xs">
-        End of current transmission.
+    <div id="project-detail-panel" class="fixed inset-0 z-50 bg-[#050505] overflow-y-auto no-scrollbar">
+        <div class="max-w-2xl mx-auto p-6 pt-12 min-h-screen flex flex-col">
+            
+            <button onclick="closeProject()" class="flex items-center gap-2 text-zinc-500 hover:text-white transition group mb-8">
+                <span class="text-[20px] group-hover:-translate-x-1 transition-transform">←</span>
+                <span class="text-[10px] font-black uppercase tracking-[0.3em]">Back to Forge</span>
+            </button>
+
+            <div id="detail-content" class="space-y-8 pb-20">
+                </div>
+        </div>
+    </div>
+
+    <footer class="max-w-2xl mx-auto py-20 text-center opacity-10 italic text-[10px] uppercase tracking-[0.5em] font-black">
+        Transmission Ends
     </footer>
 
     <script>
+        let allProjects = [];
+
         async function loadWorkbench() {
             try {
                 const res = await fetch('data.json?v=' + Date.now(), { cache: "no-store" });
-                const data = await res.json();
+                allProjects = await res.json();
                 
-                document.getElementById('project-count').innerText = `${data.length} Projects`;
-                const list = document.getElementById('project-list');
-                list.innerHTML = '';
+                document.getElementById('project-count').innerText = `${allProjects.length} Projects`;
+                renderList();
+            } catch (e) { console.error("Forge load failed", e); }
+        }
 
-                data.forEach(project => {
-                    // Check if images is an array or a single string
-                    const images = Array.isArray(project.images) ? project.images : [project.image || project.images];
-                    
-                    const card = document.createElement('div');
-                    card.className = 'space-y-4 group';
+        function renderList() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = '';
 
-                    // Gallery/Image Logic
-                    let mediaHTML = '';
-                    if (images.length > 1) {
-                        // Multi-image Horizontal Scroll
-                        mediaHTML = `
-                            <div class="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory">
-                                ${images.map(img => `
-                                    <div class="min-w-[85%] md:min-w-[70%] snap-center">
-                                        <img src="${img}" class="w-full aspect-square object-cover rounded-xl border border-white/5 grayscale group-hover:grayscale-0 transition-all duration-700">
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="flex gap-1 justify-center opacity-30">
-                                ${images.map(() => `<div class="w-1 h-1 bg-white rounded-full"></div>`).join('')}
-                            </div>
-                        `;
-                    } else {
-                        // Single Image
-                        mediaHTML = `
-                            <img src="${images[0]}" class="w-full aspect-square object-cover rounded-xl border border-white/5 grayscale group-hover:grayscale-0 transition-all duration-700">
-                        `;
-                    }
+            allProjects.forEach((project, index) => {
+                const images = Array.isArray(project.images) ? project.images : [project.image || project.images];
+                const cover = images[0];
 
-                    card.innerHTML = `
-                        ${mediaHTML}
-                        <div class="flex justify-between items-start pt-2">
-                            <div>
-                                <span class="text-[8px] font-black uppercase tracking-[0.2em] ${project.type === 'Commission' ? 'text-red-500' : 'text-zinc-500'}">${project.type || 'Personal'}</span>
-                                <h3 class="text-xl font-bold uppercase tracking-tight">${project.name}</h3>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[10px] font-black text-red-500">${project.percentage}%</span>
-                                <div class="w-24 bg-white/5 h-1 rounded-full mt-1 overflow-hidden">
-                                    <div class="bg-red-600 h-full" style="width: ${project.percentage}%"></div>
-                                </div>
-                            </div>
+                const card = document.createElement('div');
+                card.className = 'project-card cursor-pointer space-y-4 group';
+                card.onclick = () => openProject(index);
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden rounded-2xl border border-white/5 bg-zinc-900 aspect-[16/9]">
+                        <img src="${cover}" class="w-full h-full object-cover transition-transform duration-700 ease-out">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[8px] font-black uppercase tracking-[0.2em] text-red-500 bg-black/40 backdrop-blur-md px-2 py-1 rounded-sm">${project.type || 'Personal'}</span>
                         </div>
-                        <p class="text-xs text-zinc-400 leading-relaxed max-w-lg">${project.description || 'No project briefing available.'}</p>
-                    `;
-                    list.appendChild(card);
-                });
-            } catch (e) {
-                console.error("Workbench load failed", e);
-            }
+                    </div>
+                    <div class="flex justify-between items-end px-1">
+                        <div>
+                            <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-none group-hover:accent-red transition-colors">${project.name}</h3>
+                            <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-2">Tap to View Project Details</p>
+                        </div>
+                        <div class="text-right">
+                             <span class="text-[10px] font-black text-red-600">${project.percentage}%</span>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function openProject(index) {
+            const project = allProjects[index];
+            const images = Array.isArray(project.images) ? project.images : [project.image || project.images];
+            const detailContainer = document.getElementById('detail-content');
+            
+            detailContainer.innerHTML = `
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-red-600">${project.type || 'Personal'}</span>
+                        <h2 class="text-4xl font-900 uppercase italic tracking-tighter">${project.name}</h2>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl border-white/10">
+                         <div class="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2">
+                            <span>Project Completion</span>
+                            <span class="text-red-500">${project.percentage}%</span>
+                        </div>
+                        <div class="w-full bg-black h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-red-600 h-full" style="width: ${project.percentage}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        ${images.map(img => `
+                            <img src="${img}" class="w-full rounded-2xl border border-white/10 shadow-2xl">
+                        `).join('')}
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-white/5">
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Project Briefing</h4>
+                        <p class="text-zinc-300 text-sm leading-relaxed">${project.description || 'No detailed log available for this project yet.'}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('project-detail-panel').classList.add('open');
+            document.body.style.overflow = 'hidden'; // Stop scrolling background
+        }
+
+        function closeProject() {
+            document.getElementById('project-detail-panel').classList.remove('open');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
         }
 
         loadWorkbench();
