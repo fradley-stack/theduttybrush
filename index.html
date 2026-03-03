@@ -3,47 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Dutty Brush | Studio Hub</title>
-    
-    <link rel="icon" type="image/png" href="https://thebaselair.com/favicon.ico">
-    <link rel="apple-touch-icon" href="https://thebaselair.com/favicon.ico">
-
+    <title>The Dutty Brush | Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; }
         .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
-        .nav-link { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: #555; transition: all 0.3s; }
-        .nav-link:hover { color: #fff; letter-spacing: 0.4em; }
+        .progress-glow { box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
+        
+        .glow-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 
+            0% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.5; transform: scale(1.2); } 
+            100% { opacity: 1; transform: scale(1); } 
+        }
+
+        #toast { visibility: hidden; min-width: 180px; background-color: #ff3e3e; color: #fff; text-align: center; border-radius: 8px; padding: 10px; position: fixed; z-index: 100; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
-<body class="hero-gradient min-h-screen flex flex-col items-center justify-center">
+<body class="hero-gradient min-h-screen flex flex-col items-center p-6 pt-12 md:pt-24">
 
-    <main class="text-center space-y-12">
-        <header class="space-y-2">
-            <h1 class="text-7xl font-900 uppercase italic tracking-tighter leading-none">The <span class="accent-red">Dutty</span> Brush</h1>
-            <p class="text-[10px] uppercase tracking-[0.6em] text-zinc-600 font-black">Creative Operations & Archive</p>
-        </header>
+    <div id="toast">Email Copied to Clipboard</div>
 
-        <nav class="flex flex-col gap-6 items-center">
-            <a href="hobby.html" class="nav-link group">
-                <span class="inline-block transition-transform group-hover:-translate-x-2">/</span> The Workbench
+    <main class="max-w-md w-full text-center space-y-8 mb-20">
+        <div class="space-y-5">
+            <img src="avatar.jpg" alt="The Dutty Brush" class="w-24 h-24 rounded-full mx-auto border border-white/10 shadow-2xl object-cover hover:scale-105 transition-transform duration-500">
+            <h1 class="text-4xl font-900 uppercase italic tracking-tighter leading-none">THE <span class="accent-red">DUTTY</span> BRUSH</h1>
+            
+            <div class="flex items-center justify-center gap-3 group transition py-1">
+                <div class="glow-dot"></div>
+                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white">Commissions Open</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            
+            <a href="hobby.html" class="relative bg-white text-black py-6 rounded-xl text-[11px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all block shadow-lg group">
+                Enter Workbench
+                <span id="workbench-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded border-2 border-[#050505] hidden">0 ACTIVE</span>
             </a>
-            <a href="commissions.html" class="nav-link group">
-                <span class="inline-block transition-transform group-hover:-translate-x-2">/</span> Commission Portal
+
+            <div class="glass-card rounded-xl flex items-center overflow-hidden">
+                <a href="mailto:commissions@theduttybrush.com?subject=Commission Inquiry&body=Project Name:%0D%0AQuantity:%0D%0ADetails:" class="flex-1 py-4 px-6 flex items-center justify-between hover:bg-white/5 transition group text-left">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Contact Me</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white transition-colors"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <button onclick="copyEmail()" class="border-l border-white/5 py-4 px-5 hover:bg-red-600 transition-colors group" title="Copy Email">
+                    <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg id="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition group">
+                <span class="text-[10px] font-bold uppercase tracking-widest">Baselair</span>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEYUlEQVR4Ab2WA5AsSRRFz6uu2T/8XNu2bdu2zdDatm3btu39ts3xdGe+QXZGRtZ0r3dvoLKecQsCwPSfF4bcNSCbAwvgpIgIioII+KuH4O6FcmgCxqF8jCaP0HO5zygB6UpeSH4G6SsCKpHWV0KXDodQkDOKChYADXYBr2KTIzsKmRYXMP6XJxA5ADRKGAeMu5dEiik0KiD291MiKBNGkqSbUr3MuCAd+8sEYAHfIUJAdvRSdirl15SdmMgP9GxaH1k770xG/aRRQN+UuC4zfAhyn0wynFAnjxvK3Aun0WelW9zt8B9VAtkQQqJwzXTj5XFxcaJYF3zFtc3cKy/hREN+VO2SB8fAAS8L+rD/ENP5hyaQsmsJBWmyMgus1F8Y+L3GewtGcSFxwHj/AF5XbgpkyboHC676UooBEfVCFFBRpJjM3fsgFsT3Ghcq4pnhdCRhKiqUIKytBUgxFhWJukdA1WYmoEU90NA0p+taW93T+4VCnECthkfYJ48bmegKsCGBIKhYQIIs41z5yjszK295qA9A82mHz2zZbZs+obuQ1CcKUyCc0QKFws+uue++USUo4/1n5dB7z2OQxiaXrqaG2S/fG+lLPX4+XkDyFsutvkNxBcXaAw+QaHRKWA8+uRM1NhL5e2fx+RUNa/fxLIleQBGpGk84b2CDh7+E0ZGFGkvwF2TK5Gm1N9w3N0DjWUdP0/nmnduvAyARrrArrPEtgJ9ATCJjmivffr8VEW3ZbqtK0lyVit9ldwR/13HdudfNnRs7HoDac66bu/6eq1FRz4k77Wrrng8BqViNSFNz5Y0VFT/+WgWQ+/6XfMO5Z0aEykIMqASy+uQUz2pCbBJ5DY8wAbrgE1T80j/FoeP8W4VYwuhF6Qar4S0plNT7DGJ5tYP0V9gRoy5i332NX4FnsUtgLHgYixZcYSKUhtGQvJRRQQkr0EThvFxl9QYGti6S0EZvvSzEOk2ZBGHEZUgqNn6JVT7x7Kweb36wFSusc/6sgd9emooBpGhAd2hrvl4q0joALeTrgbqYAwqiSJkAvkHfXuWLb/TGWGjkvLkXWv7pzArohuonns43H3SA6To/+XS+/Ao0nlBUIEEVVjyXtXpSSqiwlD893v+g71yff+GCtbT0LVHA7/pjwycqa6DKOqk3KEMyn5hyCP6lWRSTWMlgsYQ2MxOjbpRthXr+AnwCjMXFsGQhnTGNogWFDj4Ro19S9eKzeQrGkre25rln+asQq2CLq7B0Q9VTT+cpWCNGTdWTz+SJMUX6zL+cao9KF6y1hb+KWbfc0UQuVw2AtU29Tzmhmgy0srLMKvW1NE7811H5wQf1LVtuXd11/uj9eqD6z3JIkRc6J1AAcvwDmPkWACA3eSJ/AaNm9kuX6yhg2d9AVuL/hZFEdpwxYdA7iai8+L8nFzmxMzlAUpmrvRK0P/8PRnV1PnHQPdEf/dxzL1dnUq4GdgIW5d9DHpgE+nMn4Wb1Sx+nf/82AmgHp3JI1c28tfIAAAAASUVORK5CYII=" class="w-5 h-5 rounded-sm grayscale group-hover:grayscale-0 transition-all">
             </a>
-            <a href="contact.html" class="nav-link group">
-                <span class="inline-block transition-transform group-hover:-translate-x-2">/</span> Transmission
+
+            <a href="https://instagram.com/theduttybrush" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
+                <span class="text-[10px] font-bold uppercase tracking-widest">Instagram</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
-        </nav>
+
+            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
+                <span class="text-[10px] font-bold uppercase tracking-widest">TikTok</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+            </a>
+
+            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
+                <span class="text-[10px] font-bold uppercase tracking-widest">Facebook</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+        </div>
+
+        <div id="forge-card" class="glass-card p-5 rounded-xl border border-zinc-800/50 text-left space-y-3 hidden">
+            <div class="flex justify-between items-end">
+                <div class="flex flex-col">
+                    <span id="project-tag" class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-500 uppercase font-black w-fit border border-white/5 mb-1">TYPE</span>
+                    <span class="text-[8px] uppercase font-bold text-zinc-500 tracking-widest">Live in the Forge</span>
+                </div>
+                <span id="progress-text" class="text-[10px] font-bold text-red-500">0%</span>
+            </div>
+            <div class="w-full bg-black h-1 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: 0%"></div>
+            </div>
+            <p id="project-name" class="text-[9px] text-zinc-400 uppercase font-semibold italic">Current Project</p>
+        </div>
     </main>
 
-    <footer class="fixed bottom-12 text-center">
-        <div class="opacity-10 italic text-[10px] uppercase tracking-[0.5em] font-black">
-            Est. MMXXIV
+    <footer class="w-full max-w-md border-t border-white/5 pt-8 pb-12 text-center space-y-4">
+        <div>
+            <h2 class="text-sm font-900 uppercase italic tracking-tighter leading-none">The <span class="text-red-600">Dutty Brush</span></h2>
+            <p class="text-[8px] uppercase tracking-[0.4em] text-zinc-600 font-bold mt-1">Studio &copy; 2026</p>
+        </div>
+        <div class="flex justify-center gap-6 text-[8px] font-black uppercase tracking-widest text-zinc-500">
+            <span>Hand-Crafted in the Studio</span>
+            <span class="text-zinc-800">|</span>
+            <span class="text-zinc-700">v2.1.0-Forge</span>
         </div>
     </footer>
 
+    <script>
+        // Copy Email Logic
+        function copyEmail() {
+            const email = "commissions@theduttybrush.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const toast = document.getElementById("toast");
+                const copyIcon = document.getElementById("copy-icon");
+                const checkIcon = document.getElementById("check-icon");
+
+                toast.className = "show";
+                copyIcon.classList.add("hidden");
+                checkIcon.classList.remove("hidden");
+
+                setTimeout(() => { 
+                    toast.className = toast.className.replace("show", ""); 
+                    copyIcon.classList.remove("hidden");
+                    checkIcon.classList.add("hidden");
+                }, 3000);
+            });
+        }
+
+        async function syncForge() {
+            try {
+                const res = await fetch('data.json?v=' + Date.now(), {
+                    cache: "no-store",
+                    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                });
+                
+                if (!res.ok) throw new Error('Failed to load data.json');
+                const data = await res.json();
+
+                if (data.length > 0) {
+                    const badge = document.getElementById('workbench-count');
+                    badge.innerText = `${data.length} ACTIVE`;
+                    badge.classList.remove('hidden');
+                }
+
+                const active = data[0];
+                if (active) {
+                    document.getElementById('forge-card').classList.remove('hidden');
+                    document.getElementById('project-name').innerText = `Current: "${active.name}"`;
+                    document.getElementById('progress-text').innerText = `${active.percentage}%`;
+                    document.getElementById('progress-bar').style.width = `${active.percentage}%`;
+                    const tag = document.getElementById('project-tag');
+                    tag.innerText = active.type || "Personal";
+                    if (active.type === "Commission") tag.classList.add('text-red-500');
+                }
+            } catch (e) { console.error("Sync failed:", e); }
+        }
+        syncForge();
+    </script>
 </body>
 </html>
+
