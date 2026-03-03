@@ -12,8 +12,14 @@
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
         .progress-glow { box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
+        
+        /* Enhanced Glow Dot */
         .glow-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 
+            0% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.5; transform: scale(1.2); } 
+            100% { opacity: 1; transform: scale(1); } 
+        }
     </style>
 </head>
 <body class="hero-gradient min-h-screen flex flex-col items-center p-6 pt-12 md:pt-24">
@@ -92,9 +98,16 @@
     <script>
         async function syncForge() {
             try {
-                const res = await fetch('data.json?t=' + Date.now());
-                const data = await res.json();
+                // Aggressive cache busting
+                const res = await fetch('data.json?v=' + Date.now(), {
+                    cache: "no-store",
+                    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                });
                 
+                if (!res.ok) throw new Error('Failed to load data.json');
+                const data = await res.json();
+                console.log("Forge Data Synced:", data); // Check your browser console to see this
+
                 // Update Workbench Status Badge
                 if (data.length > 0) {
                     const badge = document.getElementById('workbench-count');
@@ -102,7 +115,7 @@
                     badge.classList.remove('hidden');
                 }
 
-                // Update Progress Card for the latest project
+                // Update Progress Card for the top project
                 const active = data[0];
                 if (active) {
                     document.getElementById('forge-card').classList.remove('hidden');
@@ -113,7 +126,7 @@
                     tag.innerText = active.type || "Personal";
                     if (active.type === "Commission") tag.classList.add('text-red-500');
                 }
-            } catch (e) { console.log("Forge sync skipped."); }
+            } catch (e) { console.error("Sync failed:", e); }
         }
         syncForge();
     </script>
