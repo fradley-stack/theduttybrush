@@ -9,17 +9,8 @@
     <style>
         body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); }
-        
-        /* ADMIN TRIGGER - FIXED VISIBILITY */
-        .admin-trigger { 
-            position: fixed; bottom: 20px; right: 20px; 
-            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            color: white; border-radius: 4px; opacity: 0.15; cursor: pointer; 
-            font-weight: 900; font-size: 12px; z-index: 100; transition: all 0.2s;
-        }
-        .admin-trigger:hover { opacity: 1; color: #ff3e3e; background: rgba(255,255,255,0.1); }
-
+        .admin-trigger { position: fixed; bottom: 20px; right: 20px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); color: white; border-radius: 4px; opacity: 0.15; cursor: pointer; font-weight: 900; font-size: 12px; z-index: 100; transition: all 0.2s; }
+        .admin-trigger:hover { opacity: 1; color: #ff3e3e; }
         #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .active-type { background: #ff3e3e !important; color: white !important; }
         .tag-primer { border-color: #52525b; color: #a1a1aa; }
@@ -41,20 +32,20 @@
         <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20"></div>
     </main>
 
-    <div class="admin-trigger" onclick="toggleAdmin()">D</div>
+    <div class="admin-trigger" onclick="authenticate()">D</div>
 
     <div id="admin-panel">
         <div class="glass p-10 rounded-3xl w-full max-w-5xl space-y-8 relative max-h-[90vh] overflow-y-auto border border-white/10 text-left">
-            <button onclick="toggleAdmin()" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px]">✕ Close</button>
+            <button onclick="document.getElementById('admin-panel').style.display='none'" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px]">✕ Close</button>
             <div class="grid lg:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
-                    <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600 transition">
+                    <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600">
                     <div class="flex gap-2">
                         <button id="btn-p" onclick="setEditType('Personal')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase active-type">Personal</button>
                         <button id="btn-c" onclick="setEditType('Commission')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase">Commission</button>
                     </div>
-                    <input type="text" id="edit-img" placeholder="Image URL (or path)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs">
+                    <input type="text" id="edit-img" placeholder="Image URL (e.g. models/pic.jpg)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs">
                     
                     <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
                         <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Recipe Builder</p>
@@ -70,7 +61,7 @@
                         <div class="flex justify-between text-[10px] font-black uppercase text-zinc-500"><span>Completion</span><span id="val" class="text-red-600">0%</span></div>
                         <input type="range" id="edit-perc" min="0" max="100" class="w-full accent-red-600" oninput="document.getElementById('val').innerText = this.value + '%'">
                     </div>
-                    <button onclick="applyChanges()" class="w-full bg-white text-black py-5 rounded-2xl font-900 uppercase text-[11px] tracking-widest">Copy Master JSON</button>
+                    <button id="commit-btn" onclick="applyAndPush()" class="w-full bg-white text-black py-5 rounded-2xl font-900 uppercase text-[11px] tracking-widest hover:bg-red-600 hover:text-white transition-all">Commit to Forge</button>
                 </div>
                 <div class="space-y-6 border-l border-white/5 pl-10">
                     <h2 class="text-2xl font-900 italic uppercase text-zinc-600 tracking-tighter">Archives</h2>
@@ -81,7 +72,73 @@
     </div>
 
     <script>
+        let sessionPAT = ""; 
         let projects = []; let editingIndex = null; let currentEditType = "Personal"; let currentRecipe = [];
+        const REPO_OWNER = "Clem-DuttyBrush"; // Update to your username
+        const REPO_NAME = "DuttyBrush_Studio"; // Update to your repo
+        const FILE_PATH = "data.json";
+
+        function authenticate() {
+            const entry = prompt("Enter PAT for Forge access:");
+            if (entry) {
+                sessionPAT = entry;
+                document.getElementById('admin-panel').style.display = 'flex';
+                renderAdminList();
+            }
+        }
+
+        async function applyAndPush() {
+            const btn = document.getElementById('commit-btn');
+            btn.innerText = "FORGING...";
+            btn.disabled = true;
+
+            const update = {
+                name: document.getElementById('edit-name').value,
+                percentage: parseInt(document.getElementById('edit-perc').value),
+                type: currentEditType,
+                image: document.getElementById('edit-img').value,
+                recipe: currentRecipe
+            };
+
+            if(editingIndex !== null) projects[editingIndex] = update;
+            else projects.unshift(update);
+
+            try {
+                // 1. Get current file SHA
+                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { 'Authorization': `token ${sessionPAT}` }
+                });
+                const fileData = await getRes.json();
+                
+                // 2. Push updated JSON
+                const putRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `token ${sessionPAT}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Forge Update: ${update.name}`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(projects, null, 2)))),
+                        sha: fileData.sha
+                    })
+                });
+
+                if (putRes.ok) {
+                    alert("Forge Sync Complete!");
+                    location.reload();
+                } else {
+                    throw new Error("Push Failed");
+                }
+            } catch (e) {
+                alert("Error: check PAT or Repo settings.");
+                console.error(e);
+            } finally {
+                btn.innerText = "Commit to Forge";
+                btn.disabled = false;
+            }
+        }
+
         async function loadData() {
             try { const r = await fetch('data.json?t=' + Date.now()); projects = await r.json(); renderGallery(); } catch(e) {}
         }
@@ -98,13 +155,12 @@
                 </div>
             `).join('');
         }
-        function toggleAdmin() { const p = document.getElementById('admin-panel'); p.style.display = (p.style.display === 'flex') ? 'none' : 'flex'; if(p.style.display === 'flex') renderAdminList(); }
         function renderAdminList() { const list = document.getElementById('admin-list'); list.innerHTML = projects.map((p, i) => `<div class="p-4 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:border-red-600 mb-2" onclick="editProject(${i})"><span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span></div>`).join(''); }
         function editProject(idx) { editingIndex = idx; const p = projects[idx]; document.getElementById('edit-name').value = p.name; document.getElementById('edit-img').value = p.image; document.getElementById('edit-perc').value = p.percentage; document.getElementById('val').innerText = p.percentage + '%'; currentRecipe = p.recipe || []; setEditType(p.type); renderRecipeEditor(); }
         function addPaint() { const type = document.getElementById('paint-type').value; const name = document.getElementById('paint-name').value; if(!name) return; currentRecipe.push({type, name}); document.getElementById('paint-name').value = ''; renderRecipeEditor(); }
         function renderRecipeEditor() { document.getElementById('paint-list-editor').innerHTML = currentRecipe.map((p,i) => `<div class="flex justify-between text-[10px] bg-white/5 p-2 rounded border border-white/5 mb-1"><span>${p.type}: ${p.name}</span><button onclick="currentRecipe.splice(${i},1);renderRecipeEditor()">✕</button></div>`).join(''); }
         function setEditType(t) { currentEditType = t; document.getElementById('btn-p').classList.toggle('active-type', t === 'Personal'); document.getElementById('btn-c').classList.toggle('active-type', t === 'Commission'); }
-        function applyChanges() { const update = { name: document.getElementById('edit-name').value, percentage: parseInt(document.getElementById('edit-perc').value), type: currentEditType, image: document.getElementById('edit-img').value, recipe: currentRecipe }; if(editingIndex !== null) projects[editingIndex] = update; else projects.unshift(update); navigator.clipboard.writeText(JSON.stringify(projects, null, 2)); alert("JSON Copied."); renderGallery(); }
+        
         loadData();
     </script>
 </body>
