@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     
-                    <textarea id="edit-notes" placeholder="Notes & Lore" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs h-24 resize-none focus:border-red-600"></textarea>
+                    <textarea id="edit-notes" placeholder="Notes & Details" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs h-24 resize-none focus:border-red-600"></textarea>
 
                     <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
                         <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Recipe Builder</p>
@@ -131,7 +131,7 @@
                     name: nameVal,
                     percentage: percVal,
                     type: currentEditType,
-                    image: currentImages.join(','), // Join for storage
+                    image: currentImages.join(','), 
                     notes: noteVal,
                     recipe: currentRecipe
                 };
@@ -155,7 +155,10 @@
                     })
                 });
 
-                if (putRes.ok) { alert("Forge Updated!"); location.reload(); }
+                if (putRes.ok) { 
+                    alert("Forge Updated!"); 
+                    location.reload(true); 
+                }
                 else { throw new Error("GitHub rejected the push."); }
             } catch (e) { alert("Forge Error: " + e.message); }
             finally { btn.innerText = "Commit Changes"; btn.disabled = false; }
@@ -215,7 +218,7 @@
                             <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">${p.type} — ${p.percentage}% Done</span>
                             <h2 class="text-4xl font-900 uppercase italic tracking-tighter mt-2">${p.name}</h2>
                         </div>
-                        <p class="text-zinc-400 text-sm leading-relaxed">${p.notes || "No additional lore archived."}</p>
+                        <p class="text-zinc-400 text-sm leading-relaxed">${p.notes || "No details archived."}</p>
                         <div class="space-y-4 pt-6 border-t border-white/5">
                             <p class="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Technique & Recipe</p>
                             <div class="grid gap-2">
@@ -235,7 +238,6 @@
 
         function closeModal() { document.getElementById('project-modal').style.display = 'none'; }
 
-        // IMAGE MANAGER LOGIC
         function addImage() {
             const url = document.getElementById('image-url-input').value;
             if(!url) return;
@@ -253,7 +255,6 @@
             `).join('');
         }
 
-        // PAINT LOGIC
         function addPaint() {
             const type = document.getElementById('paint-type').value;
             const name = document.getElementById('paint-name').value;
