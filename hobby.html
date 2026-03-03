@@ -7,17 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
+        body { background: #050505; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); }
         .admin-trigger { position: fixed; bottom: 20px; right: 20px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); color: white; border-radius: 4px; opacity: 0.15; cursor: pointer; font-weight: 900; font-size: 12px; z-index: 100; transition: all 0.2s; }
         .admin-trigger:hover { opacity: 1; color: #ff3e3e; }
-        #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+        #admin-panel, #project-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
         .active-type { background: #ff3e3e !important; color: white !important; }
         .tag-primer { border-color: #52525b; color: #a1a1aa; }
         .tag-base { border-color: #991b1b; color: #fca5a5; }
         .tag-layer { border-color: #1e40af; color: #93c5fd; }
         .tag-highlight { border-color: #166534; color: #86efac; }
         input, select, textarea { color: white !important; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #ff3e3e; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -33,16 +35,23 @@
         <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pb-20"></div>
     </main>
 
+    <div id="project-modal" onclick="closeModal()">
+        <div class="glass p-10 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scroll border border-white/10 relative" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px]">✕ Close</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
     <div class="admin-trigger" onclick="authenticate()">D</div>
 
     <div id="admin-panel">
-        <div class="glass p-10 rounded-3xl w-full max-w-5xl space-y-8 relative max-h-[90vh] overflow-y-auto border border-white/10 text-left">
+        <div class="glass p-10 rounded-3xl w-full max-w-5xl space-y-8 relative max-h-[90vh] overflow-y-auto custom-scroll border border-white/10 text-left">
             <button onclick="document.getElementById('admin-panel').style.display='none'" class="absolute top-8 right-8 text-zinc-500 font-bold hover:text-white uppercase text-[10px]">✕ Close</button>
             <div class="grid lg:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <div class="flex justify-between items-center">
                         <h2 class="text-2xl font-900 italic uppercase text-red-600 tracking-tighter">Forge Editor</h2>
-                        <button onclick="resetForm()" class="text-[9px] font-black uppercase text-zinc-500 hover:text-white border border-white/10 px-3 py-1 rounded-md tracking-tighter">New Project</button>
+                        <button onclick="resetForm()" class="text-[9px] font-black uppercase text-zinc-500 hover:text-white border border-white/10 px-3 py-1 rounded-md tracking-tighter">New Entry</button>
                     </div>
                     
                     <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-red-600">
@@ -52,13 +61,20 @@
                         <button id="btn-c" onclick="setEditType('Commission')" class="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase">Commission</button>
                     </div>
 
-                    <input type="text" id="edit-img" placeholder="Image Path (models/pic.jpg)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs">
+                    <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
+                        <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Asset Manager (Cloudinary Links)</p>
+                        <div id="image-list-editor" class="space-y-2 max-h-32 overflow-y-auto custom-scroll"></div>
+                        <div class="flex gap-2">
+                            <input type="text" id="image-url-input" placeholder="Paste Cloudinary URL..." class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none">
+                            <button onclick="addImage()" class="bg-zinc-800 px-4 rounded font-bold text-white hover:bg-red-600 transition-colors">+</button>
+                        </div>
+                    </div>
                     
-                    <textarea id="edit-notes" placeholder="Notes (Lore, special techniques, etc.)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs h-20 resize-none focus:border-red-600" spellcheck="false"></textarea>
+                    <textarea id="edit-notes" placeholder="Notes & Lore" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs h-24 resize-none focus:border-red-600"></textarea>
 
                     <div class="p-5 bg-black/40 rounded-2xl border border-white/5 space-y-4">
                         <p class="text-[9px] font-black uppercase text-zinc-500 tracking-widest">Recipe Builder</p>
-                        <div id="paint-list-editor" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                        <div id="paint-list-editor" class="space-y-2 max-h-40 overflow-y-auto custom-scroll"></div>
                         <div class="flex gap-2">
                             <select id="paint-type" class="bg-zinc-900 text-[10px] p-2 rounded border border-white/10 uppercase font-bold text-white"><option value="primer">Primer</option><option value="base">Base</option><option value="layer">Layer</option><option value="highlight">Highlight</option></select>
                             <input type="text" id="paint-name" class="flex-1 bg-zinc-900 text-xs p-2 rounded border border-white/10 outline-none">
@@ -72,13 +88,12 @@
                     </div>
 
                     <button id="commit-btn" onclick="applyAndPush()" class="w-full bg-white text-black py-5 rounded-2xl font-900 uppercase text-[11px] tracking-widest hover:bg-red-600 hover:text-white transition-all">Commit Changes</button>
-                    
-                    <button id="del-btn" onclick="deleteProject()" class="w-full py-3 text-zinc-700 hover:text-red-600 text-[9px] font-black uppercase tracking-widest transition-all hidden">Delete Project Permanently</button>
+                    <button id="del-btn" onclick="deleteProject()" class="w-full py-3 text-zinc-700 hover:text-red-600 text-[9px] font-black uppercase tracking-widest hidden">Delete Project Permanently</button>
                 </div>
 
                 <div class="space-y-6 border-l border-white/5 pl-10">
                     <h2 class="text-2xl font-900 italic uppercase text-zinc-600 tracking-tighter">Archives</h2>
-                    <div id="admin-list" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
+                    <div id="admin-list" class="space-y-3 overflow-y-auto max-h-[500px] custom-scroll"></div>
                 </div>
             </div>
         </div>
@@ -86,7 +101,9 @@
 
     <script>
         let sessionKey = ""; 
-        let projects = []; let editingIndex = null; let currentEditType = "Personal"; let currentRecipe = [];
+        let projects = []; let editingIndex = null; let currentEditType = "Personal"; 
+        let currentRecipe = []; let currentImages = [];
+        
         const REPO_OWNER = "fradley-stack"; 
         const REPO_NAME = "theduttybrush"; 
         const FILE_PATH = "data.json";
@@ -105,13 +122,17 @@
             btn.innerText = "SYNCHRONIZING...";
             btn.disabled = true;
 
+            const nameVal = document.getElementById('edit-name').value || "Unnamed Project";
+            const percVal = parseInt(document.getElementById('edit-perc').value);
+            const noteVal = document.getElementById('edit-notes').value || "";
+
             if(!isDelete) {
                 const update = {
-                    name: document.getElementById('edit-name').value || "Unnamed Project",
-                    percentage: parseInt(document.getElementById('edit-perc').value),
+                    name: nameVal,
+                    percentage: percVal,
                     type: currentEditType,
-                    image: document.getElementById('edit-img').value || "avatar.jpg",
-                    notes: document.getElementById('edit-notes').value || "",
+                    image: currentImages.join(','), // Join for storage
+                    notes: noteVal,
                     recipe: currentRecipe
                 };
                 if(editingIndex !== null) projects[editingIndex] = update;
@@ -119,7 +140,7 @@
             }
 
             try {
-                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?t=${Date.now()}`, {
                     headers: { 'Authorization': `token ${sessionKey}` }
                 });
                 const fileData = await getRes.json();
@@ -128,34 +149,30 @@
                     method: 'PUT',
                     headers: { 'Authorization': `token ${sessionKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: isDelete ? `Studio: Removed Project` : `Studio: ${document.getElementById('edit-name').value}`,
+                        message: isDelete ? `Forge: Purged Entry` : `Forge: ${nameVal} Updated`,
                         content: btoa(unescape(encodeURIComponent(JSON.stringify(projects, null, 2)))),
                         sha: fileData.sha
                     })
                 });
 
-                if (putRes.ok) { alert("Studio Synced!"); location.reload(); }
-                else { throw new Error("Sync Failed."); }
-            } catch (e) { alert("Access Denied: Connection Error."); }
+                if (putRes.ok) { alert("Forge Updated!"); location.reload(); }
+                else { throw new Error("GitHub rejected the push."); }
+            } catch (e) { alert("Forge Error: " + e.message); }
             finally { btn.innerText = "Commit Changes"; btn.disabled = false; }
         }
 
-        function deleteProject() {
-            if (editingIndex !== null && confirm("Confirm Permanent Deletion?")) {
-                projects.splice(editingIndex, 1);
-                applyAndPush(true);
-            }
-        }
-
+        function deleteProject() { if (editingIndex !== null && confirm("Confirm Permanent Deletion?")) { projects.splice(editingIndex, 1); applyAndPush(true); } }
+        
         function resetForm() {
             editingIndex = null;
             document.getElementById('edit-name').value = "";
-            document.getElementById('edit-img').value = "";
             document.getElementById('edit-notes').value = "";
             document.getElementById('edit-perc').value = 0;
             document.getElementById('val').innerText = '0%';
             currentRecipe = [];
+            currentImages = [];
             renderRecipeEditor();
+            renderImageEditor();
             document.getElementById('del-btn').classList.add('hidden');
         }
 
@@ -163,15 +180,94 @@
         
         function renderGallery() {
             const grid = document.getElementById('gallery-grid');
-            grid.innerHTML = projects.map(p => `
-                <div class="glass rounded-3xl overflow-hidden flex flex-col border border-white/5">
-                    <img src="${p.image}" class="w-full aspect-[4/5] object-cover">
-                    <div class="p-8 space-y-6">
+            grid.innerHTML = projects.map((p, i) => {
+                const mainImg = p.image ? p.image.split(',')[0].trim() : 'avatar.jpg';
+                return `
+                <div class="glass rounded-3xl overflow-hidden flex flex-col border border-white/5 cursor-pointer hover:border-red-600 transition-all group" onclick="openProject(${i})">
+                    <div class="relative overflow-hidden aspect-[4/5]">
+                        <img src="${mainImg}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-8 space-y-4">
                         <div class="flex justify-between items-center"><span class="text-[8px] font-900 uppercase px-2 py-1 border border-white/10 rounded ${p.type === 'Commission' ? 'text-red-500 border-red-500/30' : 'text-zinc-500'}">${p.type}</span><span class="text-xs font-900 text-red-600 italic tracking-tighter">${p.percentage}%</span></div>
                         <h3 class="text-2xl font-900 uppercase italic tracking-tighter leading-tight">${p.name}</h3>
-                        ${p.notes ? `<p class="text-[11px] text-zinc-500 leading-relaxed italic border-l border-red-600/30 pl-3">${p.notes}</p>` : ''}
-                        <div class="space-y-2 pt-4 border-t border-white/5">${(p.recipe || []).map(paint => `<div class="flex items-center text-[10px] text-zinc-400 font-bold uppercase tracking-wide"><span class="text-[7px] px-1.5 py-0.5 rounded border mr-3 tag-${paint.type}">${paint.type}</span>${paint.name}</div>`).join('')}</div>
                     </div>
+                </div>`;
+            }).join('');
+        }
+
+        function openProject(idx) {
+            const p = projects[idx];
+            const images = p.image ? p.image.split(',').map(img => img.trim()) : [];
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="space-y-4">
+                        <img src="${images[0] || 'avatar.jpg'}" class="w-full rounded-2xl border border-white/5">
+                        <div class="grid grid-cols-3 gap-2">
+                            ${images.slice(1).map(img => `<img src="${img}" class="w-full aspect-square object-cover rounded-lg border border-white/5">`).join('')}
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <div>
+                            <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">${p.type} — ${p.percentage}% Done</span>
+                            <h2 class="text-4xl font-900 uppercase italic tracking-tighter mt-2">${p.name}</h2>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">${p.notes || "No additional lore archived."}</p>
+                        <div class="space-y-4 pt-6 border-t border-white/5">
+                            <p class="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Technique & Recipe</p>
+                            <div class="grid gap-2">
+                                ${(p.recipe || []).map(paint => `
+                                    <div class="flex items-center text-xs text-zinc-300 font-bold uppercase tracking-wide">
+                                        <span class="text-[8px] px-2 py-1 rounded border mr-4 tag-${paint.type} min-w-[70px] text-center">${paint.type}</span>
+                                        ${paint.name}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('project-modal').style.display = 'none'; }
+
+        // IMAGE MANAGER LOGIC
+        function addImage() {
+            const url = document.getElementById('image-url-input').value;
+            if(!url) return;
+            currentImages.push(url);
+            document.getElementById('image-url-input').value = '';
+            renderImageEditor();
+        }
+
+        function renderImageEditor() {
+            document.getElementById('image-list-editor').innerHTML = currentImages.map((url, i) => `
+                <div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded border border-white/5 mb-1">
+                    <span class="truncate pr-4 opacity-50 italic">${url}</span>
+                    <button onclick="currentImages.splice(${i},1);renderImageEditor()" class="text-red-500 hover:text-white">✕</button>
+                </div>
+            `).join('');
+        }
+
+        // PAINT LOGIC
+        function addPaint() {
+            const type = document.getElementById('paint-type').value;
+            const name = document.getElementById('paint-name').value;
+            if(!name) return;
+            currentRecipe.push({type, name});
+            document.getElementById('paint-name').value = '';
+            renderRecipeEditor();
+        }
+
+        function renderRecipeEditor() {
+            document.getElementById('paint-list-editor').innerHTML = currentRecipe.map((p,i) => `
+                <div class="flex justify-between text-[10px] bg-white/5 p-2 rounded border border-white/5 mb-1">
+                    <span>${p.type}: ${p.name}</span>
+                    <button onclick="currentRecipe.splice(${i},1);renderRecipeEditor()">✕</button>
                 </div>
             `).join('');
         }
@@ -181,18 +277,17 @@
         function editProject(idx) { 
             editingIndex = idx; const p = projects[idx]; 
             document.getElementById('edit-name').value = p.name; 
-            document.getElementById('edit-img').value = p.image; 
             document.getElementById('edit-notes').value = p.notes || "";
             document.getElementById('edit-perc').value = p.percentage; 
             document.getElementById('val').innerText = p.percentage + '%'; 
             currentRecipe = p.recipe || []; 
+            currentImages = p.image ? p.image.split(',').map(img => img.trim()) : [];
             setEditType(p.type); 
             renderRecipeEditor();
+            renderImageEditor();
             document.getElementById('del-btn').classList.remove('hidden');
         }
 
-        function addPaint() { const type = document.getElementById('paint-type').value; const name = document.getElementById('paint-name').value; if(!name) return; currentRecipe.push({type, name}); document.getElementById('paint-name').value = ''; renderRecipeEditor(); }
-        function renderRecipeEditor() { document.getElementById('paint-list-editor').innerHTML = currentRecipe.map((p,i) => `<div class="flex justify-between text-[10px] bg-white/5 p-2 rounded border border-white/5 mb-1"><span>${p.type}: ${p.name}</span><button onclick="currentRecipe.splice(${i},1);renderRecipeEditor()">✕</button></div>`).join(''); }
         function setEditType(t) { currentEditType = t; document.getElementById('btn-p').classList.toggle('active-type', t === 'Personal'); document.getElementById('btn-c').classList.toggle('active-type', t === 'Commission'); }
         loadData();
     </script>
