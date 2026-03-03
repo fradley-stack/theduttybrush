@@ -1,21 +1,14 @@
 [
   {
-    "name": "Unnamed",
-    "percentage": 10,
+    "name": "Night Lord",
+    "percentage": 50,
     "type": "Personal",
     "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554708/aavsoxdehbwl6tjkxyi7.jpg",
     "recipe": []
   },
   {
-    "id": 1772554354289,
-    "name": "Night Lord",
-    "status": "WIP",
-    "notes": "Primer: Vallejo Primers Black",
-    "img": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554426/xv9xqmtjfprfj3zvtflb.jpg"
-  },
-  {
     "name": "Dark Angel",
-    "percentage": 10,
+    "percentage": 100,
     "type": "Personal",
     "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772549499/hpsbmiawe7xb28qle8ac.jpg",
     "recipe": []
