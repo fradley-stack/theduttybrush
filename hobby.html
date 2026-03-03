@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workbench | Duttyclem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #ffffff; }
+        .accent-bg { background-color: #ff3e3e; }
+        .card-bg { background-color: #111111; border: 1px solid #222; }
+        .input-dark { background: #000; border: 1px solid #333; color: white; border-radius: 6px; padding: 10px; width: 100%; font-size: 11px; }
+        .img-container { aspect-ratio: 1/1; overflow: hidden; background: #0a0a0a; cursor: pointer; }
+        .status-badge { font-size: 8px; font-weight: 800; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-overlay { background-color: rgba(0,0,0,0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const GITHUB_USER = "fradley-stack";
+            const GITHUB_REPO = "theduttybrush";
+            const DATA_FILE = "data.json";
+
+            const [inventory, setInventory] = useState([]);
+            const [isAuth, setIsAuth] = useState(false);
+            const [token, setToken] = useState('');
+            const [loading, setLoading] = useState(true);
+            const [sha, setSha] = useState('');
+            const [selectedProject, setSelectedProject] = useState(null);
+
+            useEffect(() => {
+                fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${DATA_FILE}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const content = JSON.parse(atob(data.content));
+                        setInventory(content);
+                        setSha(data.sha);
+                        setLoading(false);
+                    })
+                    .catch(err => setLoading(false));
+            }, []);
+
+            const handleEditorMode = () => {
+                const key = prompt("Enter Studio Access Key:");
+                if (key) { setToken(key); setIsAuth(true); }
+            };
+
+            const syncToCloud = async () => {
+                try {
+                    const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${DATA_FILE}`, {
+                        method: 'PUT',
+                        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: "uploaded",
+                            content: btoa(unescape(encodeURIComponent(JSON.stringify(inventory, null, 2)))),
+                            sha: sha
+                        })
+                    });
+                    if (response.ok) {
+                        const result = await response.json();
+                        setSha(result.content.sha);
+                        alert("Data Synced.");
+                    } else { alert("Sync failed."); }
+                } catch (err) { alert("Error."); }
+            };
+
+            if (loading) return <div className="min-h-screen flex items-center justify-center text-[10px] tracking-[0.5em] opacity-30">INITIALIZING FORGE...</div>;
+
+            return (
+                <div className="min-h-screen p-6 md:p-12 max-w-7xl mx-auto">
+                    <header className="flex justify-between items-end mb-16 border-b border-zinc-900 pb-8">
+                        <div>
+                            <h1 className="text-3xl font-bold uppercase tracking-tighter">Workbench</h1>
+                            <p className="text-[10px] text-red-500 uppercase tracking-[0.4em] font-bold">{isAuth ? "Editor Active" : "Duttyclem Studio"}</p>
+                        </div>
+                        <div className="flex gap-4">
+                            {isAuth ? (
+                                <>
+                                    <button onClick={() => setIsAuth(false)} className="text-[10px] uppercase font-bold text-zinc-500 hover:text-white transition">Public View</button>
+                                    <button onClick={syncToCloud} className="bg-green-600 px-6 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest transition">Push changes</button>
+                                </>
+                            ) : (
+                                <a href="index.html" className="text-[10px] uppercase font-bold text-zinc-500 border border-zinc-900 px-4 py-2 rounded-lg hover:text-white transition">Home</a>
+                            )}
+                        </div>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {inventory.map(p => (
+                            <div key={p.id} className="card-bg rounded-2xl overflow-hidden border border-zinc-800 flex flex-col hover:border-zinc-500 transition-all duration-300">
+                                <div className="img-container" onClick={() => !isAuth && setSelectedProject(p)}>
+                                    {p.img ? <img src={p.img} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /> : <div className="w-full h-full flex items-center justify-center text-[9px] opacity-20">No Image</div>}
+                                </div>
+                                <div className="p-6">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="font-bold uppercase tracking-tight text-lg mb-2">{p.name}</h3>
+                                            <span className={`status-badge ${p.status === 'Complete' ? 'bg-green-900/40 text-green-400' : 'bg-orange-900/40 text-orange-400'}`}>{p.status || 'WIP'}</span>
+                                        </div>
+                                        {isAuth && (
+                                            <button onClick={() => {if(confirm("Delete?")) setInventory(inventory.filter(i => i.id !== p.id))}} className="text-[9px] text-zinc-700 hover:text-red-500 font-bold uppercase tracking-widest transition">Delete</button>
+                                        )}
+                                    </div>
+                                    
+                                    {isAuth ? (
+                                        <div className="space-y-4 mt-6 pt-6 border-t border-zinc-900">
+                                            <input className="input-dark" value={p.img || ''} placeholder="Image URL" onChange={(e) => setInventory(inventory.map(i => i.id === p.id ? {...i, img: e.target.value} : i))} />
+                                            <select className="input-dark" value={p.status || 'WIP'} onChange={(e) => setInventory(inventory.map(i => i.id === p.id ? {...i, status: e.target.value} : i))}>
+                                                <option value="WIP">Work in Progress</option>
+                                                <option value="Battle Ready">Battle Ready</option>
+                                                <option value="Complete">Parade Ready</option>
+                                            </select>
+                                            <textarea className="input-dark h-32" placeholder="Recipes..." value={p.notes || ''} onChange={(e) => setInventory(inventory.map(i => i.id === p.id ? {...i, notes: e.target.value} : i))} />
+                                        </div>
+                                    ) : (
+                                        <button onClick={() => setSelectedProject(p)} className="mt-6 w-full py-2 border border-zinc-800 rounded-lg text-[10px] uppercase font-bold tracking-widest text-zinc-500 hover:bg-zinc-900 hover:text-white transition">View Details</button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* MODAL VIEW */}
+                    {selectedProject && (
+                        <div className="fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4 md:p-12 overflow-y-auto" onClick={() => setSelectedProject(null)}>
+                            <div className="max-w-5xl w-full bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl" onClick={e => e.stopPropagation()}>
+                                <div className="md:w-3/5 bg-black flex items-center justify-center">
+                                    <img src={selectedProject.img} className="w-full h-full object-contain max-h-[80vh]" alt={selectedProject.name} />
+                                </div>
+                                <div className="md:w-2/5 p-8 md:p-12 flex flex-col">
+                                    <div className="flex justify-between items-start mb-8">
+                                        <h2 className="text-3xl font-bold uppercase tracking-tighter leading-none">{selectedProject.name}</h2>
+                                        <button onClick={() => setSelectedProject(null)} className="text-zinc-600 hover:text-white text-2xl font-light">&times;</button>
+                                    </div>
+                                    <div className="mb-8">
+                                        <span className={`status-badge ${selectedProject.status === 'Complete' ? 'bg-green-900/40 text-green-400' : 'bg-orange-900/40 text-orange-400'}`}>{selectedProject.status || 'WIP'}</span>
+                                    </div>
+                                    <div className="flex-grow overflow-y-auto pr-4 custom-scrollbar">
+                                        <p className="text-zinc-500 uppercase text-[9px] font-bold tracking-[0.2em] mb-4">Documentation & Recipes</p>
+                                        <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap font-light">
+                                            {selectedProject.notes || "No public notes available for this designation."}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {isAuth && (
+                        <button onClick={() => {
+                            const n = prompt("Designation:");
+                            if(n) setInventory([{id: Date.now(), name: n, status: 'WIP', notes: '', img: ''}, ...inventory]);
+                        }} className="fixed bottom-10 right-10 accent-bg w-14 h-14 rounded-full text-2xl shadow-2xl flex items-center justify-center hover:scale-110 transition z-50">+</button>
+                    )}
+
+                    <button onClick={handleEditorMode} className="fixed bottom-4 left-4 text-zinc-900 hover:text-zinc-600 transition font-bold text-[10px] opacity-40 uppercase">D</button>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

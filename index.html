@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duttyclem | Miniature Artist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #050505; --accent: #ff3e3e; --text: #ffffff; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; min-height: 100vh; text-align: center; }
+        .container { max-width: 480px; width: 90%; padding: 60px 0; }
+        .profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent); margin: 0 auto 20px auto; display: block; object-fit: cover; }
+        h1 { font-size: 2.5rem; margin: 0; letter-spacing: -1px; font-weight: 600; }
+        .subtitle { color: var(--accent); text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; margin-bottom: 40px; display: block; }
+        .links-container { display: flex; flex-direction: column; gap: 12px; }
+        .link-card { background: #111; padding: 18px; border-radius: 10px; text-decoration: none; color: var(--text); font-weight: 500; border: 1px solid #222; transition: 0.3s; }
+        .link-card:hover { border-color: var(--accent); background: #181818; }
+        .workbench-link { border-color: var(--accent); color: var(--accent); text-transform: uppercase; font-size: 0.85rem; }
+        .footer { margin-top: 80px; font-size: 0.65rem; color: #888; letter-spacing: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="avatar.jpg" alt="Duttyclem" class="profile-pic">
+        <h1>Duttyclem</h1>
+        <span class="subtitle">Miniature Artist</span>
+        <div class="links-container">
+            <a href="hobby.html" class="link-card workbench-link">Artist Workbench</a>
+            <a href="https://thebaselair.com/duttyclem" class="link-card" target="_blank">Full Gallery</a>
+            <a href="https://www.instagram.com/duttyclem/" class="link-card" target="_blank">Instagram</a>
+            <a href="mailto:dom@theduttybrush.com" class="link-card">dom@theduttybrush.com</a>
+        </div>
+        <div class="footer">THE DUTTY BRUSH &bull; 2026</div>
+    </div>
+</body>
+</html>
