@@ -8,28 +8,25 @@
     <style>
         body { background: #050505; color: white; font-family: sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); }
-        .admin-trigger { position: fixed; bottom: 15px; right: 15px; opacity: 0.1; transition: 0.3s; cursor: pointer; font-weight: 900; z-index: 50; }
-        .admin-trigger:hover { opacity: 1; color: #dc2626; transform: scale(1.5); }
+        .admin-trigger { position: fixed; bottom: 15px; right: 15px; opacity: 0.05; cursor: pointer; font-weight: 900; font-size: 10px; z-index: 50; }
+        .admin-trigger:hover { opacity: 1; color: #dc2626; }
         #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .tag-primer { color: #a1a1aa; border-color: #3f3f46; }
+        .tag-base { color: #fca5a5; border-color: #991b1b; }
+        .tag-layer { color: #93c5fd; border-color: #1e40af; }
+        .tag-highlight { color: #86efac; border-color: #166534; }
         .active-type { background: #dc2626 !important; border-color: #dc2626 !important; }
-        .tag-primer { background: #27272a; color: #a1a1aa; }
-        .tag-base { background: #7f1d1d; color: #fca5a5; }
-        .tag-layer { background: #1e3a8a; color: #93c5fd; }
-        .tag-highlight { background: #14532d; color: #86efac; }
     </style>
 </head>
 <body>
 
     <main class="max-w-6xl mx-auto p-8 space-y-12">
         <header class="flex justify-between items-end border-b border-white/10 pb-8">
-            <div>
-                <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
-                <p class="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold mt-2">Grimdark Archives & Paint Recipes</p>
-            </div>
-            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest bg-white/5 px-6 py-3 rounded-full hover:bg-red-600 transition">Return Hub</a>
+            <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">The <span class="text-red-600">Workbench</span></h1>
+            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest opacity-50 hover:opacity-100 transition">Return Hub</a>
         </header>
 
-        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"></div>
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
     <div class="admin-trigger" onclick="toggleAdmin()">D</div>
@@ -37,7 +34,7 @@
     <div id="admin-panel">
         <div class="glass p-8 rounded-3xl w-full max-w-5xl space-y-8 relative max-h-[90vh] overflow-y-auto">
             <button onclick="toggleAdmin()" class="absolute top-6 right-6 text-zinc-500">✕ Close</button>
-            <div class="grid lg:grid-cols-2 gap-10">
+            <div class="grid lg:grid-cols-2 gap-10 text-left">
                 <div class="space-y-4">
                     <h2 class="text-2xl font-black italic uppercase text-red-600">Forge Admin</h2>
                     <input type="text" id="edit-name" placeholder="Project Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none">
@@ -58,7 +55,7 @@
                     </div>
                     <input type="range" id="edit-perc" class="w-full accent-red-600" oninput="document.getElementById('val').innerText = this.value + '%'">
                     <span id="val" class="block text-center text-xs font-bold">50%</span>
-                    <button onclick="applyChanges()" class="w-full bg-white text-black py-4 rounded-xl font-black uppercase text-xs">Copy Master JSON</button>
+                    <button onclick="applyChanges()" class="w-full bg-white text-black py-4 rounded-xl font-black uppercase text-xs">Copy Updated JSON</button>
                 </div>
 
                 <div class="space-y-4 border-l border-white/5 pl-10">
@@ -87,7 +84,7 @@
                         <div class="flex justify-between items-center"><span class="text-[8px] font-black uppercase px-2 py-1 border border-white/10 rounded ${p.type === 'Commission' ? 'text-red-500' : 'text-zinc-500'}">${p.type}</span><span class="text-xs font-bold text-red-600 italic">${p.percentage}%</span></div>
                         <h3 class="text-xl font-black uppercase italic tracking-tighter">${p.name}</h3>
                         <div class="space-y-1.5 pt-2 border-t border-white/5">
-                            ${(p.recipe || []).map(paint => `<div class="flex items-center text-[10px] text-zinc-400"><span class="text-[7px] px-1.5 py-0.5 rounded font-black uppercase mr-2 tag-${paint.type}">${paint.type}</span> ${paint.name}</div>`).join('')}
+                            ${(p.recipe || []).map(paint => `<div class="flex items-center text-[10px] text-zinc-400"><span class="text-[7px] px-1.5 py-0.5 rounded font-black uppercase mr-2 border tag-${paint.type}">${paint.type}</span> ${paint.name}</div>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -135,7 +132,7 @@
             const update = { name: document.getElementById('edit-name').value, percentage: parseInt(document.getElementById('edit-perc').value), type: currentEditType, image: document.getElementById('edit-img').value, recipe: currentRecipe };
             if(editingIndex !== null) projects[editingIndex] = update; else projects.unshift(update);
             navigator.clipboard.writeText(JSON.stringify(projects, null, 2));
-            alert("JSON Copied."); renderGallery();
+            alert("JSON Copied. Paste into data.json."); renderGallery();
         }
 
         loadData();
