@@ -3,56 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Dutty Brush | Studio</title>
+    <title>The Dutty Brush</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
-        
-        /* The Glowing Commission Button */
-        .glow-btn { 
-            position: relative;
-            background: #dc2626;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
-            animation: pulse-glow 2s infinite;
-        }
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.7); }
-            100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); }
-        }
-        .glow-btn:hover { background: #ef4444; transform: scale(1.02); }
-        .closed { background: #27272a; box-shadow: none; animation: none; }
+        body { background-color: #050505; color: white; font-family: sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glow-green { box-shadow: 0 0 8px #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
     <main class="max-w-md w-full text-center space-y-6">
-        <div class="mb-8">
-            <h1 class="text-4xl font-black italic uppercase tracking-tighter leading-none">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
-            <p class="text-[9px] uppercase tracking-[0.4em] text-zinc-500 font-bold mt-2">Grimdark Miniature Studio</p>
+        <div class="space-y-4">
+            <img src="https://res.cloudinary.com/dt9p8v9px/image/upload/v1740941910/370258169_122100806120038838_435017109249764516_n_p78i8u.jpg" 
+                 class="w-24 h-24 rounded-full mx-auto border-2 border-red-600 object-cover shadow-lg shadow-red-600/20">
+            <div>
+                <h1 class="text-3xl font-black italic uppercase tracking-tighter">THE <span class="text-red-600">DUTTY</span> BRUSH</h1>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full glow-green"></div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Commissions Open</span>
+                </div>
+            </div>
         </div>
 
         <div class="grid gap-3">
-            <a href="mailto:your-email@example.com?subject=Commission Request" id="comm-btn" class="glow-btn py-5 rounded-2xl font-black uppercase text-xs tracking-widest text-white block">
-                Commissions Open
+            <a href="mailto:your-email@example.com" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+                <i class="fa-solid fa-envelope text-red-600 w-6 text-base"></i>
+                <span class="flex-1">Request Quote</span>
             </a>
-
-            <a href="hobby.html" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
-                <span>Enter Workbench</span> <span class="opacity-30">→</span>
+            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+                <i class="fa-brands fa-facebook text-[#1877F2] w-6 text-base"></i>
+                <span class="flex-1">Facebook</span>
             </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
-                <span>Facebook</span> <span class="opacity-30">→</span>
+            <a href="https://instagram.com/duttyclem" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+                <i class="fa-brands fa-instagram text-[#E4405F] w-6 text-base"></i>
+                <span class="flex-1">Instagram</span>
             </a>
-
-            <a href="https://instagram.com/duttyclem" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
-                <span>Instagram</span> <span class="opacity-30">→</span>
+            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex items-center px-6">
+                <i class="fa-brands fa-tiktok text-[#ff0050] w-6 text-base"></i>
+                <span class="flex-1">TikTok</span>
             </a>
-
-            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass py-4 rounded-xl font-bold uppercase text-[10px] hover:bg-zinc-900 transition flex justify-between px-6 items-center">
-                <span>TikTok</span> <span class="opacity-30">→</span>
+            <a href="hobby.html" class="bg-white text-black py-4 rounded-xl font-black uppercase text-[10px] hover:bg-red-600 hover:text-white transition shadow-xl">
+                Enter Workbench
             </a>
         </div>
 
@@ -60,7 +54,7 @@
             <div class="flex justify-between items-end">
                 <div class="flex flex-col gap-1">
                     <span id="p-tag" class="text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border"></span>
-                    <span class="text-[9px] uppercase font-bold text-zinc-600 tracking-widest">Live in the Forge</span>
+                    <span class="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Live in the Forge</span>
                 </div>
                 <span id="p-percent" class="text-sm font-black text-red-600 italic">0%</span>
             </div>
@@ -82,17 +76,11 @@
                     document.getElementById('p-name').innerText = p.name;
                     document.getElementById('p-percent').innerText = p.percentage + '%';
                     document.getElementById('p-bar').style.width = p.percentage + '%';
-                    
                     const tag = document.getElementById('p-tag');
                     tag.innerText = p.type || "Personal";
                     tag.className = p.type === "Commission" 
                         ? "text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border border-red-600/50 text-red-500 bg-red-500/5"
                         : "text-[8px] px-2 py-0.5 rounded font-black uppercase tracking-tighter border border-white/10 text-zinc-500 bg-white/5";
-
-                    // Handle Glow Button State (optional: add 'status' to JSON later if you want to automate this)
-                    const commBtn = document.getElementById('comm-btn');
-                    // commBtn.innerText = "Commissions Closed"; // Toggle logic if needed
-                    // commBtn.classList.add('closed');
                 }
             } catch(e) {}
         }
