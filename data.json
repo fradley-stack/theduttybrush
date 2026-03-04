@@ -7,9 +7,7 @@
     "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772587362/lpeppqxxdyo3kxwll586.png",
     "notes": "Haven't decided on the faction yet. Imperial Fist? Death Guard?",
     "gallery": [],
-    "paints": {
-      "Primer": "Vallejo Primers Black"
-    }
+    "paints": {}
   },
   {
     "title": "Night Lord",
@@ -17,9 +15,11 @@
     "progress": 10,
     "category": "Personal",
     "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554708/aavsoxdehbwl6tjkxyi7.jpg",
+    "notes": "",
     "gallery": [],
-    "paints": {},
-    "notes": ""
+    "paints": {
+      "Primer": "Vallejo Primers Black"
+    }
   },
   {
     "title": "Dark Angel",
