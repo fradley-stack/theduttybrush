@@ -104,6 +104,7 @@
     </footer>
 
     <script>
+        // Email Copy Functionality
         function copyEmail() {
             const email = "commissions@theduttybrush.com";
             navigator.clipboard.writeText(email).then(() => {
@@ -121,6 +122,7 @@
             });
         }
 
+        // Project Synchronization Logic
         async function syncForge() {
             try {
                 const res = await fetch('data.json?v=' + Date.now(), {
@@ -131,46 +133,47 @@
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
 
-                // Filter for in-flight projects
-                const activeProjects = data.filter(p => p.percentage < 100);
+                // Field Mapping: title, progress, category, link, thumbnail
+                const activeProjects = data.filter(p => p.progress < 100);
 
-                // Update Workbench Badge
+                // Update Active Count Badge
                 if (activeProjects.length > 0) {
                     const badge = document.getElementById('workbench-count');
                     badge.innerText = `${activeProjects.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
 
-                // Inject Active Project Cards
+                // Render Forge Cards
                 const container = document.getElementById('forge-container');
                 container.innerHTML = '';
 
                 activeProjects.forEach(project => {
                     const cardWrapper = document.createElement('a');
-                    cardWrapper.href = project.url || "#";
-                    cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block";
+                    // Linking logic: use specific link or default to hobby page
+                    cardWrapper.href = project.link || "hobby.html";
+                    cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block cursor-pointer";
                     
-                    const isCommission = project.type === "Commission";
-                    const thumbnail = project.image || 'images/placeholder-wip.jpg';
+                    const isCommission = project.category === "Commission";
+                    const imgUrl = project.thumbnail || 'avatar.jpg';
                     
                     cardWrapper.innerHTML = `
-                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0">
-                            <img src="${thumbnail}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${project.name}">
+                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0 bg-black">
+                            <img src="${imgUrl}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${project.title}">
                         </div>
                         <div class="flex-1 space-y-2">
                             <div class="flex justify-between items-end">
                                 <div class="flex flex-col">
                                     <span class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 ${isCommission ? 'text-red-500' : 'text-zinc-500'} uppercase font-black w-fit border border-white/5 mb-1">
-                                        ${project.type || "Personal"}
+                                        ${project.category || "Project"}
                                     </span>
                                     <span class="text-[8px] uppercase font-bold text-zinc-400 tracking-widest leading-none">Live in the Forge</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-red-500">${project.percentage}%</span>
+                                <span class="text-[10px] font-bold text-red-500">${project.progress}%</span>
                             </div>
                             <div class="w-full bg-black h-1 rounded-full overflow-hidden">
-                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${project.percentage}%"></div>
+                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${project.progress}%"></div>
                             </div>
-                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${project.name}"</p>
+                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${project.title}"</p>
                         </div>
                     `;
                     container.appendChild(cardWrapper);
