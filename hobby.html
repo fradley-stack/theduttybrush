@@ -108,7 +108,7 @@
                             <label>Cover Thumbnail</label>
                             <input type="text" placeholder="Cover URL" id="f-thumb" required class="forge-input w-full mb-4">
                             <label>Gallery Images</label>
-                            </div>
+                        </div>
                     </div>
                     <div class="glass-card p-6 rounded-2xl">
                         <div class="flex justify-between items-center mb-4"><label class="mb-0">Paints</label><button type="button" onclick="addDynamicField('paint-fields', true)" class="btn-add">+</button></div>
@@ -154,34 +154,10 @@
         let currentEditTitle = null;
         let currentFilter = 'all';
 
+        // --- Core Utilities ---
         function handleLogout() { sessionStorage.removeItem('gh_token'); location.reload(); }
         function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
         
-        function openProjectModal(title) {
-            const p = allProjectData.find(x => (x.title || x.name) === title);
-            if (!p) return;
-            document.getElementById('view-title').innerText = title;
-            document.getElementById('view-faction').innerText = p.faction;
-            document.getElementById('view-progress').innerText = `${p.progress}%`;
-            document.getElementById('view-notes').innerText = p.notes || "No notes.";
-            document.getElementById('main-view-img').src = p.thumbnail;
-            
-            const galGrid = document.getElementById('view-gallery-grid');
-            galGrid.innerHTML = '';
-            if (p.gallery) p.gallery.forEach(src => { galGrid.innerHTML += `<img src="${src}" class="gallery-sub-img" onclick="openLightbox('${src}')">`; });
-            
-            const pList = document.getElementById('view-paints-list');
-            pList.innerHTML = '';
-            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => { pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><label class="mb-1">${cat}</label><p class="text-[12px] text-zinc-300 font-medium">${list}</p></div>`; });
-            
-            if (sessionStorage.getItem('gh_token')) document.getElementById('admin-controls').classList.remove('hidden');
-            document.getElementById('project-modal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?project=' + encodeURIComponent(title);
-            window.history.pushState({path:newUrl},'',newUrl);
-        }
-
         function closeModals() { 
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
             document.body.style.overflow = 'auto'; 
@@ -189,44 +165,35 @@
             window.history.pushState({path:cleanUrl},'',cleanUrl); 
         }
 
-        function renderProjects(data) {
-            const list = document.getElementById('workbench-list');
-            list.innerHTML = '';
-            data.forEach(p => {
-                const title = p.title || p.name;
-                list.innerHTML += `
-                    <div onclick="openProjectModal('${title}')" class="glass-card rounded-[32px] overflow-hidden group cursor-pointer border-transparent hover:border-white/20 transition-all duration-500">
-                        <div class="thumb-container">
-                            <img src="${p.thumbnail}" class="thumb-img">
-                            <div class="absolute top-6 left-6"><span class="text-[8px] px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 font-black uppercase text-white tracking-widest">${p.faction}</span></div>
-                        </div>
-                        <div class="p-8">
-                            <div class="flex justify-between items-end"><h3 class="text-lg font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${title}</h3><span class="text-xs font-black italic text-zinc-600">${p.progress}%</span></div>
-                            <div class="w-full bg-white/5 h-[3px] mt-6 rounded-full overflow-hidden"><div class="bg-red-600 h-full transition-all duration-1000" style="width: ${p.progress}%"></div></div>
-                        </div>
-                    </div>`;
-            });
-        }
-
+        // --- Data Population ---
         async function loadData() {
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 allProjectData = await res.json();
                 renderProjects(allProjectData);
                 updateAdminUI();
-                populateProjectSelector(); // Populate Forge dropdown immediately after data loads
                 
-                const container = document.getElementById('filter-container');
-                factions.sort().forEach(f => {
+                // Init Project Dropdown
+                const sel = document.getElementById('project-selector');
+                sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
+                allProjectData.forEach(p => {
+                    const name = p.title || p.name;
+                    sel.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+
+                // Init Faction Dropdown
+                const fForge = document.getElementById('f-faction');
+                fForge.innerHTML = '';
+                factions.sort().forEach(f => fForge.innerHTML += `<option value="${f}">${f}</option>`);
+
+                // Init Filter Tabs
+                const filterCont = document.getElementById('filter-container');
+                factions.forEach(f => {
                     const btn = document.createElement('button');
                     btn.className = "filter-btn";
                     btn.innerText = f; btn.onclick = (e) => filterFaction(f, e.target);
-                    container.appendChild(btn);
+                    filterCont.appendChild(btn);
                 });
-
-                const fForge = document.getElementById('f-faction');
-                fForge.innerHTML = '';
-                factions.forEach(f => fForge.innerHTML += `<option value="${f}">${f}</option>`);
                 
                 const params = new URLSearchParams(window.location.search);
                 const project = params.get('project');
@@ -234,30 +201,27 @@
             } catch (err) { console.error("Error loading data:", err); }
         }
 
-        function populateProjectSelector() {
-            const sel = document.getElementById('project-selector');
-            if (!sel) return;
-            sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
-            allProjectData.forEach(p => {
-                const name = p.title || p.name;
-                sel.innerHTML += `<option value="${name}">${name}</option>`;
+        function renderProjects(data) {
+            const list = document.getElementById('workbench-list');
+            list.innerHTML = '';
+            data.forEach(p => {
+                const title = p.title || p.name;
+                const prog = p.progress || p.percentage || 0;
+                list.innerHTML += `
+                    <div onclick="openProjectModal('${title}')" class="glass-card rounded-[32px] overflow-hidden group cursor-pointer border-transparent hover:border-white/20 transition-all duration-500">
+                        <div class="thumb-container">
+                            <img src="${p.thumbnail}" class="thumb-img">
+                            <div class="absolute top-6 left-6"><span class="text-[8px] px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 font-black uppercase text-white tracking-widest">${p.faction}</span></div>
+                        </div>
+                        <div class="p-8">
+                            <div class="flex justify-between items-end"><h3 class="text-lg font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${title}</h3><span class="text-xs font-black italic text-zinc-600">${prog}%</span></div>
+                            <div class="w-full bg-white/5 h-[3px] mt-6 rounded-full overflow-hidden"><div class="bg-red-600 h-full transition-all duration-1000" style="width: ${prog}%"></div></div>
+                        </div>
+                    </div>`;
             });
         }
 
-        function filterFaction(f, el) {
-            currentFilter = f;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            searchProjects(document.getElementById('search-units').value);
-        }
-
-        function searchProjects(q) {
-            let filtered = allProjectData;
-            if (currentFilter !== 'all') filtered = filtered.filter(p => p.faction === currentFilter);
-            if (q) filtered = filtered.filter(p => (p.title || p.name).toLowerCase().includes(q.toLowerCase()));
-            renderProjects(filtered);
-        }
-
+        // --- Forge Form Logic ---
         function addDynamicField(containerId, isPaint = false, val1 = '', val2 = '') {
             const container = document.getElementById(containerId);
             const div = document.createElement('div');
@@ -270,9 +234,91 @@
             container.appendChild(div);
         }
 
-        function handleAdminClick() {
+        function loadProjectIntoForge(title) {
+            const p = allProjectData.find(x => (x.title || x.name) === title);
+            document.querySelectorAll('#gallery-fields .dynamic-row').forEach(r => r.remove());
+            document.getElementById('paint-fields').innerHTML = '';
+            
+            if (!p) { 
+                document.getElementById('forge-form').reset(); 
+                currentEditTitle = null; 
+                return; 
+            }
+            
+            currentEditTitle = p.title || p.name;
+            document.getElementById('f-title').value = currentEditTitle;
+            document.getElementById('f-progress').value = p.progress || p.percentage || 0;
+            document.getElementById('f-faction').value = p.faction;
+            document.getElementById('f-category').value = p.category || "Commission";
+            document.getElementById('f-thumb').value = p.thumbnail || "";
+            document.getElementById('f-notes').value = p.notes || "";
+            
+            if (p.gallery) p.gallery.forEach(url => addDynamicField('gallery-fields', false, url));
+            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => addDynamicField('paint-fields', true, cat, list));
+        }
+
+        document.getElementById('forge-form').onsubmit = async (e) => {
+            e.preventDefault();
             const token = sessionStorage.getItem('gh_token');
-            if (token) {
+            if (!token) return alert("Access Denied: No Token Found");
+
+            const paints = {};
+            document.querySelectorAll('#paint-fields .dynamic-row').forEach(row => {
+                const cat = row.querySelector('.p-cat').value;
+                const val = row.querySelector('.p-val').value;
+                if (cat) paints[cat] = val;
+            });
+
+            const gallery = Array.from(document.querySelectorAll('.g-input')).map(i => i.value).filter(v => v);
+
+            const updatedProject = {
+                title: document.getElementById('f-title').value,
+                faction: document.getElementById('f-faction').value,
+                progress: parseInt(document.getElementById('f-progress').value),
+                category: document.getElementById('f-category').value,
+                thumbnail: document.getElementById('f-thumb').value,
+                notes: document.getElementById('f-notes').value,
+                gallery: gallery,
+                paints: paints
+            };
+
+            if (currentEditTitle) {
+                const idx = allProjectData.findIndex(p => (p.title || p.name) === currentEditTitle);
+                allProjectData[idx] = updatedProject;
+            } else {
+                allProjectData.push(updatedProject);
+            }
+
+            try {
+                // Fetch SHA
+                const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                const fileData = await fileRes.json();
+                
+                // Push Update
+                const pushRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: `Forge Sync: ${updatedProject.title}`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(allProjectData, null, 2)))),
+                        sha: fileData.sha
+                    })
+                });
+
+                if (pushRes.ok) {
+                    alert("Forge Synchronized Successfully!");
+                    location.reload();
+                } else {
+                    alert("Sync Failed. Check Token permissions.");
+                }
+            } catch (err) { alert("Error: " + err.message); }
+        };
+
+        // --- Admin UI ---
+        function handleAdminClick() {
+            if (sessionStorage.getItem('gh_token')) {
                 document.getElementById('admin-modal').style.display = 'block';
             } else {
                 const input = prompt("Access Token:");
@@ -287,39 +333,27 @@
             }
         }
 
-        function loadProjectIntoForge(title) {
-            const p = allProjectData.find(x => (x.title || x.name) === title);
-            // Clear existing dynamic rows
-            document.querySelectorAll('#gallery-fields .dynamic-row').forEach(r => r.remove());
-            document.getElementById('paint-fields').innerHTML = '';
-            
-            if (!p) { 
-                document.getElementById('forge-form').reset(); 
-                currentEditTitle = null; 
-                return; 
-            }
-            
-            currentEditTitle = p.title || p.name;
-            document.getElementById('f-title').value = currentEditTitle;
-            document.getElementById('f-progress').value = p.progress || 0;
-            document.getElementById('f-faction').value = p.faction || factions[0];
-            document.getElementById('f-category').value = p.category || "Commission";
-            document.getElementById('f-thumb').value = p.thumbnail || "";
-            document.getElementById('f-notes').value = p.notes || "";
-            
-            if (p.gallery) p.gallery.forEach(url => addDynamicField('gallery-fields', false, url));
-            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => addDynamicField('paint-fields', true, cat, list));
+        function editProject() {
+            const title = document.getElementById('view-title').innerText;
+            loadProjectIntoForge(title);
+            document.getElementById('project-selector').value = title;
+            document.getElementById('project-modal').style.display = 'none';
+            document.getElementById('admin-modal').style.display = 'block';
         }
 
-        function editProject() {
-            const currentTitle = document.getElementById('view-title').innerText;
-            closeModals();
-            
-            const sel = document.getElementById('project-selector');
-            sel.value = currentTitle; // Sync dropdown with current project
-            loadProjectIntoForge(currentTitle); // Load fields
-            
-            document.getElementById('admin-modal').style.display = 'block';
+        // --- Search & Filter ---
+        function searchProjects(q) {
+            let filtered = allProjectData;
+            if (currentFilter !== 'all') filtered = filtered.filter(p => p.faction === currentFilter);
+            if (q) filtered = filtered.filter(p => (p.title || p.name).toLowerCase().includes(q.toLowerCase()));
+            renderProjects(filtered);
+        }
+
+        function filterFaction(f, el) {
+            currentFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            searchProjects(document.getElementById('search-units').value);
         }
 
         loadData();
