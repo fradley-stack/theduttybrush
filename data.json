@@ -2,12 +2,17 @@
   {
     "title": "Saturnine Praetor",
     "faction": "Adeptus Astartes",
-    "progress": 10,
+    "progress": 15,
     "category": "Personal",
     "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772587362/lpeppqxxdyo3kxwll586.png",
-    "notes": "Haven't decided on the faction yet. Imperial Fist? Death Guard?",
+    "notes": "So Imperial Fist we are.\n\nI've created a recipe for a potential scheme.\n\nFor the upwards / light facing panels and nice blend from Golden Brown to Golden Yellow.\nFor the downwards / bounce reflections a Grey Blue and for the deep recesses and Purple / Magenta mix.",
     "gallery": [],
-    "paints": {}
+    "paints": {
+      "Primer": "Vallejo Primers Black",
+      "Base": "Dark Grey Blue",
+      "Layer": "Purple",
+      "Highlight": "Magenta"
+    }
   },
   {
     "title": "Night Lord",
