@@ -104,7 +104,6 @@
     </footer>
 
     <script>
-        // Email Copy Functionality
         function copyEmail() {
             const email = "commissions@theduttybrush.com";
             navigator.clipboard.writeText(email).then(() => {
@@ -122,7 +121,6 @@
             });
         }
 
-        // Project Synchronization Logic
         async function syncForge() {
             try {
                 const res = await fetch('data.json?v=' + Date.now(), {
@@ -133,47 +131,50 @@
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
 
-                // Field Mapping: title, progress, category, link, thumbnail
-                const activeProjects = data.filter(p => p.progress < 100);
+                // FLEXIBLE MAPPING: Supports old names (percentage) and new names (progress)
+                const activeProjects = data.filter(p => (p.progress || p.percentage) < 100);
 
-                // Update Active Count Badge
                 if (activeProjects.length > 0) {
                     const badge = document.getElementById('workbench-count');
                     badge.innerText = `${activeProjects.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
 
-                // Render Forge Cards
                 const container = document.getElementById('forge-container');
                 container.innerHTML = '';
 
-                activeProjects.forEach(project => {
+                activeProjects.forEach(p => {
+                    // Extract values with fallbacks to handle both naming conventions
+                    const title = p.title || p.name || "Untitled Project";
+                    const progress = p.progress || p.percentage || 0;
+                    const category = p.category || p.type || "Hobby";
+                    const link = p.link || p.url || "hobby.html";
+                    const thumb = p.thumbnail || p.image || 'avatar.jpg';
+
                     const cardWrapper = document.createElement('a');
-                    // Linking logic: use specific link or default to hobby page
-                    cardWrapper.href = project.link || "hobby.html";
+                    cardWrapper.href = link;
                     cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block cursor-pointer";
                     
-                    const isCommission = project.category === "Commission";
-                    const imgUrl = project.thumbnail || 'avatar.jpg';
+                    const isCommission = category === "Commission";
                     
                     cardWrapper.innerHTML = `
                         <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0 bg-black">
-                            <img src="${imgUrl}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${project.title}">
+                            <img src="${thumb}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${title}">
                         </div>
                         <div class="flex-1 space-y-2">
                             <div class="flex justify-between items-end">
                                 <div class="flex flex-col">
                                     <span class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 ${isCommission ? 'text-red-500' : 'text-zinc-500'} uppercase font-black w-fit border border-white/5 mb-1">
-                                        ${project.category || "Project"}
+                                        ${category}
                                     </span>
                                     <span class="text-[8px] uppercase font-bold text-zinc-400 tracking-widest leading-none">Live in the Forge</span>
                                 </div>
-                                <span class="text-[10px] font-bold text-red-500">${project.progress}%</span>
+                                <span class="text-[10px] font-bold text-red-500">${progress}%</span>
                             </div>
                             <div class="w-full bg-black h-1 rounded-full overflow-hidden">
-                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${project.progress}%"></div>
+                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${progress}%"></div>
                             </div>
-                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${project.title}"</p>
+                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${title}"</p>
                         </div>
                     `;
                     container.appendChild(cardWrapper);
