@@ -12,14 +12,14 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; scroll-behavior: smooth; }
         .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
         
-        /* Highlight effect for when jumping from an anchor link */
+        /* The "Jump To" Highlight */
         :target {
-            border: 1px solid #ff3e3e !important;
-            box-shadow: 0 0 30px rgba(255, 62, 62, 0.25);
-            transform: scale(1.02);
+            border-color: #ff3e3e !important;
+            box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
+            transition: all 0.5s ease;
         }
 
         .filter-btn.active { background-color: #ff3e3e; color: white; border-color: #ff3e3e; opacity: 1; }
@@ -29,28 +29,28 @@
 </head>
 <body class="hero-gradient min-h-screen p-6">
 
-    <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+    <header class="max-w-4xl mx-auto flex justify-between items-center mb-12">
         <a href="index.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition flex items-center gap-2">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Return to Studio
+            Back
         </a>
-        <h1 class="text-xl font-900 uppercase italic tracking-tighter text-center">STUDIO <span class="accent-red">WORKBENCH</span></h1>
-        <div class="w-24 hidden md:block"></div>
+        <h1 class="text-xl font-900 uppercase italic tracking-tighter">STUDIO <span class="accent-red">WORKBENCH</span></h1>
+        <a href="admin.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-800 hover:text-red-600 transition">Admin</a>
     </header>
 
-    <main class="max-w-6xl mx-auto">
+    <main class="max-w-4xl mx-auto">
         
-        <div class="mb-10 overflow-x-auto no-scrollbar pb-4 border-b border-white/5">
-            <div id="filter-container" class="flex gap-2 min-w-max px-2">
+        <div class="mb-10 overflow-x-auto no-scrollbar pb-4">
+            <div id="filter-container" class="flex gap-2 min-w-max">
                 <button onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all opacity-50">All</button>
                 </div>
         </div>
 
-        <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             </div>
 
-        <div id="empty-state" class="hidden text-center py-40">
-            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">Forge Signature Not Found for this Faction.</p>
+        <div id="empty-state" class="hidden text-center py-20">
+            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">No projects match this faction.</p>
         </div>
     </main>
 
@@ -64,11 +64,11 @@
 
         let allProjectData = [];
 
-        // Initialize Filter Buttons
+        // Setup Filters
         const filterContainer = document.getElementById('filter-container');
         factions.sort().forEach(faction => {
             const btn = document.createElement('button');
-            btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-white transition-all opacity-50 hover:opacity-100";
+            btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all";
             btn.innerText = faction;
             btn.onclick = (e) => filterFaction(faction, e.target);
             filterContainer.appendChild(btn);
@@ -80,16 +80,10 @@
 
         function filterFaction(faction, element) {
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            if(element) {
-                element.classList.add('active');
-            } else {
-                document.querySelector('[onclick="filterFaction(\'all\')"]').classList.add('active');
-            }
+            if(element) element.classList.add('active');
+            else document.querySelector('[onclick="filterFaction(\'all\')"]').classList.add('active');
 
-            const filtered = faction === 'all' 
-                ? allProjectData 
-                : allProjectData.filter(p => p.faction === faction);
-            
+            const filtered = faction === 'all' ? allProjectData : allProjectData.filter(p => p.faction === faction);
             renderProjects(filtered);
         }
 
@@ -107,40 +101,43 @@
             data.forEach(p => {
                 const title = p.title || p.name || "Untitled";
                 const progress = p.progress || p.percentage || 0;
-                const category = p.category || p.type || "Personal";
+                const category = p.category || p.type || "Hobby";
                 const thumb = p.thumbnail || p.image || 'avatar.jpg';
+                const link = p.link || p.url || "#";
                 const factionTag = p.faction || "Unaligned";
                 const slug = createSlug(title);
 
-                const card = document.createElement('div');
-                card.id = slug; // This is the anchor point
-                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group border-zinc-800/50";
+                // WRAPPING IN ANCHOR TAG SO CLICKING WORKS
+                const card = document.createElement('a');
+                card.href = link;
+                card.id = slug;
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group transition-all duration-500 border-zinc-800/50 block";
 
                 card.innerHTML = `
-                    <div class="relative h-64 overflow-hidden bg-black">
-                        <img src="${thumb}" alt="${title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-40 group-hover:opacity-100 scale-110 group-hover:scale-100">
+                    <div class="relative h-48 overflow-hidden bg-black">
+                        <img src="${thumb}" alt="${title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100">
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            <span class="text-[7px] px-2 py-1 rounded bg-black/90 backdrop-blur-md border border-white/10 font-black uppercase tracking-widest ${category === 'Commission' ? 'text-red-500' : 'text-zinc-400'}">
+                            <span class="text-[7px] px-2 py-1 rounded bg-black/80 backdrop-blur-md border border-white/10 font-black uppercase tracking-widest ${category === 'Commission' ? 'text-red-500' : 'text-zinc-400'}">
                                 ${category}
                             </span>
                             <span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase tracking-widest text-white">
                                 ${factionTag}
                             </span>
                         </div>
-                        <div class="absolute bottom-4 right-4 bg-black border border-white/10 px-3 py-1 rounded-full">
+                        <div class="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full">
                             <span class="text-[10px] font-black text-white">${progress}%</span>
                         </div>
                     </div>
-                    <div class="p-8 space-y-5">
-                        <h3 class="text-lg font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors leading-none">
+                    <div class="p-6 space-y-4">
+                        <h3 class="text-sm font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">
                             ${title}
                         </h3>
-                        <div class="w-full bg-white/5 h-[3px] overflow-hidden rounded-full">
-                            <div class="bg-red-600 h-full transition-all duration-1000 ease-out shadow-[0_0_10px_#dc2626]" style="width: ${progress}%"></div>
+                        <div class="w-full bg-white/5 h-[2px] mt-4 overflow-hidden">
+                            <div class="bg-red-600 h-full transition-all duration-1000 shadow-[0_0_10px_#dc2626]" style="width: ${progress}%"></div>
                         </div>
                         <div class="flex justify-between items-center pt-2">
-                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">Studio Log: ${progress < 100 ? 'Active' : 'Complete'}</span>
-                            <div class="w-2 h-2 rounded-full ${progress < 100 ? 'bg-green-500 animate-pulse' : 'bg-zinc-800'}"></div>
+                            <span class="text-[8px] font-black uppercase tracking-widest text-zinc-600">Phase: ${progress < 100 ? 'WIP' : 'Done'}</span>
+                            <div class="w-1.5 h-1.5 rounded-full ${progress < 100 ? 'bg-green-500 animate-pulse' : 'bg-zinc-800'}"></div>
                         </div>
                     </div>
                 `;
@@ -154,25 +151,12 @@
                 allProjectData = await res.json();
                 renderProjects(allProjectData);
 
-                // FIXED ANCHOR LOGIC: Wait for render, then jump
+                // Final fix for the Jump logic
                 if (window.location.hash) {
-                    const hash = window.location.hash;
-                    // Small timeout ensures the DOM has painted the new IDs
                     setTimeout(() => {
-                        const target = document.querySelector(hash);
-                        if (target) {
-                            const offset = 100; // Account for the header
-                            const bodyRect = document.body.getBoundingClientRect().top;
-                            const elementRect = target.getBoundingClientRect().top;
-                            const elementPosition = elementRect - bodyRect;
-                            const offsetPosition = elementPosition - offset;
-
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 300);
+                        const target = document.querySelector(window.location.hash);
+                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 400);
                 }
             } catch (e) { console.error("Workbench load failed:", e); }
         }
