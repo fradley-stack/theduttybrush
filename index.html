@@ -88,8 +88,7 @@
             </a>
         </div>
 
-        <div id="forge-container" class="space-y-4">
-            </div>
+        <div id="forge-container" class="space-y-4"></div>
     </main>
 
     <footer class="w-full max-w-md border-t border-white/5 pt-8 pb-12 text-center space-y-4">
@@ -111,11 +110,9 @@
                 const toast = document.getElementById("toast");
                 const copyIcon = document.getElementById("copy-icon");
                 const checkIcon = document.getElementById("check-icon");
-
                 toast.className = "show";
                 copyIcon.classList.add("hidden");
                 checkIcon.classList.remove("hidden");
-
                 setTimeout(() => { 
                     toast.className = toast.className.replace("show", ""); 
                     copyIcon.classList.remove("hidden");
@@ -134,7 +131,7 @@
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
 
-                // Filter for in-flight projects (less than 100%)
+                // Filter for in-flight projects
                 const activeProjects = data.filter(p => p.percentage < 100);
 
                 // Update Workbench Badge
@@ -144,32 +141,39 @@
                     badge.classList.remove('hidden');
                 }
 
-                // Inject Active Project Cards into the Forge
+                // Inject Active Project Cards
                 const container = document.getElementById('forge-container');
-                container.innerHTML = ''; // Clear previous content
+                container.innerHTML = '';
 
                 activeProjects.forEach(project => {
-                    const card = document.createElement('div');
-                    card.className = "glass-card p-5 rounded-xl border border-zinc-800/50 text-left space-y-3";
+                    const cardWrapper = document.createElement('a');
+                    cardWrapper.href = project.url || "#";
+                    cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block";
                     
                     const isCommission = project.type === "Commission";
+                    const thumbnail = project.image || 'images/placeholder-wip.jpg';
                     
-                    card.innerHTML = `
-                        <div class="flex justify-between items-end">
-                            <div class="flex flex-col">
-                                <span class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 ${isCommission ? 'text-red-500' : 'text-zinc-500'} uppercase font-black w-fit border border-white/5 mb-1">
-                                    ${project.type || "Personal"}
-                                </span>
-                                <span class="text-[8px] uppercase font-bold text-zinc-500 tracking-widest">Live in the Forge</span>
+                    cardWrapper.innerHTML = `
+                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0">
+                            <img src="${thumbnail}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${project.name}">
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex justify-between items-end">
+                                <div class="flex flex-col">
+                                    <span class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 ${isCommission ? 'text-red-500' : 'text-zinc-500'} uppercase font-black w-fit border border-white/5 mb-1">
+                                        ${project.type || "Personal"}
+                                    </span>
+                                    <span class="text-[8px] uppercase font-bold text-zinc-400 tracking-widest leading-none">Live in the Forge</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-red-500">${project.percentage}%</span>
                             </div>
-                            <span class="text-[10px] font-bold text-red-500">${project.percentage}%</span>
+                            <div class="w-full bg-black h-1 rounded-full overflow-hidden">
+                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${project.percentage}%"></div>
+                            </div>
+                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${project.name}"</p>
                         </div>
-                        <div class="w-full bg-black h-1 rounded-full overflow-hidden">
-                            <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${project.percentage}%"></div>
-                        </div>
-                        <p class="text-[9px] text-zinc-400 uppercase font-semibold italic">Current: "${project.name}"</p>
                     `;
-                    container.appendChild(card);
+                    container.appendChild(cardWrapper);
                 });
 
             } catch (e) { console.error("Sync failed:", e); }
