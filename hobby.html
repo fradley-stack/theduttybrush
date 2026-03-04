@@ -15,91 +15,62 @@
         .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); }
         .accent-red { color: #ff3e3e; }
         
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; backdrop-filter: blur(20px); overflow-y: auto; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; backdrop-filter: blur(20px); overflow-y: auto; }
         
-        /* FACTION TAG GRID - NO SCROLLING */
         .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
         .filter-btn { 
-            padding: 6px 14px; 
-            border-radius: 8px; 
-            font-size: 9px; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.02);
-            color: #555;
-            transition: all 0.2s ease;
+            padding: 6px 14px; border-radius: 8px; font-size: 9px; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02); color: #555; transition: all 0.2s ease;
         }
         .filter-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
         .filter-btn.active { background: #ff3e3e; color: white; border-color: #ff3e3e; }
 
-        /* FORGE INPUTS & DROPDOWNS */
-        .forge-input {
-            background: #000 !important;
-            border: 1px solid rgba(255,255,255,0.2) !important;
-            color: #fff !important;
-            padding: 12px 16px;
-            border-radius: 10px;
-            outline: none;
-        }
-        .forge-input option { background: #000; color: #fff; }
-        .forge-input:focus { border-color: #ff3e3e !important; }
-        
+        .forge-input { background: #000 !important; border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; padding: 12px 16px; border-radius: 10px; outline: none; }
         label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #444; margin-bottom: 6px; display: block; }
-        .gallery-img { width: 100%; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
-        
+
+        .project-viewer-img { width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 12px; background: #000; cursor: zoom-in; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .gallery-sub-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: zoom-in; opacity: 0.8; }
+
+        /* IMAGE STYLE UPDATED */
+        .thumb-container { height: 340px; overflow: hidden; background: #000; position: relative; border-radius: 32px 32px 0 0; }
+        .thumb-img { 
+            width: 100%; height: 100%; object-fit: cover; object-position: top center; 
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.7; /* Legibility for title overlay */
+        }
+        .group:hover .thumb-img { transform: scale(1.08); opacity: 1; }
+
+        #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; align-items: center; justify-content: center; padding: 40px; }
         .dynamic-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 12px; }
         .btn-add { background: #111; color: #fff; width: 28px; height: 28px; border-radius: 8px; font-size: 18px; line-height: 1; border: 1px solid rgba(255,255,255,0.1); }
-
-        #search-units { 
-            width: 100%;
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-radius: 12px; 
-            padding: 14px 20px; 
-            font-size: 12px; 
-            color: white; 
-            outline: none; 
-        }
-
-        /* IMAGE POSITIONING */
-        .thumb-container { height: 340px; overflow: hidden; background: #000; position: relative; }
-        .thumb-img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            object-position: top center; 
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
-        .group:hover .thumb-img { transform: scale(1.08); opacity: 1; filter: grayscale(0%); }
     </style>
 </head>
 <body class="hero-gradient min-h-screen p-6 md:p-12">
 
+    <div id="lightbox" onclick="this.style.display='none'"><img id="lightbox-img" src=""></div>
+
     <div id="project-modal" class="modal-overlay" onclick="closeModals()">
-        <div class="max-w-3xl mx-auto my-12 p-6" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-10">
+        <div class="max-w-6xl mx-auto my-12 p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-8">
                 <h2 id="view-title" class="text-3xl font-900 uppercase italic tracking-tighter"></h2>
                 <button onclick="closeModals()" class="text-zinc-600 hover:text-white uppercase text-[10px] font-black tracking-widest">Close</button>
             </div>
-            
-            <div id="view-gallery" class="flex flex-col gap-2 mb-12"></div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-white/5 pt-12">
-                <div class="space-y-10">
-                    <div><label>Field Notes</label><p id="view-notes" class="text-zinc-400 text-sm leading-relaxed"></p></div>
-                    <div><label>Recipe Stack</label><div id="view-paints-list" class="space-y-6"></div></div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div class="lg:col-span-7 space-y-4">
+                    <img id="main-view-img" src="" class="project-viewer-img" onclick="openLightbox(this.src)">
+                    <div id="view-gallery-grid" class="gallery-grid"></div>
                 </div>
-                <div class="space-y-8">
-                    <div class="glass-card p-8 rounded-3xl space-y-6">
-                        <div class="flex justify-between border-b border-white/5 pb-4">
+                <div class="lg:col-span-5 space-y-8">
+                    <div class="glass-card p-8 rounded-2xl space-y-8">
+                        <div class="flex justify-between border-b border-white/5 pb-6">
                             <div><label>Faction</label><span id="view-faction" class="text-xs font-black accent-red uppercase"></span></div>
                             <div class="text-right"><label>Status</label><span id="view-progress" class="text-2xl font-900 italic"></span></div>
                         </div>
-                        <div id="admin-controls" class="hidden"><button onclick="editProject()" class="w-full bg-white text-black text-[10px] font-900 uppercase py-4 rounded-xl hover:bg-red-600 hover:text-white transition-all">Enter Forge</button></div>
+                        <div><label>Field Notes</label><p id="view-notes" class="text-zinc-400 text-sm leading-relaxed"></p></div>
+                        <div><label>Recipe Stack</label><div id="view-paints-list" class="grid grid-cols-1 gap-4"></div></div>
+                        <div id="admin-controls" class="hidden pt-4"><button onclick="editProject()" class="w-full bg-white text-black text-[10px] font-900 uppercase py-4 rounded-xl hover:bg-red-600 hover:text-white transition-all">Enter Forge</button></div>
                     </div>
                 </div>
             </div>
@@ -110,18 +81,10 @@
         <div class="max-w-2xl mx-auto my-12 p-1 bg-[#0a0a0a] rounded-[32px] border border-white/10 shadow-2xl" onclick="event.stopPropagation()">
             <div class="p-8 md:p-10">
                 <div class="flex justify-between items-center mb-10">
-                    <div>
-                        <h2 class="text-2xl font-900 uppercase italic tracking-tighter">The <span class="accent-red">Forge</span></h2>
-                        <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Registry Editor</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="handleLogout()" class="text-zinc-600 hover:text-red-500 text-[9px] font-black uppercase tracking-widest">Logout</button>
-                        <button onclick="closeModals()" class="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white">×</button>
-                    </div>
+                    <h2 class="text-2xl font-900 uppercase italic tracking-tighter">The <span class="accent-red">Forge</span></h2>
+                    <button onclick="closeModals()" class="text-zinc-500 hover:text-white">×</button>
                 </div>
-                
                 <div class="mb-10"><label>Target Project</label><select id="project-selector" onchange="loadProjectIntoForge(this.value)" class="forge-input w-full"></select></div>
-
                 <form id="forge-form" class="space-y-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div><label>Name</label><input type="text" id="f-title" required class="forge-input w-full"></div>
@@ -142,7 +105,6 @@
                     <div><label>Notes</label><textarea id="f-notes" rows="3" class="forge-input w-full"></textarea></div>
                     <div class="flex gap-4 pt-4">
                         <button type="submit" class="flex-grow bg-red-600 text-white font-900 uppercase py-5 rounded-2xl shadow-xl hover:bg-red-500 transition-all tracking-widest text-xs">Sync</button>
-                        <button type="button" onclick="deleteProject()" class="px-8 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl border border-white/5 transition uppercase text-[10px] font-black">Delete</button>
                     </div>
                 </form>
             </div>
@@ -159,12 +121,11 @@
 
     <main class="max-w-5xl mx-auto">
         <div class="mb-12">
-            <input type="text" id="search-units" placeholder="Search project database..." oninput="searchProjects(this.value)">
+            <input type="text" id="search-units" placeholder="Search database..." oninput="searchProjects(this.value)" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-red-600 transition-all">
             <div id="filter-container" class="tag-grid">
                 <button id="btn-all" onclick="filterFaction('all', this)" class="filter-btn active">All Projects</button>
             </div>
         </div>
-        
         <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 gap-10"></div>
     </main>
 
@@ -172,97 +133,46 @@
         const GITHUB_USER = "fradley-stack"; 
         const GITHUB_REPO = "theduttybrush";
         const GITHUB_PATH = "data.json";
-
         const factions = ["Adeptus Astartes", "Chaos Space Marines", "Aeldari", "Necrons", "Orks", "Tyranids", "T'au Empire", "Leagues of Votann", "Astra Militarum", "Adepta Sororitas", "Adeptus Custodes", "Adeptus Mechanicus", "Grey Knights", "Death Guard", "World Eaters", "Thousand Sons", "Drukhari", "Genestealer Cults", "Imperial Knights", "Chaos Knights"];
+        
         let allProjectData = [];
         let currentEditTitle = null;
         let currentFilter = 'all';
 
-        function handleLogout() {
-            sessionStorage.removeItem('gh_token');
-            location.reload();
-        }
-
-        function addDynamicField(containerId, isPaint = false, val1 = '', val2 = '') {
-            const container = document.getElementById(containerId);
-            const div = document.createElement('div');
-            div.className = "dynamic-row";
-            if (isPaint) {
-                div.innerHTML = `<input type="text" placeholder="Part" value="${val1}" class="w-1/3 forge-input p-cat"><input type="text" placeholder="Colors" value="${val2}" class="w-2/3 forge-input p-val"><button type="button" onclick="this.parentElement.remove()" class="text-zinc-600 hover:text-red-500 px-2">×</button>`;
-            } else {
-                div.innerHTML = `<input type="text" placeholder="URL" value="${val1}" class="flex-grow forge-input g-input"><button type="button" onclick="this.parentElement.remove()" class="text-zinc-600 hover:text-red-500 px-2">×</button>`;
-            }
-            container.appendChild(div);
-        }
-
-        function handleAdminClick() {
-            const token = sessionStorage.getItem('gh_token');
-            if (token) openAdminModal();
-            else {
-                const input = prompt("Access Token:");
-                if (input) { sessionStorage.setItem('gh_token', input); updateAdminUI(); }
-            }
-        }
-
-        function updateAdminUI() {
-            if (sessionStorage.getItem('gh_token')) {
-                document.getElementById('admin-btn').innerText = "Forge Access";
-                document.getElementById('admin-btn').classList.replace('text-zinc-800', 'text-zinc-500');
-            }
-        }
-
-        function loadProjectIntoForge(title) {
-            const p = allProjectData.find(x => (x.title || x.name) === title);
-            document.querySelectorAll('#gallery-fields .dynamic-row').forEach(r => r.remove());
-            document.getElementById('paint-fields').innerHTML = '';
-            if (!p) { document.getElementById('forge-form').reset(); currentEditTitle = null; return; }
-            currentEditTitle = p.title || p.name;
-            document.getElementById('f-title').value = currentEditTitle;
-            document.getElementById('f-progress').value = p.progress || 0;
-            document.getElementById('f-faction').value = p.faction || factions[0];
-            document.getElementById('f-category').value = p.category || "Commission";
-            document.getElementById('f-thumb').value = p.thumbnail || "";
-            document.getElementById('f-notes').value = p.notes || "";
-            if (p.gallery) p.gallery.forEach(url => addDynamicField('gallery-fields', false, url));
-            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => addDynamicField('paint-fields', true, cat, list));
-        }
-
-        function openAdminModal(p = null) {
-            const sel = document.getElementById('project-selector');
-            sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
-            allProjectData.forEach(p => sel.innerHTML += `<option value="${p.title || p.name}">${p.title || p.name}</option>`);
-            document.getElementById('admin-modal').style.display = 'block';
-            if (p) { sel.value = p.title || p.name; loadProjectIntoForge(p.title || p.name); }
-            else { loadProjectIntoForge(""); }
-        }
-
-        function editProject() {
-            const p = allProjectData.find(x => (x.title || x.name) === document.getElementById('view-title').innerText);
-            closeModals();
-            openAdminModal(p);
-        }
-
+        function handleLogout() { sessionStorage.removeItem('gh_token'); location.reload(); }
+        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
+        
         function openProjectModal(title) {
             const p = allProjectData.find(x => (x.title || x.name) === title);
             if (!p) return;
             document.getElementById('view-title').innerText = title;
             document.getElementById('view-faction').innerText = p.faction;
             document.getElementById('view-progress').innerText = `${p.progress}%`;
-            document.getElementById('view-notes').innerText = p.notes;
+            document.getElementById('view-notes').innerText = p.notes || "No notes.";
+            document.getElementById('main-view-img').src = p.thumbnail;
+            
+            const galGrid = document.getElementById('view-gallery-grid');
+            galGrid.innerHTML = '';
+            if (p.gallery) p.gallery.forEach(src => { galGrid.innerHTML += `<img src="${src}" class="gallery-sub-img" onclick="openLightbox('${src}')">`; });
+            
             const pList = document.getElementById('view-paints-list');
             pList.innerHTML = '';
-            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => {
-                pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><span class="text-[8px] text-zinc-600 font-black uppercase tracking-widest block mb-1">${cat}</span><p class="text-[12px] text-zinc-300 font-medium">${list}</p></div>`;
-            });
-            const gal = document.getElementById('view-gallery');
-            gal.innerHTML = `<img src="${p.thumbnail}" class="gallery-img">`;
-            if (p.gallery) p.gallery.forEach(src => { gal.innerHTML += `<img src="${src}" class="gallery-img">`; });
+            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => { pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><label class="mb-1">${cat}</label><p class="text-[12px] text-zinc-300 font-medium">${list}</p></div>`; });
+            
             if (sessionStorage.getItem('gh_token')) document.getElementById('admin-controls').classList.remove('hidden');
             document.getElementById('project-modal').style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?project=' + encodeURIComponent(title);
+            window.history.pushState({path:newUrl},'',newUrl);
         }
 
-        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); document.body.style.overflow = 'auto'; }
+        function closeModals() { 
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+            document.body.style.overflow = 'auto'; 
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({path:cleanUrl},'',cleanUrl); 
+        }
 
         function renderProjects(data) {
             const list = document.getElementById('workbench-list');
@@ -283,6 +193,25 @@
             });
         }
 
+        async function loadData() {
+            const res = await fetch('data.json?v=' + Date.now());
+            allProjectData = await res.json();
+            renderProjects(allProjectData);
+            updateAdminUI();
+            
+            const container = document.getElementById('filter-container');
+            factions.sort().forEach(f => {
+                const btn = document.createElement('button');
+                btn.className = "filter-btn";
+                btn.innerText = f; btn.onclick = (e) => filterFaction(f, e.target);
+                container.appendChild(btn);
+            });
+            
+            const params = new URLSearchParams(window.location.search);
+            const project = params.get('project');
+            if (project) setTimeout(() => openProjectModal(project), 500);
+        }
+
         function filterFaction(f, el) {
             currentFilter = f;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -297,69 +226,21 @@
             renderProjects(filtered);
         }
 
-        async function syncToGithub(msg) {
+        function handleAdminClick() {
             const token = sessionStorage.getItem('gh_token');
-            const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
-            const fRes = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
-            const fData = await fRes.json();
-            const bytes = new TextEncoder().encode(JSON.stringify(allProjectData, null, 2));
-            const binString = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
-            const content = btoa(binString);
-            const pRes = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: msg, content, sha: fData.sha })
-            });
-            if(pRes.ok) location.reload(); else alert("Forge Sync Failed.");
-        }
-
-        document.getElementById('forge-form').onsubmit = (e) => {
-            e.preventDefault();
-            const gallery = Array.from(document.querySelectorAll('.g-input')).map(i => i.value).filter(Boolean);
-            const paints = {};
-            document.querySelectorAll('#paint-fields .dynamic-row').forEach(row => {
-                const cat = row.querySelector('.p-cat').value;
-                const val = row.querySelector('.p-val').value;
-                if(cat) paints[cat] = val;
-            });
-            const project = {
-                title: document.getElementById('f-title').value,
-                faction: document.getElementById('f-faction').value,
-                progress: parseInt(document.getElementById('f-progress').value),
-                category: document.getElementById('f-category').value,
-                thumbnail: document.getElementById('f-thumb').value,
-                gallery, paints, notes: document.getElementById('f-notes').value
-            };
-            if(currentEditTitle) {
-                const idx = allProjectData.findIndex(x => (x.title || x.name) === currentEditTitle);
-                allProjectData[idx] = project;
-            } else allProjectData.push(project);
-            syncToGithub(`Forge Sync: ${project.title}`);
-        };
-
-        async function deleteProject() {
-            if(!currentEditTitle) return;
-            if(confirm(`Erase ${currentEditTitle} from records?`)) {
-                allProjectData = allProjectData.filter(x => (x.title || x.name) !== currentEditTitle);
-                syncToGithub(`Forge Delete: ${currentEditTitle}`);
+            if (token) document.getElementById('admin-modal').style.display = 'block';
+            else {
+                const input = prompt("Access Token:");
+                if (input) { sessionStorage.setItem('gh_token', input); updateAdminUI(); }
             }
         }
 
-        async function loadData() {
-            const res = await fetch('data.json?v=' + Date.now());
-            allProjectData = await res.json();
-            renderProjects(allProjectData);
-            updateAdminUI();
-            const container = document.getElementById('filter-container');
-            factions.sort().forEach(f => {
-                const btn = document.createElement('button');
-                btn.className = "filter-btn";
-                btn.innerText = f; btn.onclick = (e) => filterFaction(f, e.target);
-                container.appendChild(btn);
-            });
-            const fForge = document.getElementById('f-faction');
-            factions.forEach(f => fForge.innerHTML += `<option value="${f}">${f}</option>`);
+        function updateAdminUI() {
+            if (sessionStorage.getItem('gh_token')) {
+                document.getElementById('admin-btn').innerText = "Forge Access";
+            }
         }
+
         loadData();
     </script>
 </body>
