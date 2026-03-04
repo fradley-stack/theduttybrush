@@ -16,23 +16,26 @@
         .accent-red { color: #ff3e3e; }
         
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; backdrop-filter: blur(15px); overflow-y: auto; }
-        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         input, textarea, select { 
             background: rgba(255,255,255,0.1) !important; 
-            border: 1px solid rgba(255,255,255,0.2) !important; 
+            border: 1px solid rgba(255,255,255,0.1) !important; 
             color: #ffffff !important; 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 8px; 
             width: 100%; 
-            font-size: 13px;
+            font-size: 12px;
             outline: none;
         }
         select option { background: #111; color: white; }
-        label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-bottom: 6px; display: block; }
+        label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-bottom: 4px; display: block; }
         .gallery-img { width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem; }
+        
+        .dynamic-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .btn-add { background: #222; color: #555; padding: 4px 10px; border-radius: 6px; font-size: 14px; font-weight: 900; }
+        .btn-add:hover { color: #fff; background: #ff3e3e; }
     </style>
 </head>
 <body class="hero-gradient min-h-screen p-6">
@@ -52,19 +55,14 @@
                         <label>Field Notes</label>
                         <p id="view-notes" class="text-zinc-400 text-sm italic leading-relaxed"></p>
                     </div>
-                    <div id="view-paints-container" class="space-y-4">
+                    <div class="space-y-4">
                         <label>Paint Palette</label>
-                        <div class="bg-white/5 p-5 rounded-xl border border-white/5 space-y-3">
-                            <div><span class="text-[9px] text-zinc-500 font-bold uppercase block">Primer</span><p id="v-p-primer" class="text-[11px]"></p></div>
-                            <div><span class="text-[9px] text-zinc-500 font-bold uppercase block">Base</span><p id="v-p-base" class="text-[11px]"></p></div>
-                            <div><span class="text-[9px] text-zinc-500 font-bold uppercase block">Layer</span><p id="v-p-layer" class="text-[11px]"></p></div>
-                            <div><span class="text-[9px] text-zinc-500 font-bold uppercase block">Highlight</span><p id="v-p-high" class="text-[11px]"></p></div>
-                        </div>
+                        <div id="view-paints-list" class="bg-white/5 p-5 rounded-xl border border-white/5 space-y-4"></div>
                     </div>
                 </div>
                 <div class="space-y-8">
                     <div class="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                        <div><label>Faction</label><span id="view-faction" class="text-xs font-black text-red-500 uppercase tracking-widest"></span></div>
+                        <div><label>Faction</label><span id="view-faction" class="text-xs font-black text-red-500 uppercase"></span></div>
                         <div class="text-right"><label>Completion</label><span id="view-progress" class="text-2xl font-900 italic"></span></div>
                     </div>
                     <div id="admin-controls" class="hidden pt-4">
@@ -82,12 +80,7 @@
                 <button onclick="closeModals()" class="text-zinc-500 hover:text-white uppercase text-[10px] font-black">Cancel</button>
             </div>
             
-            <div class="mb-8 p-4 bg-white/5 rounded-xl border border-white/10">
-                <label>Quick Load Existing Project</label>
-                <select id="project-selector" onchange="loadProjectIntoForge(this.value)">
-                    <option value="">-- Select Project to Edit --</option>
-                </select>
-            </div>
+            <div class="mb-6"><select id="project-selector" onchange="loadProjectIntoForge(this.value)"><option value="">-- Select Project --</option></select></div>
 
             <form id="forge-form" class="space-y-6">
                 <div class="grid grid-cols-2 gap-4">
@@ -100,23 +93,16 @@
                     <div><label>Category</label><select id="f-category"><option value="Commission">Commission</option><option value="Personal">Personal</option></select></div>
                 </div>
 
-                <div class="space-y-2">
-                    <label>Images</label>
-                    <input type="text" id="f-thumb" placeholder="Thumbnail URL" class="mb-2">
-                    <input type="text" id="f-img1" placeholder="Gallery Image 1" class="mb-2">
-                    <input type="text" id="f-img2" placeholder="Gallery Image 2" class="mb-2">
-                    <input type="text" id="f-img3" placeholder="Gallery Image 3">
+                <div>
+                    <div class="flex justify-between items-center mb-2"><label>Gallery Images</label><button type="button" onclick="addDynamicField('gallery-fields')" class="btn-add">+</button></div>
+                    <div id="gallery-fields" class="space-y-2">
+                        <input type="text" placeholder="Main Thumbnail URL" id="f-thumb" required class="mb-2">
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label>Paint: Primer</label><textarea id="f-p-primer" rows="1"></textarea>
-                        <label>Paint: Base</label><textarea id="f-p-base" rows="2"></textarea>
-                    </div>
-                    <div class="space-y-2">
-                        <label>Paint: Layer</label><textarea id="f-p-layer" rows="2"></textarea>
-                        <label>Paint: Highlight</label><textarea id="f-p-high" rows="2"></textarea>
-                    </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2"><label>Paint Categories</label><button type="button" onclick="addDynamicField('paint-fields', true)" class="btn-add">+</button></div>
+                    <div id="paint-fields" class="space-y-2"></div>
                 </div>
 
                 <div><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div>
@@ -148,19 +134,21 @@
         let allProjectData = [];
         let currentEditTitle = null;
 
-        // Init UI
-        const filterContainer = document.getElementById('filter-container');
-        const factionSelect = document.getElementById('f-faction');
-        factions.sort().forEach(f => {
-            const btn = document.createElement('button');
-            btn.className = "filter-btn px-5 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all whitespace-nowrap";
-            btn.innerText = f;
-            btn.onclick = (e) => filterFaction(f, e.target);
-            filterContainer.appendChild(btn);
-            const opt = document.createElement('option');
-            opt.value = f; opt.innerText = f;
-            factionSelect.appendChild(opt);
-        });
+        // Dynamic Field Helper
+        function addDynamicField(containerId, isPaint = false, val1 = '', val2 = '') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = "dynamic-row";
+            if (isPaint) {
+                div.innerHTML = `<input type="text" placeholder="Category (e.g. Metals)" value="${val1}" class="w-1/3">
+                                 <input type="text" placeholder="Paints used" value="${val2}" class="w-2/3">
+                                 <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">×</button>`;
+            } else {
+                div.innerHTML = `<input type="text" placeholder="Image URL" value="${val1}" class="flex-grow">
+                                 <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">×</button>`;
+            }
+            container.appendChild(div);
+        }
 
         function handleAdminClick() {
             const token = sessionStorage.getItem('gh_token');
@@ -178,19 +166,11 @@
             }
         }
 
-        function populateProjectSelector() {
-            const selector = document.getElementById('project-selector');
-            selector.innerHTML = '<option value="">-- Select Project to Edit --</option>';
-            allProjectData.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.title || p.name;
-                opt.innerText = p.title || p.name;
-                selector.appendChild(opt);
-            });
-        }
-
         function loadProjectIntoForge(title) {
             const p = allProjectData.find(x => (x.title || x.name) === title);
+            document.getElementById('gallery-fields').innerHTML = '';
+            document.getElementById('paint-fields').innerHTML = '';
+            
             if (!p) { document.getElementById('forge-form').reset(); currentEditTitle = null; return; }
             
             currentEditTitle = p.title || p.name;
@@ -199,23 +179,19 @@
             document.getElementById('f-faction').value = p.faction || factions[0];
             document.getElementById('f-category').value = p.category || "Commission";
             document.getElementById('f-thumb').value = p.thumbnail || "";
-            document.getElementById('f-img1').value = p.gallery?.[0] || "";
-            document.getElementById('f-img2').value = p.gallery?.[1] || "";
-            document.getElementById('f-img3').value = p.gallery?.[2] || "";
-            document.getElementById('f-p-primer').value = p.paints?.primer || "";
-            document.getElementById('f-p-base').value = p.paints?.base || "";
-            document.getElementById('f-p-layer').value = p.paints?.layer || "";
-            document.getElementById('f-p-high').value = p.paints?.highlight || "";
             document.getElementById('f-notes').value = p.notes || "";
+
+            if (p.gallery) p.gallery.forEach(url => addDynamicField('gallery-fields', false, url));
+            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => addDynamicField('paint-fields', true, cat, list));
         }
 
         function openAdminModal(project = null) {
-            populateProjectSelector();
+            const selector = document.getElementById('project-selector');
+            selector.innerHTML = '<option value="">-- Select Project --</option>';
+            allProjectData.forEach(p => selector.innerHTML += `<option value="${p.title || p.name}">${p.title || p.name}</option>`);
+            
             document.getElementById('admin-modal').style.display = 'block';
-            if (project) {
-                document.getElementById('project-selector').value = project.title || project.name;
-                loadProjectIntoForge(project.title || project.name);
-            }
+            if (project) { selector.value = project.title || project.name; loadProjectIntoForge(project.title || project.name); }
         }
 
         function editProject() {
@@ -233,56 +209,42 @@
             document.getElementById('view-progress').innerText = `${p.progress || 0}%`;
             document.getElementById('view-notes').innerText = p.notes || "";
             
-            // Render Structured Paints
-            document.getElementById('v-p-primer').innerText = p.paints?.primer || "-";
-            document.getElementById('v-p-base').innerText = p.paints?.base || "-";
-            document.getElementById('v-p-layer').innerText = p.paints?.layer || "-";
-            document.getElementById('v-p-high').innerText = p.paints?.highlight || "-";
-            
+            const pList = document.getElementById('view-paints-list');
+            pList.innerHTML = '';
+            if (p.paints) {
+                Object.entries(p.paints).forEach(([cat, list]) => {
+                    pList.innerHTML += `<div><span class="text-[9px] text-zinc-500 font-bold uppercase block">${cat}</span><p class="text-[11px]">${list}</p></div>`;
+                });
+            }
+
             const gallery = document.getElementById('view-gallery');
             gallery.innerHTML = '';
             const imgs = [p.thumbnail, ...(p.gallery || [])].filter(Boolean);
-            imgs.forEach(src => {
-                const img = document.createElement('img');
-                img.src = src; img.className = "gallery-img shadow-2xl";
-                gallery.appendChild(img);
-            });
+            imgs.forEach(src => { gallery.innerHTML += `<img src="${src}" class="gallery-img shadow-2xl">`; });
 
             if (sessionStorage.getItem('gh_token')) document.getElementById('admin-controls').classList.remove('hidden');
             document.getElementById('project-modal').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-            document.body.style.overflow = 'auto';
-        }
+        function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); document.body.style.overflow = 'auto'; }
 
         function renderProjects(data) {
             const list = document.getElementById('workbench-list');
             list.innerHTML = '';
             data.forEach(p => {
-                const title = p.title || p.name;
-                const card = document.createElement('div');
-                card.onclick = () => openProjectModal(title);
-                card.className = "glass-card rounded-2xl overflow-hidden group cursor-pointer border-zinc-800/50 transition-all";
-                card.innerHTML = `
-                    <div class="h-48 overflow-hidden bg-black relative">
-                        <img src="${p.thumbnail}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-40 group-hover:opacity-80">
-                        <div class="absolute top-4 left-4"><span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase text-white">${p.faction}</span></div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-sm font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${title}</h3>
-                        <div class="w-full bg-white/5 h-[2px] mt-4"><div class="bg-red-600 h-full" style="width: ${p.progress || 0}%"></div></div>
+                list.innerHTML += `
+                    <div onclick="openProjectModal('${p.title || p.name}')" class="glass-card rounded-2xl overflow-hidden group cursor-pointer border-zinc-800/50">
+                        <div class="h-48 overflow-hidden bg-black relative">
+                            <img src="${p.thumbnail}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-40">
+                            <div class="absolute top-4 left-4"><span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase text-white">${p.faction}</span></div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-sm font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${p.title || p.name}</h3>
+                            <div class="w-full bg-white/5 h-[2px] mt-4"><div class="bg-red-600 h-full" style="width: ${p.progress || 0}%"></div></div>
+                        </div>
                     </div>`;
-                list.appendChild(card);
             });
-        }
-
-        function filterFaction(f, el) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'text-white'));
-            el ? el.classList.add('active', 'text-white') : document.getElementById('btn-all').classList.add('active', 'text-white');
-            renderProjects(f === 'all' ? allProjectData : allProjectData.filter(p => p.faction === f));
         }
 
         async function loadData() {
@@ -290,6 +252,18 @@
             allProjectData = await res.json();
             renderProjects(allProjectData);
             updateAdminUI();
+            
+            // Faction Filter Init
+            const filterContainer = document.getElementById('filter-container');
+            factions.sort().forEach(f => {
+                filterContainer.innerHTML += `<button onclick="filterFaction('${f}', this)" class="filter-btn px-5 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all whitespace-nowrap">${f}</button>`;
+            });
+        }
+
+        function filterFaction(f, el) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'text-white'));
+            el.classList.add('active', 'text-white');
+            renderProjects(f === 'all' ? allProjectData : allProjectData.filter(p => p.faction === f));
         }
 
         document.getElementById('forge-form').onsubmit = async (e) => {
@@ -297,19 +271,24 @@
             const token = sessionStorage.getItem('gh_token');
             if(!token) return alert("Login Required");
 
+            const galInputs = document.querySelectorAll('#gallery-fields input');
+            const gallery = Array.from(galInputs).map(i => i.value).filter(Boolean);
+
+            const paintRows = document.querySelectorAll('#paint-fields .dynamic-row');
+            const paints = {};
+            paintRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if(inputs[0].value) paints[inputs[0].value] = inputs[1].value;
+            });
+
             const project = {
                 title: document.getElementById('f-title').value,
                 faction: document.getElementById('f-faction').value,
                 progress: parseInt(document.getElementById('f-progress').value),
                 category: document.getElementById('f-category').value,
                 thumbnail: document.getElementById('f-thumb').value,
-                gallery: [document.getElementById('f-img1').value, document.getElementById('f-img2').value, document.getElementById('f-img3').value].filter(Boolean),
-                paints: {
-                    primer: document.getElementById('f-p-primer').value,
-                    base: document.getElementById('f-p-base').value,
-                    layer: document.getElementById('f-p-layer').value,
-                    highlight: document.getElementById('f-p-high').value
-                },
+                gallery: gallery,
+                paints: paints,
                 notes: document.getElementById('f-notes').value
             };
 
@@ -319,7 +298,12 @@
             } else { allProjectData.push(project); }
 
             try {
-                const url = 'https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/contents/data.json';
+                // REPLACE WITH YOUR DETAILS
+                const user = "YOUR_USERNAME"; 
+                const repo = "YOUR_REPO";
+                const path = "data.json";
+                
+                const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
                 const fileRes = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
                 const fileData = await fileRes.json();
 
@@ -332,8 +316,10 @@
                         sha: fileData.sha
                     })
                 });
-                if(pushRes.ok) { alert("Forge Synced."); location.reload(); }
-            } catch (err) { alert("Sync Error."); }
+
+                if(pushRes.ok) { alert("Forge Synced Successfully."); location.reload(); }
+                else { alert("Push failed. Verify Token permissions."); }
+            } catch (err) { alert("Connection Error. Check console."); console.error(err); }
         };
 
         loadData();
