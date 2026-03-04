@@ -33,7 +33,7 @@
 
         .project-viewer-img { width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 12px; background: #000; cursor: zoom-in; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-        .gallery-sub-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: zoom-in; opacity: 0.8; transition: opacity 0.2s; }
+        .gallery-sub-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; cursor: zoom-in; opacity: 0.8; }
 
         .thumb-container { height: 340px; overflow: hidden; background: #000; position: relative; border-radius: 32px 32px 0 0; }
         .thumb-img { 
@@ -48,6 +48,8 @@
         
         .dynamic-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 12px; }
         .btn-add { background: #111; color: #fff; width: 28px; height: 28px; border-radius: 8px; font-size: 18px; line-height: 1; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-del { color: #555; font-weight: bold; padding: 0 10px; transition: color 0.2s; cursor: pointer; }
+        .btn-del:hover { color: #ff3e3e; }
     </style>
 </head>
 <body class="hero-gradient min-h-screen p-6 md:p-12">
@@ -85,7 +87,10 @@
             <div class="p-8 md:p-10">
                 <div class="flex justify-between items-center mb-10">
                     <h2 class="text-2xl font-900 uppercase italic tracking-tighter">The <span class="accent-red">Forge</span></h2>
-                    <button onclick="closeModals()" class="text-zinc-500 hover:text-white">×</button>
+                    <div class="flex gap-4">
+                        <button onclick="handleLogout()" class="text-[9px] font-black uppercase tracking-widest text-zinc-600">Logout</button>
+                        <button onclick="closeModals()" class="text-zinc-500 hover:text-white">×</button>
+                    </div>
                 </div>
                 <div class="mb-10">
                     <label>Target Project</label>
@@ -104,11 +109,12 @@
                     </div>
                     <div class="glass-card p-6 rounded-2xl">
                         <div class="flex justify-between items-center mb-4"><label class="mb-0">Images</label><button type="button" onclick="addDynamicField('gallery-fields')" class="btn-add">+</button></div>
-                        <div id="gallery-fields" class="space-y-3">
+                        <div id="gallery-fields-static">
                             <label>Cover Thumbnail</label>
                             <input type="text" placeholder="Cover URL" id="f-thumb" required class="forge-input w-full mb-4">
-                            <label>Gallery Images</label>
                         </div>
+                        <label>Additional Photos</label>
+                        <div id="gallery-fields" class="space-y-3"></div>
                     </div>
                     <div class="glass-card p-6 rounded-2xl">
                         <div class="flex justify-between items-center mb-4"><label class="mb-0">Paints</label><button type="button" onclick="addDynamicField('paint-fields', true)" class="btn-add">+</button></div>
@@ -165,40 +171,47 @@
             window.history.pushState({path:cleanUrl},'',cleanUrl); 
         }
 
-        // --- Data Population ---
+        // --- Deep Linking ---
+        function checkDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const project = params.get('project');
+            if (project) {
+                setTimeout(() => openProjectModal(decodeURIComponent(project)), 500);
+            }
+        }
+
+        // --- Data Handling ---
         async function loadData() {
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 allProjectData = await res.json();
                 renderProjects(allProjectData);
                 updateAdminUI();
+                populateForgeDropdowns();
                 
-                // Init Project Dropdown
-                const sel = document.getElementById('project-selector');
-                sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
-                allProjectData.forEach(p => {
-                    const name = p.title || p.name;
-                    sel.innerHTML += `<option value="${name}">${name}</option>`;
-                });
-
-                // Init Faction Dropdown
-                const fForge = document.getElementById('f-faction');
-                fForge.innerHTML = '';
-                factions.sort().forEach(f => fForge.innerHTML += `<option value="${f}">${f}</option>`);
-
-                // Init Filter Tabs
                 const filterCont = document.getElementById('filter-container');
-                factions.forEach(f => {
+                factions.sort().forEach(f => {
                     const btn = document.createElement('button');
                     btn.className = "filter-btn";
                     btn.innerText = f; btn.onclick = (e) => filterFaction(f, e.target);
                     filterCont.appendChild(btn);
                 });
+
+                const fForge = document.getElementById('f-faction');
+                fForge.innerHTML = '';
+                factions.forEach(f => fForge.innerHTML += `<option value="${f}">${f}</option>`);
                 
-                const params = new URLSearchParams(window.location.search);
-                const project = params.get('project');
-                if (project) setTimeout(() => openProjectModal(project), 500);
+                checkDeepLink();
             } catch (err) { console.error("Error loading data:", err); }
+        }
+
+        function populateForgeDropdowns() {
+            const sel = document.getElementById('project-selector');
+            sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
+            allProjectData.forEach(p => {
+                const name = p.title || p.name;
+                sel.innerHTML += `<option value="${name}">${name}</option>`;
+            });
         }
 
         function renderProjects(data) {
@@ -221,22 +234,47 @@
             });
         }
 
-        // --- Forge Form Logic ---
+        function openProjectModal(title) {
+            const p = allProjectData.find(x => (x.title || x.name) === title);
+            if (!p) return;
+            document.getElementById('view-title').innerText = title;
+            document.getElementById('view-faction').innerText = p.faction;
+            document.getElementById('view-progress').innerText = `${p.progress || p.percentage}%`;
+            document.getElementById('view-notes').innerText = p.notes || "No notes.";
+            document.getElementById('main-view-img').src = p.thumbnail;
+            
+            const galGrid = document.getElementById('view-gallery-grid');
+            galGrid.innerHTML = '';
+            if (p.gallery) p.gallery.forEach(src => { galGrid.innerHTML += `<img src="${src}" class="gallery-sub-img" onclick="openLightbox('${src}')">`; });
+            
+            const pList = document.getElementById('view-paints-list');
+            pList.innerHTML = '';
+            if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => { pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><label class="mb-1">${cat}</label><p class="text-[12px] text-zinc-300 font-medium">${list}</p></div>`; });
+            
+            if (sessionStorage.getItem('gh_token')) document.getElementById('admin-controls').classList.remove('hidden');
+            document.getElementById('project-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?project=' + encodeURIComponent(title);
+            window.history.pushState({path:newUrl},'',newUrl);
+        }
+
+        // --- Forge Operations ---
         function addDynamicField(containerId, isPaint = false, val1 = '', val2 = '') {
             const container = document.getElementById(containerId);
             const div = document.createElement('div');
             div.className = "dynamic-row";
             if (isPaint) {
-                div.innerHTML = `<input type="text" placeholder="Part" value="${val1}" class="w-1/3 forge-input p-cat"><input type="text" placeholder="Colors" value="${val2}" class="w-2/3 forge-input p-val"><button type="button" onclick="this.parentElement.remove()" class="text-zinc-600 hover:text-red-500 px-2">×</button>`;
+                div.innerHTML = `<input type="text" placeholder="Part" value="${val1}" class="w-1/3 forge-input p-cat"><input type="text" placeholder="Colors" value="${val2}" class="w-2/3 forge-input p-val"><button type="button" onclick="this.parentElement.remove()" class="btn-del">×</button>`;
             } else {
-                div.innerHTML = `<input type="text" placeholder="URL" value="${val1}" class="flex-grow forge-input g-input"><button type="button" onclick="this.parentElement.remove()" class="text-zinc-600 hover:text-red-500 px-2">×</button>`;
+                div.innerHTML = `<input type="text" placeholder="URL" value="${val1}" class="flex-grow forge-input g-input"><button type="button" onclick="this.parentElement.remove()" class="btn-del">×</button>`;
             }
             container.appendChild(div);
         }
 
         function loadProjectIntoForge(title) {
             const p = allProjectData.find(x => (x.title || x.name) === title);
-            document.querySelectorAll('#gallery-fields .dynamic-row').forEach(r => r.remove());
+            document.getElementById('gallery-fields').innerHTML = '';
             document.getElementById('paint-fields').innerHTML = '';
             
             if (!p) { 
@@ -257,10 +295,19 @@
             if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => addDynamicField('paint-fields', true, cat, list));
         }
 
+        function editProject() {
+            const title = document.getElementById('view-title').innerText;
+            loadProjectIntoForge(title);
+            document.getElementById('project-selector').value = title;
+            document.getElementById('project-modal').style.display = 'none';
+            document.getElementById('admin-modal').style.display = 'block';
+        }
+
+        // --- GitHub Sync Logic ---
         document.getElementById('forge-form').onsubmit = async (e) => {
             e.preventDefault();
             const token = sessionStorage.getItem('gh_token');
-            if (!token) return alert("Access Denied: No Token Found");
+            if (!token) return alert("No Token Found");
 
             const paints = {};
             document.querySelectorAll('#paint-fields .dynamic-row').forEach(row => {
@@ -290,29 +337,23 @@
             }
 
             try {
-                // Fetch SHA
-                const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`, {
-                    headers: { 'Authorization': `token ${token}` }
-                });
+                const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
+                const fileRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
                 const fileData = await fileRes.json();
                 
-                // Push Update
-                const pushRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`, {
+                const jsonString = JSON.stringify(allProjectData, null, 2);
+                const bytes = new TextEncoder().encode(jsonString);
+                const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+                const content = btoa(binString);
+
+                const pushRes = await fetch(apiUrl, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: `Forge Sync: ${updatedProject.title}`,
-                        content: btoa(unescape(encodeURIComponent(JSON.stringify(allProjectData, null, 2)))),
-                        sha: fileData.sha
-                    })
+                    body: JSON.stringify({ message: `Forge Sync: ${updatedProject.title}`, content, sha: fileData.sha })
                 });
 
-                if (pushRes.ok) {
-                    alert("Forge Synchronized Successfully!");
-                    location.reload();
-                } else {
-                    alert("Sync Failed. Check Token permissions.");
-                }
+                if (pushRes.ok) { alert("Sync Successful!"); location.reload(); }
+                else { alert("Sync Failed."); }
             } catch (err) { alert("Error: " + err.message); }
         };
 
@@ -333,15 +374,7 @@
             }
         }
 
-        function editProject() {
-            const title = document.getElementById('view-title').innerText;
-            loadProjectIntoForge(title);
-            document.getElementById('project-selector').value = title;
-            document.getElementById('project-modal').style.display = 'none';
-            document.getElementById('admin-modal').style.display = 'block';
-        }
-
-        // --- Search & Filter ---
+        // --- Filters ---
         function searchProjects(q) {
             let filtered = allProjectData;
             if (currentFilter !== 'all') filtered = filtered.filter(p => p.faction === currentFilter);
