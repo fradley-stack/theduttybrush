@@ -131,31 +131,32 @@
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
 
+                // 1. Update Active Badge
                 const activeProjects = data.filter(p => (p.progress || p.percentage) < 100);
-
                 if (activeProjects.length > 0) {
                     const badge = document.getElementById('workbench-count');
                     badge.innerText = `${activeProjects.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
 
+                // 2. Render Live Feed (Bottom of Main)
                 const container = document.getElementById('forge-container');
                 container.innerHTML = '';
 
-                activeProjects.forEach(p => {
+                // Show the most recent 2 projects
+                const recentOnes = data.slice(-2).reverse();
+
+                recentOnes.forEach(p => {
                     const title = p.title || p.name || "Untitled Project";
                     const progress = p.progress || p.percentage || 0;
                     const category = p.category || p.type || "Hobby";
-                    
-                    // Fixed Link logic for hobby.html deep linking
                     const targetLink = `hobby.html?project=${encodeURIComponent(title)}`;
                     const thumb = p.thumbnail || p.image || 'avatar.jpg';
+                    const isCommission = category === "Commission";
 
                     const cardWrapper = document.createElement('a');
                     cardWrapper.href = targetLink;
                     cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block cursor-pointer";
-                    
-                    const isCommission = category === "Commission";
                     
                     cardWrapper.innerHTML = `
                         <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0 bg-black">
