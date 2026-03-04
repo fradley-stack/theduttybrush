@@ -147,11 +147,8 @@
                     const progress = p.progress || p.percentage || 0;
                     const category = p.category || p.type || "Hobby";
                     
-                    // Create a slug for the anchor (e.g., "Terminator Squad" -> "terminator-squad")
-                    const projectSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                    
-                    // Priority: Explicit Link > Anchor in Hobby.html > General Hobby.html
-                    const targetLink = p.link || p.url || `hobby.html#${projectSlug}`;
+                    // Fixed Link logic for hobby.html deep linking
+                    const targetLink = `hobby.html?project=${encodeURIComponent(title)}`;
                     const thumb = p.thumbnail || p.image || 'avatar.jpg';
 
                     const cardWrapper = document.createElement('a');
