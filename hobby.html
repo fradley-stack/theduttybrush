@@ -15,182 +15,248 @@
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
         
-        /* Modal Overlay */
-        #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; backdrop-filter: blur(10px); overflow-y: auto; }
+        /* Modal Overlays */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; backdrop-filter: blur(15px); overflow-y: auto; }
         
         :target {
             border-color: #ff3e3e !important;
             box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
-            transition: all 0.5s ease;
         }
 
         .filter-btn.active { background-color: #ff3e3e; color: white; border-color: #ff3e3e; opacity: 1; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        input, textarea, select { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; padding: 10px; border-radius: 8px; width: 100%; font-size: 12px; }
+        label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 4px; display: block; }
     </style>
 </head>
 <body class="hero-gradient min-h-screen p-6">
 
-    <div id="modal-overlay" onclick="closeModal(event)">
+    <div id="project-modal" class="modal-overlay" onclick="closeModals(event)">
         <div class="max-w-3xl mx-auto my-12 p-6" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-6">
-                <h2 id="modal-title" class="text-2xl font-900 uppercase italic tracking-tighter"></h2>
-                <button onclick="closeModal()" class="text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Close [X]</button>
+                <h2 id="view-title" class="text-2xl font-900 uppercase italic tracking-tighter leading-none"></h2>
+                <button onclick="closeModals()" class="text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Close [X]</button>
             </div>
             
-            <div id="modal-gallery" class="grid grid-cols-1 gap-4 mb-8">
-                </div>
+            <div id="view-gallery" class="grid grid-cols-1 gap-4 mb-8"></div>
 
-            <div class="space-y-4 border-t border-white/10 pt-6">
-                <div class="flex justify-between items-center">
-                    <span id="modal-faction" class="text-[10px] px-3 py-1 bg-red-600 font-black uppercase tracking-widest rounded"></span>
-                    <span id="modal-progress" class="text-xl font-900 accent-red italic text-right"></span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/10 pt-8">
+                <div class="space-y-6">
+                    <div>
+                        <label>Notes & Intel</label>
+                        <p id="view-notes" class="text-zinc-400 text-sm italic leading-relaxed"></p>
+                    </div>
+                    <div>
+                        <label>Paint Recipe / Palette</label>
+                        <p id="view-paints" class="text-zinc-300 text-xs font-mono bg-white/5 p-4 rounded-lg whitespace-pre-line"></p>
+                    </div>
                 </div>
-                <p id="modal-desc" class="text-zinc-400 text-sm leading-relaxed italic"></p>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl">
+                        <div>
+                            <label>Faction</label>
+                            <span id="view-faction" class="text-sm font-bold text-red-500 uppercase"></span>
+                        </div>
+                        <div class="text-right">
+                            <label>Progress</label>
+                            <span id="view-progress" class="text-xl font-900 italic"></span>
+                        </div>
+                    </div>
+                    <div id="admin-controls" class="hidden pt-4 border-t border-white/5">
+                        <button onclick="editProject()" class="w-full bg-white text-black text-[10px] font-900 uppercase py-3 rounded-lg hover:bg-red-600 hover:text-white transition">Modify Data</button>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-overlay" onclick="closeModals(event)">
+        <div class="max-w-xl mx-auto my-12 p-8 glass-card rounded-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-900 uppercase italic tracking-tighter">Forge <span class="accent-red">Management</span></h2>
+                <button onclick="closeModals()" class="text-zinc-500 hover:text-white uppercase text-[10px] font-black">Cancel</button>
+            </div>
+            
+            <form id="forge-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>Project Title</label><input type="text" id="f-title" required></div>
+                    <div><label>Faction</label>
+                        <select id="f-faction"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>Progress %</label><input type="number" id="f-progress" min="0" max="100"></div>
+                    <div><label>Category</label>
+                        <select id="f-category">
+                            <option value="Commission">Commission</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Tutorial">Tutorial</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label>Thumbnail URL</label><input type="text" id="f-thumb"></div>
+                <div><label>Gallery (Comma Separated URLs)</label><textarea id="f-gallery" rows="2"></textarea></div>
+                <div><label>Paint Palette</label><textarea id="f-paints" rows="3"></textarea></div>
+                <div><label>Project Notes</label><textarea id="f-notes" rows="3"></textarea></div>
+                
+                <button type="submit" class="w-full bg-red-600 text-white font-900 uppercase py-4 rounded-xl mt-4 shadow-lg hover:bg-red-500 transition">Update Studio Records</button>
+            </form>
         </div>
     </div>
 
     <header class="max-w-4xl mx-auto flex justify-between items-center mb-12">
         <a href="index.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition flex items-center gap-2">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Return
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Return
         </a>
-        <h1 class="text-xl font-900 uppercase italic tracking-tighter">STUDIO <span class="accent-red">WORKBENCH</span></h1>
-        <button onclick="adminLogin()" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-800 hover:text-red-600 transition">Admin</button>
+        <h1 class="text-xl font-900 uppercase italic tracking-tighter leading-none">STUDIO <span class="accent-red">WORKBENCH</span></h1>
+        <button id="admin-entry" onclick="authAdmin()" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-800 hover:text-red-600 transition">Access Key</button>
     </header>
 
     <main class="max-w-4xl mx-auto">
-        <div class="mb-10 overflow-x-auto no-scrollbar pb-4">
-            <div id="filter-container" class="flex gap-2 min-w-max">
-                <button id="btn-all" onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all">All</button>
-            </div>
+        <div id="filter-container" class="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-4">
+            <button id="btn-all" onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all">All</button>
         </div>
-
         <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        <div id="empty-state" class="hidden text-center py-20">
-            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">No intel found for this faction.</p>
-        </div>
     </main>
 
     <script>
-        const factions = [
-            "Adeptus Astartes", "Chaos Space Marines", "Aeldari", "Necrons", "Orks", "Tyranids", 
-            "T'au Empire", "Leagues of Votann", "Astra Militarum", "Adepta Sororitas", 
-            "Adeptus Custodes", "Adeptus Mechanicus", "Grey Knights", "Death Guard", 
-            "World Eaters", "Thousand Sons", "Drukhari", "Genestealer Cults", "Imperial Knights", "Chaos Knights"
-        ];
-
+        const factions = ["Adeptus Astartes", "Chaos Space Marines", "Aeldari", "Necrons", "Orks", "Tyranids", "T'au Empire", "Leagues of Votann", "Astra Militarum", "Adepta Sororitas", "Adeptus Custodes", "Adeptus Mechanicus", "Grey Knights", "Death Guard", "World Eaters", "Thousand Sons", "Drukhari", "Genestealer Cults", "Imperial Knights", "Chaos Knights"];
         let allProjectData = [];
+        let currentEditTitle = null;
 
-        // Build Filter UI
+        // Init Filter & Form Factions
         const filterContainer = document.getElementById('filter-container');
+        const factionSelect = document.getElementById('f-faction');
         factions.sort().forEach(f => {
             const btn = document.createElement('button');
-            btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all";
+            btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all whitespace-nowrap";
             btn.innerText = f;
             btn.onclick = (e) => filterFaction(f, e.target);
             filterContainer.appendChild(btn);
+            
+            const opt = document.createElement('option');
+            opt.value = f; opt.innerText = f;
+            factionSelect.appendChild(opt);
         });
 
-        function adminLogin() {
-            const token = prompt("Enter Studio PAT Token:");
-            if (token) { sessionStorage.setItem('gh_token', token); alert("Authenticated."); }
+        function authAdmin() {
+            if (sessionStorage.getItem('studio_key')) {
+                openAdminModal();
+            } else {
+                const key = prompt("Enter Studio Access Key:");
+                if (key) {
+                    sessionStorage.setItem('studio_key', key);
+                    document.getElementById('admin-entry').innerText = "Open Forge";
+                    document.getElementById('admin-controls').classList.remove('hidden');
+                    alert("Authenticated.");
+                }
+            }
         }
 
-        function filterFaction(faction, element) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'text-white'));
-            if (element) element.classList.add('active', 'text-white');
-            else document.getElementById('btn-all').classList.add('active', 'text-white');
-            
-            const filtered = faction === 'all' ? allProjectData : allProjectData.filter(p => p.faction === faction);
-            renderProjects(filtered);
+        function openAdminModal(project = null) {
+            document.getElementById('admin-modal').style.display = 'block';
+            if (project) {
+                currentEditTitle = project.title || project.name;
+                document.getElementById('f-title').value = currentEditTitle;
+                document.getElementById('f-progress').value = project.progress || 0;
+                document.getElementById('f-faction').value = project.faction || factions[0];
+                document.getElementById('f-category').value = project.category || "Commission";
+                document.getElementById('f-thumb').value = project.thumbnail || "";
+                document.getElementById('f-gallery').value = (project.gallery || []).join(', ');
+                document.getElementById('f-paints').value = project.paints || "";
+                document.getElementById('f-notes').value = project.notes || "";
+            } else {
+                document.getElementById('forge-form').reset();
+                currentEditTitle = null;
+            }
         }
 
-        // MODAL LOGIC
-        function openModal(projectId) {
-            const p = allProjectData.find(proj => (proj.title || proj.name) === projectId);
+        function editProject() {
+            const title = document.getElementById('view-title').innerText;
+            const p = allProjectData.find(x => (x.title || x.name) === title);
+            closeModals();
+            openAdminModal(p);
+        }
+
+        function openProjectModal(title) {
+            const p = allProjectData.find(x => (x.title || x.name) === title);
             if (!p) return;
-
-            document.getElementById('modal-title').innerText = p.title || p.name;
-            document.getElementById('modal-faction').innerText = p.faction || "Unaligned";
-            document.getElementById('modal-progress').innerText = `${p.progress || p.percentage || 0}%`;
-            document.getElementById('modal-desc').innerText = p.description || "No project logs available for this unit.";
+            document.getElementById('view-title').innerText = title;
+            document.getElementById('view-faction').innerText = p.faction || "Unaligned";
+            document.getElementById('view-progress').innerText = `${p.progress || 0}%`;
+            document.getElementById('view-notes').innerText = p.notes || "No log entry found.";
+            document.getElementById('view-paints').innerText = p.paints || "No paint data recorded.";
             
-            const gallery = document.getElementById('modal-gallery');
+            const gallery = document.getElementById('view-gallery');
             gallery.innerHTML = '';
-            
-            // Handle multiple images if they exist, otherwise use thumbnail
-            const images = p.gallery || [p.thumbnail || p.image];
-            images.forEach(imgSrc => {
+            const imgs = p.gallery && p.gallery.length ? p.gallery : [p.thumbnail];
+            imgs.forEach(src => {
                 const img = document.createElement('img');
-                img.src = imgSrc;
-                img.className = "w-full rounded-xl border border-white/10 shadow-2xl";
+                img.src = src; img.className = "w-full rounded-xl border border-white/10";
                 gallery.appendChild(img);
             });
 
-            document.getElementById('modal-overlay').style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent scroll
+            if (sessionStorage.getItem('studio_key')) document.getElementById('admin-controls').classList.remove('hidden');
+            document.getElementById('project-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeModal() {
-            document.getElementById('modal-overlay').style.display = 'none';
+        function closeModals(e) {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
             document.body.style.overflow = 'auto';
         }
 
         function renderProjects(data) {
-            const container = document.getElementById('workbench-list');
-            container.innerHTML = '';
-            
+            const list = document.getElementById('workbench-list');
+            list.innerHTML = '';
             data.forEach(p => {
-                const title = p.title || p.name || "Untitled";
-                const progress = p.progress || p.percentage || 0;
-                const thumb = p.thumbnail || p.image || 'avatar.jpg';
-                const faction = p.faction || "Unaligned";
-                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
+                const title = p.title || p.name;
+                const progress = p.progress || 0;
+                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                 const card = document.createElement('div');
                 card.id = slug;
-                card.onclick = () => openModal(title);
-                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer transition-all duration-500 border-zinc-800/50";
-
+                card.onclick = () => openProjectModal(title);
+                card.className = "glass-card rounded-2xl overflow-hidden group cursor-pointer border-zinc-800/50 transition-all";
                 card.innerHTML = `
-                    <div class="relative h-48 overflow-hidden bg-black">
-                        <img src="${thumb}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60">
-                        <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            <span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase tracking-widest text-white">${faction}</span>
-                        </div>
-                        <div class="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[10px] font-black">${progress}%</div>
+                    <div class="h-48 overflow-hidden bg-black relative">
+                        <img src="${p.thumbnail}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all opacity-60">
+                        <div class="absolute top-4 left-4"><span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase text-white">${p.faction}</span></div>
                     </div>
-                    <div class="p-6 space-y-4">
+                    <div class="p-6">
                         <h3 class="text-sm font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${title}</h3>
-                        <div class="w-full bg-white/5 h-[2px] overflow-hidden">
-                            <div class="bg-red-600 h-full" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+                        <div class="w-full bg-white/5 h-[2px] mt-4"><div class="bg-red-600 h-full" style="width: ${progress}%"></div></div>
+                    </div>`;
+                list.appendChild(card);
             });
         }
 
-        async function loadWorkbench() {
-            try {
-                const res = await fetch('data.json?v=' + Date.now(), { cache: "no-store" });
-                allProjectData = await res.json();
-                renderProjects(allProjectData);
-
-                // Auto-open if linked from Forge
-                if (window.location.hash) {
-                    setTimeout(() => {
-                        const slug = window.location.hash.substring(1);
-                        const project = allProjectData.find(p => (p.title || p.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug);
-                        if (project) openModal(project.title || project.name);
-                    }, 500);
-                }
-            } catch (e) { console.error(e); }
+        function filterFaction(f, el) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'text-white'));
+            el ? el.classList.add('active', 'text-white') : document.getElementById('btn-all').classList.add('active', 'text-white');
+            renderProjects(f === 'all' ? allProjectData : allProjectData.filter(p => p.faction === f));
         }
 
-        loadWorkbench();
+        async function loadData() {
+            const res = await fetch('data.json?v=' + Date.now());
+            allProjectData = await res.json();
+            renderProjects(allProjectData);
+            if (window.location.hash) {
+                setTimeout(() => {
+                    const slug = window.location.hash.substring(1);
+                    const p = allProjectData.find(x => (x.title || x.name).toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
+                    if (p) openProjectModal(p.title || p.name);
+                }, 500);
+            }
+        }
+
+        document.getElementById('forge-form').onsubmit = (e) => {
+            e.preventDefault();
+            alert("Data Prepared for Push. Ensure your 'Access Key' (PAT) is correct in Session Storage.");
+            // Here you would call your GitHub API Push function
+        };
+
+        loadData();
     </script>
 </body>
 </html>
