@@ -1,68 +1,47 @@
-# The Dutty Brush | Studio Workbench
+# 🖌️ The Dutty Brush | Studio Landing Page
 
-A bespoke, high-performance web archive for hobbyists and commission painters to document, track, and showcase miniature painting progress and color recipes.
+The central hub for **The Dutty Brush** studio. This is a high-performance, mobile-first landing page featuring a real-time project tracker ("The Forge") that syncs dynamically with the studio workbench.
 
-## 🛠 Project Overview
+## 🚀 Core Features
 
-**The Dutty Brush** is designed as a digital "Workbench"—a centralized hub that bridges the gap between a static portfolio and a dynamic project manager. It allows for real-time updates of project completion percentages, technique documentation, and asset management via a custom-built "Forge" editor.
+- **The Live Forge:** A dynamic project tracker that displays active Work-in-Progress (WIP) items.
+- **Smart Filtering:** The landing page automatically hides projects that reach **100% completion**, keeping the focus on current activity.
+- **Workbench Sync:** Integrated with `hobby.html` via a shared `data.json` architecture.
+- **Adaptive UI:** Built with Tailwind CSS, featuring glassmorphism effects and desaturated imagery that pops into color on hover.
+- **One-Touch Contact:** Integrated `mailto:` system with pre-formatted commission requirement templates.
 
-### Core Objectives
-* **Recipe Archiving:** Documentation of paint stages (Primer, Base, Layer, Highlight) for consistent army painting.
-* **Progress Tracking:** Visual representation of project completion for both personal and commission work.
-* **Minimalist Aesthetic:** A high-contrast, "glassmorphism" UI designed to let the miniature photography take center stage.
-* **Serverless CMS:** Utilizing GitHub's API as a lightweight backend to manage data without the need for a dedicated database server.
+## 🛠️ Technical Architecture
 
----
+### Data Synchronization
+The site uses an asynchronous `fetch` request to pull project data from `data.json`. The script is "Convention-Agnostic," meaning it supports both the legacy naming and the new Workbench naming conventions:
 
-## 🚀 Key Features
+| Display Element | Workbench Field | Legacy Field |
+| :--- | :--- | :--- |
+| **Project Title** | `title` | `name` |
+| **Progress %** | `progress` | `percentage` |
+| **Category** | `category` | `type` |
+| **Project Link** | `link` | `url` |
+| **Thumbnail** | `thumbnail` | `image` |
 
-### 1. The Workbench (Hobby Archive)
-* **Responsive Gallery:** A grid-based showcase of current and past projects.
-* **Project Modals:** Deep-dive views for each project featuring a mobile-responsive carousel/slider and detailed paint recipes.
-* **Status Tagging:** Instant visual distinction between *Personal* projects and *Commission* work.
+### The "In-Flight" Logic
+Projects are only rendered in the Forge if their progress value is **less than 100**. 
+- **Badge:** The "Enter Workbench" button displays a red notification badge showing the total count of active projects.
+- **Cards:** Each active project generates a clickable card leading directly to that project's specific URL or the general workbench.
 
-### 2. The Forge (Admin Suite)
-* **Live Editing:** A secure, prompt-authenticated editor built directly into the site.
-* **GitHub Integration:** Real-time synchronization with `data.json` via the GitHub REST API.
-* **Asset Management:** Support for multi-image projects via Cloudinary or external URL hosting.
-* **Recipe Builder:** A dynamic interface to add, remove, and categorize paint steps on the fly.
+## 📂 File Structure
 
----
+- `index.html`: The main landing page and Forge engine.
+- `hobby.html`: The studio workbench/management interface.
+- `data.json`: The single source of truth for all project statuses.
+- `avatar.jpg`: Studio branding icon.
+- `baselair.png`: Integration icon for The Baselair.
 
-## 💻 Tech Stack
+## 🎨 Styling Constants
 
-* **Frontend:** HTML5, Tailwind CSS (via CDN for rapid styling).
-* **Typography:** Google Fonts (Inter: 400, 700, 900).
-* **Data Structure:** JSON (Flat-file architecture).
-* **Backend Logic:** Vanilla JavaScript (ES6+) using Async/Await for API communication.
-* **Hosting/Storage:** GitHub Pages.
-
----
-
-## 📂 Repository Structure
-
-* `index.html`: The main landing hub / portfolio entry.
-* `hobby.html`: The Workbench application and gallery.
-* `data.json`: The central database for all project details and recipes.
-* `avatar.jpg`: Site branding and favicon.
+- **Background:** `radial-gradient` (#111111 to #050505)
+- **Primary Accent:** `#ff3e3e` (Dutty Red)
+- **Status Accent:** `#22c55e` (Glow Green)
+- **Font:** Inter (Weight 400, 700, 900)
 
 ---
-
-## 🔒 Security & Privacy
-
-* **Zero Sensitive Data:** This repository does not contain hardcoded API tokens or private keys.
-* **Authentication:** The "Forge" editor requires a GitHub Personal Access Token (PAT) provided via user prompt at runtime, ensuring write-access is restricted to the repository owner only.
-* **Environment:** All administrative actions are performed client-side and authenticated directly against the GitHub API.
-
----
-
-## 🎨 Design Philosophy
-
-The site follows a **Dark Studio** aesthetic:
-* **Primary Palette:** `#050505` (Deep Black), `#ff3e3e` (Racing Red).
-* **UI Elements:** 2% White transparency with 15px backdrop-blur for a "frosted glass" look.
-* **Motion:** Smooth CSS transitions and Snap-X horizontal carousels for a tactile feel.
-
----
-
-© 2026 The Dutty Brush. Built for the hobby.
+*Maintained by Gemini AI for The Dutty Brush Studio © 2026*
