@@ -131,22 +131,23 @@
                 if (!res.ok) throw new Error('Failed to load data.json');
                 const data = await res.json();
 
-                // 1. Update Active Badge
-                const activeProjects = data.filter(p => (p.progress || p.percentage) < 100);
-                if (activeProjects.length > 0) {
+                // FILTER: Only show "In Flight" projects (progress < 100)
+                const inFlightProjects = data.filter(p => (p.progress || p.percentage || 0) < 100);
+
+                // Update Active Badge with in-flight count
+                if (inFlightProjects.length > 0) {
                     const badge = document.getElementById('workbench-count');
-                    badge.innerText = `${activeProjects.length} ACTIVE`;
+                    badge.innerText = `${inFlightProjects.length} ACTIVE`;
                     badge.classList.remove('hidden');
                 }
 
-                // 2. Render Live Feed (Bottom of Main)
+                // Render Live Feed for the most recent 2 in-flight projects
                 const container = document.getElementById('forge-container');
                 container.innerHTML = '';
 
-                // Show the most recent 2 projects
-                const recentOnes = data.slice(-2).reverse();
+                const recentInFlight = inFlightProjects.slice(-2).reverse();
 
-                recentOnes.forEach(p => {
+                recentInFlight.forEach(p => {
                     const title = p.title || p.name || "Untitled Project";
                     const progress = p.progress || p.percentage || 0;
                     const category = p.category || p.type || "Hobby";
