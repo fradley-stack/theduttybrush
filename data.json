@@ -1,7 +1,7 @@
 [
   {
     "title": "Saturnine Praetor",
-    "faction": "Adeptus Astartes",
+    "faction": "",
     "progress": 10,
     "category": "Personal",
     "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772579839/ebwps0jsvrpjwech0tsw.png",
@@ -10,48 +10,25 @@
     "notes": "Haven't decided on the faction yet. Imperial Fist? Death Guard?"
   },
   {
-    "name": "Night Lord",
-    "percentage": 10,
-    "type": "Personal",
-    "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554708/aavsoxdehbwl6tjkxyi7.jpg",
-    "notes": "",
-    "recipe": []
+    "title": "Night Lord",
+    "faction": "Chaos Space Marines",
+    "progress": 10,
+    "category": "Personal",
+    "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772554708/aavsoxdehbwl6tjkxyi7.jpg",
+    "gallery": [],
+    "paints": {},
+    "notes": ""
   },
   {
-    "name": "Dark Angel",
-    "percentage": 100,
-    "type": "Personal",
-    "image": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772549499/hpsbmiawe7xb28qle8ac.jpg,https://res.cloudinary.com/detnqdxoz/image/upload/v1772571740/ika2x5dorlgh9mf6pk64.jpg",
-    "notes": "Dark Angel or Dark Salamangel?",
-    "recipe": [
-      {
-        "type": "primer",
-        "name": "Vallejo Primers Black"
-      },
-      {
-        "type": "base",
-        "name": "Caliban Green"
-      },
-      {
-        "type": "layer",
-        "name": "Warpstone Glow"
-      },
-      {
-        "type": "highlight",
-        "name": "Moot Green"
-      },
-      {
-        "type": "base",
-        "name": "Khorne Red"
-      },
-      {
-        "type": "layer",
-        "name": "Mephiston Red"
-      },
-      {
-        "type": "highlight",
-        "name": "Evil Sunz Scarlet"
-      }
-    ]
+    "title": "Dark Angel",
+    "faction": "Adeptus Astartes",
+    "progress": 100,
+    "category": "Personal",
+    "thumbnail": "https://res.cloudinary.com/detnqdxoz/image/upload/v1772549499/hpsbmiawe7xb28qle8ac.jpg",
+    "gallery": [
+      "https://res.cloudinary.com/detnqdxoz/image/upload/v1772571740/ika2x5dorlgh9mf6pk64.jpg"
+    ],
+    "paints": {},
+    "notes": "Dark Angel or Dark Salamangel?"
   }
 ]
