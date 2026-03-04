@@ -15,7 +15,7 @@
         .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
         .accent-red { color: #ff3e3e; }
         
-        /* The "Jump To" Highlight */
+        /* Anchor Highlight */
         :target {
             border-color: #ff3e3e !important;
             box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
@@ -32,17 +32,17 @@
     <header class="max-w-4xl mx-auto flex justify-between items-center mb-12">
         <a href="index.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition flex items-center gap-2">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Back
+            Return
         </a>
         <h1 class="text-xl font-900 uppercase italic tracking-tighter">STUDIO <span class="accent-red">WORKBENCH</span></h1>
-        <a href="admin.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-800 hover:text-red-600 transition">Admin</a>
+        <button onclick="adminLogin()" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-800 hover:text-red-600 transition">Admin</button>
     </header>
 
     <main class="max-w-4xl mx-auto">
         
         <div class="mb-10 overflow-x-auto no-scrollbar pb-4">
             <div id="filter-container" class="flex gap-2 min-w-max">
-                <button onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all opacity-50">All</button>
+                <button id="btn-all" onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all">All</button>
                 </div>
         </div>
 
@@ -50,11 +50,12 @@
             </div>
 
         <div id="empty-state" class="hidden text-center py-20">
-            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">No projects match this faction.</p>
+            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">No intel found for this faction.</p>
         </div>
     </main>
 
     <script>
+        // Full Faction List
         const factions = [
             "Adeptus Astartes", "Chaos Space Marines", "Aeldari", "Necrons", "Orks", "Tyranids", 
             "T'au Empire", "Leagues of Votann", "Astra Militarum", "Adepta Sororitas", 
@@ -64,13 +65,13 @@
 
         let allProjectData = [];
 
-        // Setup Filters
+        // Build the Filter UI
         const filterContainer = document.getElementById('filter-container');
         factions.sort().forEach(faction => {
             const btn = document.createElement('button');
             btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all";
             btn.innerText = faction;
-            btn.onclick = (e) => filterFaction(faction, e.target);
+            btn.addEventListener('click', (e) => filterFaction(faction, e.target));
             filterContainer.appendChild(btn);
         });
 
@@ -78,12 +79,33 @@
             return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         }
 
-        function filterFaction(faction, element) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            if(element) element.classList.add('active');
-            else document.querySelector('[onclick="filterFaction(\'all\')"]').classList.add('active');
+        // PAT Token Admin Login (Restored)
+        function adminLogin() {
+            const token = prompt("Enter Studio PAT Token:");
+            if (token) {
+                sessionStorage.setItem('gh_token', token);
+                alert("Session Authenticated. You can now push updates.");
+                // Add your push logic call here if needed
+            }
+        }
 
-            const filtered = faction === 'all' ? allProjectData : allProjectData.filter(p => p.faction === faction);
+        function filterFaction(faction, element) {
+            // Update Active State
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-white');
+                btn.classList.add('text-zinc-500');
+            });
+            
+            if (element) {
+                element.classList.add('active', 'text-white');
+            } else {
+                document.getElementById('btn-all').classList.add('active', 'text-white');
+            }
+
+            const filtered = faction === 'all' 
+                ? allProjectData 
+                : allProjectData.filter(p => p.faction === faction);
+            
             renderProjects(filtered);
         }
 
@@ -107,11 +129,9 @@
                 const factionTag = p.faction || "Unaligned";
                 const slug = createSlug(title);
 
-                // WRAPPING IN ANCHOR TAG SO CLICKING WORKS
-                const card = document.createElement('a');
-                card.href = link;
+                const card = document.createElement('div');
                 card.id = slug;
-                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group transition-all duration-500 border-zinc-800/50 block";
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group transition-all duration-500 border-zinc-800/50";
 
                 card.innerHTML = `
                     <div class="relative h-48 overflow-hidden bg-black">
@@ -136,7 +156,7 @@
                             <div class="bg-red-600 h-full transition-all duration-1000 shadow-[0_0_10px_#dc2626]" style="width: ${progress}%"></div>
                         </div>
                         <div class="flex justify-between items-center pt-2">
-                            <span class="text-[8px] font-black uppercase tracking-widest text-zinc-600">Phase: ${progress < 100 ? 'WIP' : 'Done'}</span>
+                            <a href="${link}" class="text-[8px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition">Full Log</a>
                             <div class="w-1.5 h-1.5 rounded-full ${progress < 100 ? 'bg-green-500 animate-pulse' : 'bg-zinc-800'}"></div>
                         </div>
                     </div>
@@ -151,12 +171,14 @@
                 allProjectData = await res.json();
                 renderProjects(allProjectData);
 
-                // Final fix for the Jump logic
+                // Handle Deep Linking from Home Page
                 if (window.location.hash) {
                     setTimeout(() => {
                         const target = document.querySelector(window.location.hash);
-                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 400);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 500);
                 }
             } catch (e) { console.error("Workbench load failed:", e); }
         }
