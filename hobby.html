@@ -12,123 +12,169 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; scroll-behavior: smooth; }
         .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .accent-red { color: #ff3e3e; }
         
         /* Highlight effect for when jumping from an anchor link */
         :target {
-            border-color: #ff3e3e !important;
-            box-shadow: 0 0 20px rgba(255, 62, 62, 0.2);
-            transition: all 0.5s ease;
+            border: 1px solid #ff3e3e !important;
+            box-shadow: 0 0 30px rgba(255, 62, 62, 0.25);
+            transform: scale(1.02);
         }
+
+        .filter-btn.active { background-color: #ff3e3e; color: white; border-color: #ff3e3e; opacity: 1; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="hero-gradient min-h-screen p-6">
 
-    <header class="max-w-4xl mx-auto flex justify-between items-center mb-12">
+    <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <a href="index.html" class="text-[10px] font-900 uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition flex items-center gap-2">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Return to Studio
         </a>
-        <h1 class="text-xl font-900 uppercase italic tracking-tighter">STUDIO <span class="accent-red">WORKBENCH</span></h1>
+        <h1 class="text-xl font-900 uppercase italic tracking-tighter text-center">STUDIO <span class="accent-red">WORKBENCH</span></h1>
+        <div class="w-24 hidden md:block"></div>
     </header>
 
-    <main class="max-w-4xl mx-auto">
-        <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <main class="max-w-6xl mx-auto">
+        
+        <div class="mb-10 overflow-x-auto no-scrollbar pb-4 border-b border-white/5">
+            <div id="filter-container" class="flex gap-2 min-w-max px-2">
+                <button onclick="filterFaction('all')" class="filter-btn active px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest transition-all opacity-50">All</button>
+                </div>
+        </div>
+
+        <div id="workbench-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             </div>
 
-        <div id="empty-state" class="hidden text-center py-20">
-            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">The forge is cold. No active projects.</p>
+        <div id="empty-state" class="hidden text-center py-40">
+            <p class="text-zinc-600 text-[10px] font-black uppercase tracking-[0.5em]">Forge Signature Not Found for this Faction.</p>
         </div>
     </main>
 
-    <footer class="max-w-4xl mx-auto mt-20 pb-12 text-center opacity-20">
-        <p class="text-[8px] font-black uppercase tracking-[0.5em]">Workbench v2.1.0-Forge</p>
-    </footer>
-
     <script>
-        // Slugifier to create IDs that match the Home Page links
+        const factions = [
+            "Adeptus Astartes", "Chaos Space Marines", "Aeldari", "Necrons", "Orks", "Tyranids", 
+            "T'au Empire", "Leagues of Votann", "Astra Militarum", "Adepta Sororitas", 
+            "Adeptus Custodes", "Adeptus Mechanicus", "Grey Knights", "Death Guard", 
+            "World Eaters", "Thousand Sons", "Drukhari", "Genestealer Cults", "Imperial Knights", "Chaos Knights"
+        ];
+
+        let allProjectData = [];
+
+        // Initialize Filter Buttons
+        const filterContainer = document.getElementById('filter-container');
+        factions.sort().forEach(faction => {
+            const btn = document.createElement('button');
+            btn.className = "filter-btn px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-white transition-all opacity-50 hover:opacity-100";
+            btn.innerText = faction;
+            btn.onclick = (e) => filterFaction(faction, e.target);
+            filterContainer.appendChild(btn);
+        });
+
         function createSlug(text) {
-            return text.toString().toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
+            return text.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+
+        function filterFaction(faction, element) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if(element) {
+                element.classList.add('active');
+            } else {
+                document.querySelector('[onclick="filterFaction(\'all\')"]').classList.add('active');
+            }
+
+            const filtered = faction === 'all' 
+                ? allProjectData 
+                : allProjectData.filter(p => p.faction === faction);
+            
+            renderProjects(filtered);
+        }
+
+        function renderProjects(data) {
+            const container = document.getElementById('workbench-list');
+            const emptyState = document.getElementById('empty-state');
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            data.forEach(p => {
+                const title = p.title || p.name || "Untitled";
+                const progress = p.progress || p.percentage || 0;
+                const category = p.category || p.type || "Personal";
+                const thumb = p.thumbnail || p.image || 'avatar.jpg';
+                const factionTag = p.faction || "Unaligned";
+                const slug = createSlug(title);
+
+                const card = document.createElement('div');
+                card.id = slug; // This is the anchor point
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group border-zinc-800/50";
+
+                card.innerHTML = `
+                    <div class="relative h-64 overflow-hidden bg-black">
+                        <img src="${thumb}" alt="${title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-40 group-hover:opacity-100 scale-110 group-hover:scale-100">
+                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                            <span class="text-[7px] px-2 py-1 rounded bg-black/90 backdrop-blur-md border border-white/10 font-black uppercase tracking-widest ${category === 'Commission' ? 'text-red-500' : 'text-zinc-400'}">
+                                ${category}
+                            </span>
+                            <span class="text-[7px] px-2 py-1 rounded bg-red-600 font-black uppercase tracking-widest text-white">
+                                ${factionTag}
+                            </span>
+                        </div>
+                        <div class="absolute bottom-4 right-4 bg-black border border-white/10 px-3 py-1 rounded-full">
+                            <span class="text-[10px] font-black text-white">${progress}%</span>
+                        </div>
+                    </div>
+                    <div class="p-8 space-y-5">
+                        <h3 class="text-lg font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors leading-none">
+                            ${title}
+                        </h3>
+                        <div class="w-full bg-white/5 h-[3px] overflow-hidden rounded-full">
+                            <div class="bg-red-600 h-full transition-all duration-1000 ease-out shadow-[0_0_10px_#dc2626]" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-700">Studio Log: ${progress < 100 ? 'Active' : 'Complete'}</span>
+                            <div class="w-2 h-2 rounded-full ${progress < 100 ? 'bg-green-500 animate-pulse' : 'bg-zinc-800'}"></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         async function loadWorkbench() {
             try {
                 const res = await fetch('data.json?v=' + Date.now(), { cache: "no-store" });
-                if (!res.ok) throw new Error('Failed to load data.json');
-                const data = await res.json();
-                
-                const container = document.getElementById('workbench-list');
-                const emptyState = document.getElementById('empty-state');
-                
-                if (data.length === 0) {
-                    emptyState.classList.remove('hidden');
-                    return;
-                }
+                allProjectData = await res.json();
+                renderProjects(allProjectData);
 
-                container.innerHTML = '';
-
-                data.forEach(project => {
-                    // Mapping fields for consistency
-                    const title = project.title || project.name || "Untitled";
-                    const progress = project.progress || project.percentage || 0;
-                    const category = project.category || project.type || "Hobby";
-                    const thumb = project.thumbnail || project.image || 'avatar.jpg';
-                    const link = project.link || project.url || "#";
-                    
-                    const slug = createSlug(title);
-                    const isCommission = category === "Commission";
-
-                    const card = document.createElement('div');
-                    // APPLYING THE ID HERE FOR ANCHOR LINKS
-                    card.id = slug;
-                    card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group transition-all duration-500 border-zinc-800/50";
-
-                    card.innerHTML = `
-                        <div class="relative h-48 overflow-hidden bg-black">
-                            <img src="${thumb}" alt="${title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100">
-                            <div class="absolute top-4 left-4">
-                                <span class="text-[8px] px-2 py-1 rounded bg-black/80 backdrop-blur-md border border-white/10 font-black uppercase tracking-widest ${isCommission ? 'text-red-500' : 'text-zinc-400'}">
-                                    ${category}
-                                </span>
-                            </div>
-                            <div class="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full">
-                                <span class="text-[10px] font-black text-white">${progress}%</span>
-                            </div>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <h3 class="text-sm font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">
-                                    ${title}
-                                </h3>
-                                <div class="w-full bg-white/5 h-[2px] mt-4 overflow-hidden">
-                                    <div class="bg-red-600 h-full transition-all duration-1000" style="width: ${progress}%"></div>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center pt-2">
-                                <a href="${link}" class="text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition">View Details</a>
-                                <div class="flex gap-2">
-                                    <div class="w-1.5 h-1.5 rounded-full ${progress < 100 ? 'bg-green-500 animate-pulse' : 'bg-zinc-700'}"></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-
-                // Small delay to ensure rendering is done before jumping to anchor
+                // FIXED ANCHOR LOGIC: Wait for render, then jump
                 if (window.location.hash) {
+                    const hash = window.location.hash;
+                    // Small timeout ensures the DOM has painted the new IDs
                     setTimeout(() => {
-                        const target = document.querySelector(window.location.hash);
-                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                }
+                        const target = document.querySelector(hash);
+                        if (target) {
+                            const offset = 100; // Account for the header
+                            const bodyRect = document.body.getBoundingClientRect().top;
+                            const elementRect = target.getBoundingClientRect().top;
+                            const elementPosition = elementRect - bodyRect;
+                            const offsetPosition = elementPosition - offset;
 
-            } catch (e) {
-                console.error("Workbench load failed:", e);
-            }
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 300);
+                }
+            } catch (e) { console.error("Workbench load failed:", e); }
         }
 
         loadWorkbench();
