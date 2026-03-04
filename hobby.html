@@ -17,61 +17,59 @@
         
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; backdrop-filter: blur(20px); overflow-y: auto; }
         
-        /* IMPROVED SCROLLABLE TAGS */
-        .nav-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 3rem; }
-        .tag-scroll-area { 
-            display: flex; 
-            gap: 10px; 
-            overflow-x: auto; 
-            padding-bottom: 12px;
-            -webkit-overflow-scrolling: touch;
+        /* FACTION TAG GRID - NO SCROLLING */
+        .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+        .filter-btn { 
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            font-size: 9px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
+            color: #555;
+            transition: all 0.2s ease;
         }
-        
-        /* Custom Scrollbar for Tags */
-        .tag-scroll-area::-webkit-scrollbar { height: 4px; }
-        .tag-scroll-area::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .tag-scroll-area::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .tag-scroll-area::-webkit-scrollbar-thumb:hover { background: #ff3e3e; }
+        .filter-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+        .filter-btn.active { background: #ff3e3e; color: white; border-color: #ff3e3e; }
 
+        /* FORGE INPUTS & DROPDOWNS */
         .forge-input {
-            background: rgba(0,0,0,0.4) !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
+            background: #000 !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
             color: #fff !important;
             padding: 12px 16px;
             border-radius: 10px;
-            transition: all 0.2s ease;
+            outline: none;
         }
-        .forge-input:focus { border-color: #ff3e3e !important; background: rgba(255,62,62,0.05) !important; }
+        .forge-input option { background: #000; color: #fff; }
+        .forge-input:focus { border-color: #ff3e3e !important; }
         
         label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #444; margin-bottom: 6px; display: block; }
         .gallery-img { width: 100%; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
         
         .dynamic-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 12px; }
         .btn-add { background: #111; color: #fff; width: 28px; height: 28px; border-radius: 8px; font-size: 18px; line-height: 1; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .filter-btn { transition: all 0.2s; border: 1px solid rgba(255,255,255,0.05); }
-        .filter-btn.active { background: #ff3e3e; color: white; border-color: #ff3e3e; }
 
         #search-units { 
             width: 100%;
-            max-width: 400px;
             background: rgba(255,255,255,0.03); 
             border: 1px solid rgba(255,255,255,0.08); 
             border-radius: 12px; 
-            padding: 12px 20px; 
+            padding: 14px 20px; 
             font-size: 12px; 
             color: white; 
             outline: none; 
         }
-        #search-units:focus { border-color: #ff3e3e; background: rgba(255,255,255,0.05); }
 
-        /* IMAGE POSITIONING FIX */
-        .thumb-container { height: 320px; overflow: hidden; background: #000; position: relative; }
+        /* IMAGE POSITIONING */
+        .thumb-container { height: 340px; overflow: hidden; background: #000; position: relative; }
         .thumb-img { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
-            object-position: top center; /* Prevents cutting off heads */
+            object-position: top center; 
             transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             opacity: 0.4;
             filter: grayscale(100%);
@@ -116,10 +114,13 @@
                         <h2 class="text-2xl font-900 uppercase italic tracking-tighter">The <span class="accent-red">Forge</span></h2>
                         <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Registry Editor</p>
                     </div>
-                    <button onclick="closeModals()" class="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white">×</button>
+                    <div class="flex gap-4">
+                        <button onclick="handleLogout()" class="text-zinc-600 hover:text-red-500 text-[9px] font-black uppercase tracking-widest">Logout</button>
+                        <button onclick="closeModals()" class="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white">×</button>
+                    </div>
                 </div>
                 
-                <div class="mb-10"><label>Target Project</label><select id="project-selector" onchange="loadProjectIntoForge(this.value)" class="forge-input w-full appearance-none"></select></div>
+                <div class="mb-10"><label>Target Project</label><select id="project-selector" onchange="loadProjectIntoForge(this.value)" class="forge-input w-full"></select></div>
 
                 <form id="forge-form" class="space-y-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,10 +158,10 @@
     </header>
 
     <main class="max-w-5xl mx-auto">
-        <div class="nav-container">
-            <input type="text" id="search-units" placeholder="Search project names..." oninput="searchProjects(this.value)">
-            <div id="filter-container" class="tag-scroll-area">
-                <button id="btn-all" onclick="filterFaction('all', this)" class="filter-btn active px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap glass-card">All</button>
+        <div class="mb-12">
+            <input type="text" id="search-units" placeholder="Search project database..." oninput="searchProjects(this.value)">
+            <div id="filter-container" class="tag-grid">
+                <button id="btn-all" onclick="filterFaction('all', this)" class="filter-btn active">All Projects</button>
             </div>
         </div>
         
@@ -176,6 +177,11 @@
         let allProjectData = [];
         let currentEditTitle = null;
         let currentFilter = 'all';
+
+        function handleLogout() {
+            sessionStorage.removeItem('gh_token');
+            location.reload();
+        }
 
         function addDynamicField(containerId, isPaint = false, val1 = '', val2 = '') {
             const container = document.getElementById(containerId);
@@ -193,14 +199,15 @@
             const token = sessionStorage.getItem('gh_token');
             if (token) openAdminModal();
             else {
-                const input = prompt("Token:");
+                const input = prompt("Access Token:");
                 if (input) { sessionStorage.setItem('gh_token', input); updateAdminUI(); }
             }
         }
 
         function updateAdminUI() {
             if (sessionStorage.getItem('gh_token')) {
-                document.getElementById('admin-btn').innerText = "Open Forge";
+                document.getElementById('admin-btn').innerText = "Forge Access";
+                document.getElementById('admin-btn').classList.replace('text-zinc-800', 'text-zinc-500');
             }
         }
 
@@ -222,7 +229,7 @@
 
         function openAdminModal(p = null) {
             const sel = document.getElementById('project-selector');
-            sel.innerHTML = '<option value="">+ New Entry</option>';
+            sel.innerHTML = '<option value="">+ Add New Registry Entry</option>';
             allProjectData.forEach(p => sel.innerHTML += `<option value="${p.title || p.name}">${p.title || p.name}</option>`);
             document.getElementById('admin-modal').style.display = 'block';
             if (p) { sel.value = p.title || p.name; loadProjectIntoForge(p.title || p.name); }
@@ -245,7 +252,7 @@
             const pList = document.getElementById('view-paints-list');
             pList.innerHTML = '';
             if (p.paints) Object.entries(p.paints).forEach(([cat, list]) => {
-                pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><span class="text-[8px] text-zinc-600 font-black uppercase tracking-widest block mb-1">${cat}</span><p class="text-[12px] text-zinc-300">${list}</p></div>`;
+                pList.innerHTML += `<div class="border-l-2 border-red-600/20 pl-4"><span class="text-[8px] text-zinc-600 font-black uppercase tracking-widest block mb-1">${cat}</span><p class="text-[12px] text-zinc-300 font-medium">${list}</p></div>`;
             });
             const gal = document.getElementById('view-gallery');
             gal.innerHTML = `<img src="${p.thumbnail}" class="gallery-img">`;
@@ -270,7 +277,7 @@
                         </div>
                         <div class="p-8">
                             <div class="flex justify-between items-end"><h3 class="text-lg font-900 uppercase italic tracking-tighter text-white group-hover:text-red-500 transition-colors">${title}</h3><span class="text-xs font-black italic text-zinc-600">${p.progress}%</span></div>
-                            <div class="w-full bg-white/5 h-[3px] mt-6 rounded-full overflow-hidden"><div class="bg-red-600 h-full" style="width: ${p.progress}%"></div></div>
+                            <div class="w-full bg-white/5 h-[3px] mt-6 rounded-full overflow-hidden"><div class="bg-red-600 h-full transition-all duration-1000" style="width: ${p.progress}%"></div></div>
                         </div>
                     </div>`;
             });
@@ -303,7 +310,7 @@
                 headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg, content, sha: fData.sha })
             });
-            if(pRes.ok) location.reload(); else alert("Sync Fail.");
+            if(pRes.ok) location.reload(); else alert("Forge Sync Failed.");
         }
 
         document.getElementById('forge-form').onsubmit = (e) => {
@@ -332,7 +339,7 @@
 
         async function deleteProject() {
             if(!currentEditTitle) return;
-            if(confirm(`Purge ${currentEditTitle}?`)) {
+            if(confirm(`Erase ${currentEditTitle} from records?`)) {
                 allProjectData = allProjectData.filter(x => (x.title || x.name) !== currentEditTitle);
                 syncToGithub(`Forge Delete: ${currentEditTitle}`);
             }
@@ -346,7 +353,7 @@
             const container = document.getElementById('filter-container');
             factions.sort().forEach(f => {
                 const btn = document.createElement('button');
-                btn.className = "filter-btn px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-all whitespace-nowrap glass-card";
+                btn.className = "filter-btn";
                 btn.innerText = f; btn.onclick = (e) => filterFaction(f, e.target);
                 container.appendChild(btn);
             });
