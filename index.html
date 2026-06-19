@@ -1,190 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Dutty Brush | Studio</title>
-    
-    <link rel="icon" type="image/jpeg" href="avatar.jpg">
-    <link rel="apple-touch-icon" href="avatar.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Dutty Brush — Warhammer &amp; Tabletop Miniature Painting Commissions</title>
+  <meta name="description" content="Hand-painted Warhammer 40K and tabletop miniatures, tabletop-ready to display-grade. Free paint recipes in The Vault. Commissions open.">
+  <meta name="theme-color" content="#07070a">
+  <link rel="canonical" href="https://theduttybrush.com/">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; }
-        .hero-gradient { background: radial-gradient(circle at center, #111111 0%, #050505 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-        .accent-red { color: #ff3e3e; }
-        .progress-glow { box-shadow: 0 0 15px rgba(220, 38, 38, 0.4); }
-        
-        .glow-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
-        @keyframes pulse { 
-            0% { opacity: 1; transform: scale(1); } 
-            50% { opacity: 0.5; transform: scale(1.2); } 
-            100% { opacity: 1; transform: scale(1); } 
-        }
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Dutty Brush">
+  <meta property="og:title" content="The Dutty Brush — Miniature Painting Commissions">
+  <meta property="og:description" content="Display-grade minis, battle-ready armies, and the recipes behind every one. Commissions open.">
+  <meta property="og:url" content="https://theduttybrush.com/">
+  <meta property="og:image" content="https://theduttybrush.com/assets/img/featured.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://theduttybrush.com/assets/img/featured.jpg">
 
-        #toast { visibility: hidden; min-width: 180px; background-color: #ff3e3e; color: #fff; text-align: center; border-radius: 8px; padding: 10px; position: fixed; z-index: 100; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-    </style>
+  <link rel="icon" type="image/jpeg" href="assets/img/avatar.jpg">
+  <link rel="apple-touch-icon" href="assets/img/avatar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ProfessionalService","name":"The Dutty Brush",
+   "description":"Warhammer and tabletop miniature painting commission studio.","url":"https://theduttybrush.com/",
+   "image":"https://theduttybrush.com/assets/img/featured.jpg","email":"commissions@theduttybrush.com","areaServed":"Worldwide",
+   "sameAs":["https://instagram.com/duttyclem","https://www.tiktok.com/@theduttybrush","https://www.facebook.com/profile.php?id=61582895284714"]}
+  </script>
 </head>
-<body class="hero-gradient min-h-screen flex flex-col items-center p-6 pt-12 md:pt-24">
+<body class="grain">
 
-    <div id="toast">Email Copied to Clipboard</div>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/" aria-label="The Dutty Brush home">
+        <img src="assets/img/avatar.jpg" alt="">
+        <span class="brand-name">The <span class="accent">Dutty</span> Brush</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="gallery.html">Work</a>
+        <a href="vault.html">The Vault</a>
+        <a href="#tutorials">Tutorials</a>
+        <a href="#pricing">Commissions</a>
+      </nav>
+      <div class="nav-cta">
+        <span class="status hide-sm"><span class="dot"></span> Commissions Open</span>
+        <a class="btn btn-primary btn-sm hide-sm" href="#commission">Commission Me</a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <main class="max-w-md w-full text-center space-y-8 mb-20">
-        <div class="space-y-5">
-            <img src="avatar.jpg" alt="The Dutty Brush" class="w-24 h-24 rounded-full mx-auto border border-white/10 shadow-2xl object-cover hover:scale-105 transition-transform duration-500">
-            <h1 class="text-4xl font-900 uppercase italic tracking-tighter leading-none">THE <span class="accent-red">DUTTY</span> BRUSH</h1>
-            
-            <div class="flex items-center justify-center gap-3 group transition py-1">
-                <div class="glow-dot"></div>
-                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white">Commissions Open</span>
-            </div>
+  <main>
+    <!-- CINEMATIC HERO -->
+    <section class="cine">
+      <div class="cine-bg" id="cine-bg" aria-hidden="true"></div>
+      <div id="embers" aria-hidden="true"></div>
+      <div class="wrap">
+        <span class="eyebrow acc" style="display:block;margin-bottom:22px;">Warhammer &amp; Tabletop Miniature Painting</span>
+        <h1 class="display">PAINT<br><span class="stroke">LIKE HELL.</span></h1>
+        <p class="tagline">Display-grade minis, battle-ready armies, and the recipes behind every one. This is the workbench of <span class="accent">The Dutty Brush</span>.</p>
+        <div style="margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
+          <a class="btn btn-primary" href="#commission">Start a Commission</a>
+          <a class="btn btn-ghost" href="vault.html">Steal my Recipes
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
         </div>
+      </div>
+      <div class="scroll-cue">Scroll<span></span></div>
+    </section>
 
-        <div class="flex flex-col gap-3">
-            <a href="hobby.html" class="relative bg-white text-black py-6 rounded-xl text-[11px] font-900 uppercase tracking-[0.3em] hover:bg-red-600 hover:text-white transition-all block shadow-lg group">
-                Enter Workbench
-                <span id="workbench-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded border-2 border-[#050505] hidden">0 ACTIVE</span>
-            </a>
+    <!-- PROOF BAR (honest claims) -->
+    <section class="proof">
+      <div class="wrap proof-row">
+        <div class="proof-stat"><div class="n">40K +</div><div class="l">Any system</div></div>
+        <div class="proof-stat"><div class="n">4 tiers</div><div class="l">Tabletop → Display</div></div>
+        <div class="proof-stat"><div class="n">100%</div><div class="l">Hand-painted</div></div>
+        <div class="proof-stat"><div class="n">UK</div><div class="l">Ships worldwide</div></div>
+        <div class="proof-stat"><div class="n">Free</div><div class="l">Recipes in The Vault</div></div>
+      </div>
+    </section>
 
-            <div class="glass-card rounded-xl flex items-center overflow-hidden">
-                <a href="mailto:commissions@theduttybrush.com?subject=Commission Inquiry - [Project Name]&body=COMMISSION DETAILS%0D%0A------------------------%0D%0AFaction/Game: %0D%0AUnit Name/Description: %0D%0AUnit Count: %0D%0A%0D%0AMINI SIZE%0D%0A(e.g. Infantry 28-32mm, Cavalry/Large 40-60mm, Monster/Vehicle 80mm+): %0D%0A%0D%0AQUALITY STANDARD%0D%0A(Tabletop / Tabletop Plus / Display / Character): %0D%0A%0D%0AADDITIONAL INFO%0D%0A- Assembly Required? (Yes/No): %0D%0A- Specific Color Scheme/Lore: %0D%0A- Specific Basing Style: %0D%0A- Deadline (if any): " class="flex-1 py-4 px-6 flex items-center justify-between hover:bg-white/5 transition group text-left">
-                    <span class="text-[10px] font-bold uppercase tracking-widest">Contact Me</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white transition-colors"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </a>
-                <button onclick="copyEmail()" class="border-l border-white/5 py-4 px-5 hover:bg-red-600 transition-colors group" title="Copy Email">
-                    <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 group-hover:text-white">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    <svg id="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                </button>
-            </div>
-
-            <a href="https://thebaselair.com/duttyclem" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition group">
-                <span class="text-[10px] font-bold uppercase tracking-widest">Baselair</span>
-                <img src="baselair.png" alt="Baselair" class="w-5 h-5 rounded-sm grayscale group-hover:grayscale-0 transition-all">
-            </a>
-
-            <a href="https://instagram.com/duttyclem" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
-                <span class="text-[10px] font-bold uppercase tracking-widest">Instagram</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-
-            <a href="https://www.tiktok.com/@theduttybrush" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
-                <span class="text-[10px] font-bold uppercase tracking-widest">TikTok</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" class="glass-card py-4 px-6 rounded-xl flex items-center justify-between hover:bg-zinc-900 transition">
-                <span class="text-[10px] font-bold uppercase tracking-widest">Facebook</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-            </a>
-        </div>
-
-        <div id="forge-container" class="space-y-4"></div>
-    </main>
-
-    <footer class="w-full max-w-md border-t border-white/5 pt-8 pb-12 text-center space-y-4">
+    <!-- FEATURED SHOWCASE -->
+    <section class="section wrap reveal" id="work">
+      <div class="section-head">
+        <span class="eyebrow acc">The Standard</span>
+        <h2>What lands back on your shelf</h2>
+        <p>Layered highlights, glazed transitions, weathering and a base that tells a story — finished to the tier you pick. No batch-farming, no shortcuts.</p>
+      </div>
+      <div class="split">
+        <div class="showcase"><img src="assets/img/featured.jpg" alt="A display-grade hand-painted Space Marine miniature"><span class="chip acc tag">Display Grade</span></div>
         <div>
-            <h2 class="text-sm font-900 uppercase italic tracking-tighter leading-none">The <span class="text-red-600">Dutty Brush</span></h2>
-            <p class="text-[8px] uppercase tracking-[0.4em] text-zinc-600 font-bold mt-1">Studio &copy; 2026</p>
+          <span class="eyebrow acc" style="display:block;margin-bottom:14px;">Every edge, every transition, by hand</span>
+          <h3 style="font-size:clamp(1.6rem,4vw,2.4rem)">From grey plastic to centrepiece.</h3>
+          <p style="color:var(--tx-soft); margin-top:16px;">Send a box of sprue, get back an army you're almost scared to field. Pick your standard, your scheme and your base — I handle the rest, sealed and shipped safe.</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
+            <a class="btn btn-ghost" href="gallery.html">See the full workbench</a>
+            <a class="btn btn-primary" href="#commission">Get this on your army</a>
+          </div>
         </div>
-        <div class="flex justify-center gap-6 text-[8px] font-black uppercase tracking-widest text-zinc-500">
-            <span>Hand-Crafted in the Studio</span>
-            <span class="text-zinc-800">|</span>
-            <span class="text-zinc-700">v2.1.0-Forge</span>
+      </div>
+    </section>
+
+    <!-- THE VAULT -->
+    <section class="section wrap reveal" id="vault">
+      <div class="section-head">
+        <span class="eyebrow acc">The Vault · Free Recipes</span>
+        <h2>Every scheme. Every paint. <span class="accent">Yours.</span></h2>
+        <p>You can't get something for nothing — so here's the something. The exact recipe behind every model I paint, free to steal. Like it? Get me to do it properly on yours.</p>
+      </div>
+      <div class="vault-grid" id="vault-grid"></div>
+      <div style="margin-top:38px; display:flex; justify-content:center;">
+        <a class="btn btn-ghost" href="vault.html">Open the full Vault
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- TUTORIALS -->
+    <section class="section wrap reveal" id="tutorials">
+      <div class="section-head">
+        <span class="eyebrow acc">Process Breakdowns</span>
+        <h2>Watch how it's done</h2>
+        <p>Step-by-step from primer to varnish. Learn the techniques, or just enjoy the grind.</p>
+      </div>
+      <div class="tut-grid" id="tut-grid"></div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section wrap reveal" id="pricing">
+      <div class="section-head">
+        <span class="eyebrow acc">Commissions</span>
+        <h2>Pick your standard</h2>
+        <p>Starting prices per standard infantry model. Cavalry, monsters and vehicles scale up, and every project gets a firm quote from your brief.</p>
+      </div>
+      <div class="tier-grid">
+        <article class="card tier"><span class="tier-tag">From £10 / model</span><h3>Tabletop</h3><p>Clean, cohesive, ready to game.</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 3-colour + shade</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Clean edges</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Textured base</li></ul></article>
+        <article class="card tier featured"><span class="tier-tag">From £22 / model</span><h3>Tabletop+</h3><p>The sweet spot — reads across the table and up close.</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Layered highlights</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Sub-assembly detail</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Themed basing</li></ul></article>
+        <article class="card tier"><span class="tier-tag">From £50 / model</span><h3>Display</h3><p>Cabinet pieces, built to be looked at.</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Glazing &amp; OSL</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Freehand &amp; weathering</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Scenic base</li></ul></article>
+        <article class="card tier"><span class="tier-tag">Quote · from £120</span><h3>Character</h3><p>Centrepiece showpieces, full collaboration.</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Bespoke scheme</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Competition finish</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Custom plinth</li></ul></article>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS (data-driven; hidden until you add real ones) -->
+    <section class="section wrap reveal" id="testimonials-section" hidden>
+      <div class="section-head"><span class="eyebrow acc">Word from the warband</span><h2>What clients say</h2></div>
+      <div class="quotes" id="quotes"></div>
+    </section>
+
+    <!-- COMMUNITY FEEDBACK -->
+    <section class="section wrap reveal">
+      <div class="card" style="padding:clamp(28px,5vw,48px);">
+        <div class="split">
+          <div>
+            <span class="eyebrow acc" style="display:block;margin-bottom:14px;">Join in</span>
+            <h2 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Tell me what to paint next</h2>
+            <p style="color:var(--tx-soft); margin-top:16px;">Hype the work, or throw a unit in the request pile. Most-wanted schemes get the full Vault treatment.</p>
+            <div class="reacts" id="reacts" style="margin-top:22px;"></div>
+          </div>
+          <div>
+            <label class="eyebrow" style="display:block;margin-bottom:10px;">Request a recipe</label>
+            <form class="news" id="request-form">
+              <input type="text" id="rq-text" placeholder="e.g. 'Iron Warriors, but rusty'" aria-label="Recipe request" required>
+              <button class="btn btn-primary" type="submit">Request</button>
+            </form>
+            <p style="color:var(--mut); font-size:.82rem; margin-top:12px;">No login needed. I read every one.</p>
+          </div>
         </div>
-    </footer>
+      </div>
+    </section>
 
-    <script>
-        function copyEmail() {
-            const email = "commissions@theduttybrush.com";
-            navigator.clipboard.writeText(email).then(() => {
-                const toast = document.getElementById("toast");
-                const copyIcon = document.getElementById("copy-icon");
-                const checkIcon = document.getElementById("check-icon");
-                toast.className = "show";
-                copyIcon.classList.add("hidden");
-                checkIcon.classList.remove("hidden");
-                setTimeout(() => { 
-                    toast.className = toast.className.replace("show", ""); 
-                    copyIcon.classList.remove("hidden");
-                    checkIcon.classList.add("hidden");
-                }, 3000);
-            });
-        }
+    <!-- NEWSLETTER -->
+    <section class="section wrap reveal">
+      <div class="card contact-card" style="border-color:var(--acc-line);">
+        <span class="eyebrow acc">Join the warband</span>
+        <h2>Recipes, drops &amp; open slots</h2>
+        <p>New recipes, behind-the-scenes WIPs, and a heads-up the moment commission slots open. No spam, ever.</p>
+        <form class="news" id="news-form" style="margin:28px auto 0; justify-content:center;">
+          <input type="email" id="news-email" placeholder="you@email.com" aria-label="Email" required>
+          <button class="btn btn-primary" type="submit">Enlist</button>
+        </form>
+      </div>
+    </section>
 
-        async function syncForge() {
-            try {
-                const res = await fetch('data.json?v=' + Date.now(), {
-                    cache: "no-store",
-                    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-                });
-                
-                if (!res.ok) throw new Error('Failed to load data.json');
-                const data = await res.json();
+    <!-- COMMISSION -->
+    <section class="section wrap reveal" id="commission">
+      <div class="split">
+        <div>
+          <span class="eyebrow acc" style="display:block;margin-bottom:14px;">Commissions Open</span>
+          <h2 style="font-size:clamp(2rem,6vw,3.4rem)">Let's get yours <span class="accent">on the bench</span></h2>
+          <p style="color:var(--tx-soft); margin-top:16px;">Faction, model count, the tier you're after. Lands straight in the studio inbox — replies in a day or two.</p>
+          <div class="socials" style="justify-content:flex-start; margin-top:28px;">
+            <a class="social" href="https://instagram.com/duttyclem" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+            <a class="social" href="https://www.tiktok.com/@theduttybrush" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8.245a6.5 6.5 0 0 0 3.5 1.02V6.5a3.77 3.77 0 0 1-3.5-3.5h-2.77v11.04a2.02 2.02 0 1 1-2.02-2.02c.14 0 .27.02.4.05V9.27a4.79 4.79 0 1 0 4.39 4.78V8.245z"/></svg></a>
+            <a class="social" href="https://www.facebook.com/profile.php?id=61582895284714" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a class="social" href="https://thebaselair.com/duttyclem" target="_blank" rel="noopener" aria-label="Baselair"><img src="assets/img/baselair.png" alt=""></a>
+          </div>
+        </div>
+        <form class="card" id="commission-form" style="padding:28px; display:flex; flex-direction:column; gap:14px;">
+          <div class="form-grid">
+            <div class="field"><label for="c-name">Name</label><input id="c-name" required placeholder="Your name"></div>
+            <div class="field"><label for="c-email">Email</label><input id="c-email" type="email" required placeholder="you@email.com"></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="c-faction">Faction / Game</label><input id="c-faction" placeholder="Adeptus Astartes"></div>
+            <div class="field"><label for="c-tier">Tier</label><select id="c-tier"><option>Not sure yet</option><option>Tabletop</option><option>Tabletop+</option><option>Display</option><option>Character</option></select></div>
+          </div>
+          <div class="field"><label for="c-count">Model count</label><input id="c-count" placeholder="e.g. 10 infantry + 1 character"></div>
+          <div class="field"><label for="c-brief">Brief</label><textarea id="c-brief" rows="3" placeholder="Scheme, lore, basing, deadline…"></textarea></div>
+          <input type="text" id="c-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+          <button class="btn btn-primary" type="submit" id="c-submit">Send the brief</button>
+        </form>
+      </div>
+    </section>
+  </main>
 
-                // FILTER: Only show "In Flight" projects (progress < 100)
-                const inFlightProjects = data.filter(p => (p.progress || p.percentage || 0) < 100);
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="brand">
+        <img src="assets/img/avatar.jpg" alt="" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);">
+        <span class="brand-name">The <span class="accent">Dutty</span> Brush</span>
+      </div>
+      <div class="meta">Stay dutty <span class="sep">/</span> Studio &copy; <span data-year>2026</span> <span class="sep">/</span> v4.0</div>
+    </div>
+  </footer>
 
-                // Update Active Badge with in-flight count
-                if (inFlightProjects.length > 0) {
-                    const badge = document.getElementById('workbench-count');
-                    badge.innerText = `${inFlightProjects.length} ACTIVE`;
-                    badge.classList.remove('hidden');
-                }
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-                // Render Live Feed for the most recent 2 in-flight projects
-                const container = document.getElementById('forge-container');
-                container.innerHTML = '';
-
-                const recentInFlight = inFlightProjects.slice(-2).reverse();
-
-                recentInFlight.forEach(p => {
-                    const title = p.title || p.name || "Untitled Project";
-                    const progress = p.progress || p.percentage || 0;
-                    const category = p.category || p.type || "Hobby";
-                    const targetLink = `hobby.html?project=${encodeURIComponent(title)}`;
-                    const thumb = p.thumbnail || p.image || 'avatar.jpg';
-                    const isCommission = category === "Commission";
-
-                    const cardWrapper = document.createElement('a');
-                    cardWrapper.href = targetLink;
-                    cardWrapper.className = "glass-card p-4 rounded-xl border border-zinc-800/50 text-left flex gap-4 items-center hover:bg-white/5 transition group block cursor-pointer";
-                    
-                    cardWrapper.innerHTML = `
-                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-white/5 flex-shrink-0 bg-black">
-                            <img src="${thumb}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="${title}">
-                        </div>
-                        <div class="flex-1 space-y-2">
-                            <div class="flex justify-between items-end">
-                                <div class="flex flex-col">
-                                    <span class="text-[7px] px-1.5 py-0.5 rounded bg-white/5 ${isCommission ? 'text-red-500' : 'text-zinc-500'} uppercase font-black w-fit border border-white/5 mb-1">
-                                        ${category}
-                                    </span>
-                                    <span class="text-[8px] uppercase font-bold text-zinc-400 tracking-widest leading-none">Live in the Forge</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-red-500">${progress}%</span>
-                            </div>
-                            <div class="w-full bg-black h-1 rounded-full overflow-hidden">
-                                <div class="bg-red-600 h-full progress-glow transition-all duration-700" style="width: ${progress}%"></div>
-                            </div>
-                            <p class="text-[9px] text-zinc-300 uppercase font-semibold italic truncate">"${title}"</p>
-                        </div>
-                    `;
-                    container.appendChild(cardWrapper);
-                });
-
-            } catch (e) { console.error("Sync failed:", e); }
-        }
-        syncForge();
-    </script>
+  <script src="assets/js/vendor/supabase.js"></script>
+  <script type="module" src="assets/js/home.js"></script>
 </body>
 </html>

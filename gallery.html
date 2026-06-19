@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workbench — The Dutty Brush</title>
+  <meta name="description" content="The Dutty Brush workbench: the full catalogue of painted Warhammer and tabletop miniatures, with field notes, galleries and paint recipes.">
+  <meta name="theme-color" content="#07070a">
+  <link rel="canonical" href="https://theduttybrush.com/gallery.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Dutty Brush">
+  <meta property="og:title" content="Workbench — The Dutty Brush">
+  <meta property="og:description" content="The full catalogue of painted miniatures, with field notes and paint recipes.">
+  <meta property="og:url" content="https://theduttybrush.com/gallery.html">
+  <meta property="og:image" content="https://theduttybrush.com/assets/img/featured.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/jpeg" href="assets/img/avatar.jpg">
+  <link rel="apple-touch-icon" href="assets/img/avatar.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- ============================================================= NAV -- -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="The Dutty Brush home">
+        <img src="assets/img/avatar.jpg" alt="">
+        <span class="brand-name">The <span class="accent">Dutty</span> Brush</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="index.html#commissions">Commissions</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <button class="btn btn-ghost btn-sm" id="admin-btn">Studio Login</button>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(64px,10vw,120px);">
+    <div class="section-head" style="margin-bottom:32px;">
+      <span class="eyebrow acc">The Workbench</span>
+      <h2 style="font-size:clamp(2rem,5.5vw,3.4rem);">Every model, every recipe</h2>
+      <p>Search and filter the full catalogue. Tap a model for field notes, the gallery and the exact paints used.</p>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" class="search" id="search" placeholder="Search the project database…" aria-label="Search projects">
+      <div class="filters" id="filters" role="group" aria-label="Filter by faction"></div>
+    </div>
+
+    <div class="work-grid" id="work-grid" aria-live="polite"></div>
+    <div class="empty-state" id="empty" hidden>
+      <div class="eyebrow">No matches</div>
+      <p>Nothing in the cabinet fits that search yet.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/img/avatar.jpg" alt="" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);">
+        <span class="brand-name">The <span class="accent">Dutty</span> Brush</span>
+      </a>
+      <div class="meta">Studio &copy; <span data-year>2026</span><span class="sep">/</span> v3.0</div>
+    </div>
+  </footer>
+
+  <!-- ===================================================== PROJECT VIEW -- -->
+  <div class="modal" id="project-modal" role="dialog" aria-modal="true" aria-labelledby="v-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="v-title"></h2>
+        <button class="modal-close" data-close>Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="viewer-grid">
+          <div class="viewer-main">
+            <img id="v-main" src="" alt="">
+            <div class="viewer-gallery" id="v-gallery"></div>
+          </div>
+          <div class="spec">
+            <div class="spec-row">
+              <div class="spec-block"><label>Faction</label><div class="val accent" id="v-faction"></div></div>
+              <div class="spec-block" style="text-align:right;"><label>Progress</label><div class="val big" id="v-progress"></div></div>
+            </div>
+            <div class="spec-block"><label>Field Notes</label><div class="spec-notes" id="v-notes"></div></div>
+            <div class="recipe"><label>Recipe Stack</label><div class="recipe-list" id="v-paints"></div></div>
+            <div id="v-admin" hidden><button class="btn btn-ghost" id="v-edit" style="width:100%;">Edit in the Forge</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= LOGIN -- -->
+  <div class="modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="modal-card narrow">
+      <div class="modal-head">
+        <h2 id="login-title">Studio <span class="accent">Access</span></h2>
+        <button class="modal-close" data-close>Close</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--mut); font-size:0.92rem; line-height:1.7;">
+          Studio login. Your credentials authenticate against
+          <strong>Supabase</strong> — access is enforced by row-level security, and no
+          repository token ever touches the browser.
+        </p>
+        <form id="login-form" style="margin-top:22px; display:flex; flex-direction:column; gap:18px;">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" autocomplete="username" placeholder="you@studio.com" required>
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" autocomplete="current-password" placeholder="••••••••" required>
+          </div>
+          <button class="btn btn-primary" type="submit" id="login-submit">Unlock the Forge</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== FORGE -- -->
+  <div class="modal" id="forge-modal" role="dialog" aria-modal="true" aria-labelledby="forge-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="forge-title">The <span class="accent">Forge</span></h2>
+        <div style="display:flex; gap:18px; align-items:center;">
+          <button class="modal-close" id="inbox-btn" type="button">Studio Desk</button>
+          <button class="modal-close" id="logout-btn" type="button">Logout</button>
+          <button class="modal-close" data-close>Close</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="field" style="margin-bottom:24px;">
+          <label for="project-selector">Target project</label>
+          <select id="project-selector"><option value="">+ New registry entry</option></select>
+        </div>
+        <form id="forge-form" style="display:flex; flex-direction:column; gap:20px;">
+          <div class="form-grid">
+            <div class="field"><label for="f-title">Name</label><input id="f-title" required placeholder="Project name"></div>
+            <div class="field"><label for="f-faction">Faction</label><select id="f-faction"></select></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="f-progress">Progress %</label><input id="f-progress" type="number" min="0" max="100" required placeholder="0–100"></div>
+            <div class="field"><label for="f-category">Type</label><select id="f-category"><option value="Commission">Commission</option><option value="Personal">Personal</option></select></div>
+          </div>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--mut);">
+            <input type="checkbox" id="f-published" checked style="width:auto;"> Published (visible on the public site)
+          </label>
+          <div class="fieldset">
+            <div class="field"><label for="f-thumb">Cover image</label>
+              <div class="dyn-row" style="margin-bottom:0;">
+                <input id="f-thumb" type="url" required placeholder="https://… or upload →">
+                <button type="button" class="icon-btn" id="upload-cover" aria-label="Upload cover image" title="Upload">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="fs-head" style="margin-top:16px;">
+              <label style="margin:0;">Gallery images</label>
+              <button type="button" class="icon-btn" id="add-gallery" aria-label="Add gallery image">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+            <div id="gallery-fields"></div>
+          </div>
+          <div class="fieldset">
+            <div class="fs-head">
+              <label style="margin:0;">Paint recipe</label>
+              <button type="button" class="icon-btn" id="add-paint" aria-label="Add paint step">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+            <div id="paint-fields"></div>
+          </div>
+          <div class="field"><label for="f-notes">Field notes</label><textarea id="f-notes" rows="4" placeholder="Scheme, recipe thoughts, lore…"></textarea></div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit" id="save-btn" style="flex:1;">Save project</button>
+            <button class="btn btn-ghost danger" type="button" id="delete-btn" hidden>Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== STUDIO DESK -- -->
+  <div class="modal" id="inbox-modal" role="dialog" aria-modal="true" aria-labelledby="inbox-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="inbox-title">Studio <span class="accent">Desk</span></h2>
+        <button class="modal-close" data-close>Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="filters" id="dash-tabs" role="tablist" style="margin-bottom:22px;"></div>
+        <div id="dash-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== LIGHTBOX -- -->
+  <div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightbox-img" src="" alt=""></div>
+
+  <script src="assets/js/vendor/supabase.js"></script>
+  <script type="module" src="assets/js/gallery.js"></script>
+</body>
+</html>

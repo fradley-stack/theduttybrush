@@ -1,47 +1,110 @@
-# 🖌️ The Dutty Brush | Studio Landing Page
+# The Dutty Brush
 
-The central hub for **The Dutty Brush** studio. This is a high-performance, mobile-first landing page featuring a real-time project tracker ("The Forge") that syncs dynamically with the studio workbench.
+Studio site for **The Dutty Brush** — a Warhammer & tabletop miniature‑painting
+commission studio. A fast, buildless static site for GitHub Pages, with a live
+project tracker ("The Forge") and a no‑backend admin editor that commits straight
+to `data.json`.
 
-## 🚀 Core Features
-
-- **The Live Forge:** A dynamic project tracker that displays active Work-in-Progress (WIP) items.
-- **Smart Filtering:** The landing page automatically hides projects that reach **100% completion**, keeping the focus on current activity.
-- **Workbench Sync:** Integrated with `hobby.html` via a shared `data.json` architecture.
-- **Adaptive UI:** Built with Tailwind CSS, featuring glassmorphism effects and desaturated imagery that pops into color on hover.
-- **One-Touch Contact:** Integrated `mailto:` system with pre-formatted commission requirement templates.
-
-## 🛠️ Technical Architecture
-
-### Data Synchronization
-The site uses an asynchronous `fetch` request to pull project data from `data.json`. The script is "Convention-Agnostic," meaning it supports both the legacy naming and the new Workbench naming conventions:
-
-| Display Element | Workbench Field | Legacy Field |
-| :--- | :--- | :--- |
-| **Project Title** | `title` | `name` |
-| **Progress %** | `progress` | `percentage` |
-| **Category** | `category` | `type` |
-| **Project Link** | `link` | `url` |
-| **Thumbnail** | `thumbnail` | `image` |
-
-### The "In-Flight" Logic
-Projects are only rendered in the Forge if their progress value is **less than 100**. 
-- **Badge:** The "Enter Workbench" button displays a red notification badge showing the total count of active projects.
-- **Cards:** Each active project generates a clickable card leading directly to that project's specific URL or the general workbench.
-
-## 📂 File Structure
-
-- `index.html`: The main landing page and Forge engine.
-- `hobby.html`: The studio workbench/management interface.
-- `data.json`: The single source of truth for all project statuses.
-- `avatar.jpg`: Studio branding icon.
-- `baselair.png`: Integration icon for The Baselair.
-
-## 🎨 Styling Constants
-
-- **Background:** `radial-gradient` (#111111 to #050505)
-- **Primary Accent:** `#ff3e3e` (Dutty Red)
-- **Status Accent:** `#22c55e` (Glow Green)
-- **Font:** Inter (Weight 400, 700, 900)
+🌐 **Live:** [theduttybrush.com](https://theduttybrush.com)
 
 ---
-*Maintained by Gemini AI for The Dutty Brush Studio © 2026*
+
+## Stack
+
+- **Vanilla HTML / CSS / JS** — no framework, no build step, no CDN runtime.
+- **Design tokens** in `:root` (colours, type, spacing, motion) drive the whole UI.
+- **ES modules** for behaviour; data fetched from a single `data.json`.
+- Fonts: Archivo (display), Inter (body), JetBrains Mono (labels) via Google Fonts.
+- Images optimised on the fly through Cloudinary transforms.
+
+Deploys as‑is: GitHub Pages serves the repo root; `CNAME` maps the domain.
+
+## Pages
+
+| File | Purpose |
+| :--- | :--- |
+| `index.html`   | Landing: hero, **The Forge** live tracker, selected work, commission tiers, process, about, contact. |
+| `gallery.html` | The Workbench — full searchable / faction‑filterable catalogue, project viewer, and the hidden admin editor. |
+| `hobby.html`   | Redirect to `gallery.html` (preserves old `?project=` deep links). |
+
+## Structure
+
+```text
+index.html · gallery.html · hobby.html
+data.json                     single source of truth (project array)
+CNAME · robots.txt · sitemap.xml
+assets/
+  css/styles.css              design system: tokens + components
+  js/
+    core.js                   shared: safe DOM/escape helpers, data layer, toast, nav, reveal
+    home.js                   landing logic (Forge strip, selected work)
+    gallery.js                catalogue: grid, search, filters, project viewer, deep links
+    admin.js                  hardened GitHub‑token CMS
+  img/                        avatar.jpg · featured.jpg · baselair.png
+```
+
+## Data model (`data.json`)
+
+```jsonc
+[
+  {
+    "title": "Saturnine Praetor",        // project name
+    "faction": "Adeptus Astartes",       // one of the canonical 40K factions
+    "progress": 15,                      // 0–100; <100 shows in The Forge
+    "category": "Personal",              // "Commission" | "Personal"
+    "thumbnail": "https://…",            // cover image (Cloudinary)
+    "notes": "Field notes…",
+    "gallery": ["https://…"],            // additional photos
+    "paints": { "Base": "Purple", … }    // stage → paints map
+  }
+]
+```
+
+Reads are tolerant of the legacy field names (`name`, `percentage`, `type`, `image`),
+but the editor always writes the canonical schema above.
+
+## The Forge (admin editor)
+
+The Workbench includes a browser‑based CMS that writes `data.json` via the GitHub
+Contents API — no server required.
+
+1. **Studio Login** → paste a **fine‑grained Personal Access Token** scoped to the
+   `theduttybrush` repo with **Contents: Read and write**.
+2. The token is verified against the repo (including write permission) before it is
+   accepted, and is stored only in `sessionStorage` (cleared when the tab closes).
+3. Add, edit or delete projects. On save the whole list is re‑serialised and committed
+   with optimistic‑concurrency (latest file SHA re‑read immediately before each write).
+
+**Security notes**
+- All project data is rendered via DOM / `textContent` — no `innerHTML` of user data, so no XSS.
+- Inputs are validated (required name, 0–100 progress, valid URL thumbnail, known faction).
+- Destructive deletes require confirmation.
+- The token is never written to disk or committed; treat it like a password and use the
+  shortest practical expiry.
+
+## Local development
+
+ES modules require HTTP (not `file://`). From the repo root:
+
+```bash
+python -m http.server 8080
+# open http://localhost:8080
+```
+
+The admin editor needs a real GitHub token and network access; the public pages work fully offline‑of‑GitHub against the local `data.json`.
+
+## Design tokens
+
+Defined once in `assets/css/styles.css`:
+
+| Token | Value | Role |
+| :--- | :--- | :--- |
+| `--bg` | `#07070a` | Canvas |
+| `--acc` | `#ff3e3e` | Dutty Red |
+| `--gold` | `#d6a23c` | Laurel accent |
+| `--ok` | `#3ad07a` | Commissions‑open status |
+| `--disp` / `--ui` / `--mono` | Archivo / Inter / JetBrains Mono | Type scale |
+
+---
+
+*The Dutty Brush © 2026 — hand‑crafted in the studio.*

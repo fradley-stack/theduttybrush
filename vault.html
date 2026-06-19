@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Vault — Free Paint Recipes · The Dutty Brush</title>
+  <meta name="description" content="The Dutty Brush Vault: free paint recipes for Warhammer and tabletop miniatures. The exact paints and stages behind every model — yours to steal.">
+  <meta name="theme-color" content="#07070a">
+  <link rel="canonical" href="https://theduttybrush.com/vault.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Vault — Free Paint Recipes · The Dutty Brush">
+  <meta property="og:description" content="The exact paints and stages behind every model — free to steal.">
+  <meta property="og:url" content="https://theduttybrush.com/vault.html">
+  <meta property="og:image" content="https://theduttybrush.com/assets/img/featured.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/jpeg" href="assets/img/avatar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body class="grain">
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="The Dutty Brush home">
+        <img src="assets/img/avatar.jpg" alt="">
+        <span class="brand-name">The <span class="accent">Dutty</span> Brush</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="gallery.html">Work</a>
+        <a href="index.html#commission">Commissions</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-sm hide-sm" href="index.html#commission">Commission Me</a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(64px,10vw,120px);">
+    <div class="section-head" style="margin-bottom:32px;">
+      <span class="eyebrow acc">The Vault · Free Recipes</span>
+      <h2 style="font-size:clamp(2rem,5.5vw,3.4rem);">Every scheme. Every paint. <span class="accent">Yours.</span></h2>
+      <p>The exact recipe behind every model I paint — free to steal. Like a scheme? Get it done properly on your army.</p>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" class="search" id="search" placeholder="Search recipes — faction, scheme, paint…" aria-label="Search recipes">
+      <div class="filters" id="filters" role="group" aria-label="Filter by faction"></div>
+    </div>
+
+    <div class="vault-grid" id="vault-grid" aria-live="polite"></div>
+    <div class="empty-state" id="empty" hidden><div class="eyebrow">No matches</div><p>No recipes fit that search yet.</p></div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="index.html"><img src="assets/img/avatar.jpg" alt="" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);"><span class="brand-name">The <span class="accent">Dutty</span> Brush</span></a>
+      <div class="meta">Stay dutty <span class="sep">/</span> Studio &copy; <span data-year>2026</span></div>
+    </div>
+  </footer>
+
+  <!-- RECIPE MODAL -->
+  <div class="modal" id="recipe-modal" role="dialog" aria-modal="true" aria-labelledby="r-title">
+    <div class="modal-card">
+      <div class="modal-head"><h2 id="r-title"></h2><button class="modal-close" data-close>Close</button></div>
+      <div class="modal-body">
+        <div class="viewer-grid">
+          <div class="viewer-main">
+            <img id="r-main" src="" alt="">
+            <div class="viewer-gallery" id="r-gallery"></div>
+          </div>
+          <div class="spec">
+            <div class="spec-row">
+              <div class="spec-block"><label>Faction</label><div class="val accent" id="r-faction"></div></div>
+              <div class="spec-block" style="text-align:right;"><label>Progress</label><div class="val big" id="r-progress"></div></div>
+            </div>
+            <div class="recipe"><label>The Recipe</label><div class="recipe-list" id="r-paints"></div></div>
+            <div class="spec-block" id="r-notes-wrap"><label>Field Notes</label><div class="spec-notes" id="r-notes"></div></div>
+            <a class="btn btn-primary" id="r-cta" href="index.html#commission" style="width:100%;">Get this scheme on your army</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true"><img id="lightbox-img" src="" alt=""></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/vendor/supabase.js"></script>
+  <script type="module" src="assets/js/vault.js"></script>
+</body>
+</html>
