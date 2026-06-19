@@ -28,10 +28,28 @@ export function initAdmin(ctx) {
   }
 
   /* -------------------------------------------------------------- auth -- */
+  // Accept a session only if the account is an allow-listed admin (RLS-backed).
+  async function applySession(s) {
+    session = s;
+    if (session) {
+      const { data: ok, error } = await sb.rpc('is_admin');
+      if (error || !ok) {
+        session = null;
+        toast('That account is not a studio admin.', 'err');
+        await sb.auth.signOut();
+        return;
+      }
+    }
+    updateAuthUI();
+  }
   async function refreshSession() {
     const { data } = await sb.auth.getSession();
-    session = data.session;
-    updateAuthUI();
+    await applySession(data.session);
+  }
+  async function signInWithGoogle() {
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
+    if (error) toast(error.message || 'Google sign-in is not enabled yet', 'err');
   }
   function updateAuthUI() {
     const btn = $('#admin-btn');
@@ -469,6 +487,7 @@ export function initAdmin(ctx) {
   }
 
   $('#admin-btn')?.addEventListener('click', handleAdminClick);
+  $('#google-login')?.addEventListener('click', signInWithGoogle);
   $('#login-form')?.addEventListener('submit', onLogin);
   $('#logout-btn')?.addEventListener('click', logout);
   $('#inbox-btn')?.addEventListener('click', openDesk);
@@ -478,7 +497,10 @@ export function initAdmin(ctx) {
   $('#add-paint')?.addEventListener('click', () => $('#paint-fields').append(paintRow()));
   $('#upload-cover')?.addEventListener('click', () => handleUpload($('#f-thumb')));
   $('#project-selector')?.addEventListener('change', (e) => loadIntoForge(e.target.value));
-  sb.auth.onAuthStateChange((_evt, s) => { session = s; updateAuthUI(); });
+  sb.auth.onAuthStateChange((evt, s) => {
+    if (evt === 'SIGNED_OUT') { session = null; updateAuthUI(); return; }
+    applySession(s);
+  });
   refreshSession();
 
   return { isLoggedIn, openForge };

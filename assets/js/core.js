@@ -23,7 +23,7 @@ export function getSupabase() {
   if (_sb) return _sb;
   if (!SUPABASE_READY || !globalThis.supabase?.createClient) return null;
   _sb = globalThis.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' },
   });
   return _sb;
 }
