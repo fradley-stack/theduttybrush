@@ -109,6 +109,16 @@ function wireForms() {
     finally { busy(btn, false, 'Enlist'); }
   });
 
+  const cs = $('#cs-news');
+  cs?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('#cs-email').value.trim(); if (!email) return;
+    const btn = cs.querySelector('button'); busy(btn, true);
+    try { await subscribe(email); cs.reset(); toast("You're on the list ⚔", 'ok'); }
+    catch (err) { toast(err.message || 'Could not subscribe', 'err'); }
+    finally { busy(btn, false, 'Notify me'); }
+  });
+
   const rf = $('#request-form');
   rf?.addEventListener('submit', async (e) => {
     e.preventDefault();

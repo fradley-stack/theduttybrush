@@ -22,6 +22,21 @@
   <link rel="preload" as="image" href="assets/img/work/work-01.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/forge.css">
+  <style>
+    /* Coming-soon gate (remove this block + #coming-soon markup at launch) */
+    #coming-soon{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;
+      background-image:radial-gradient(820px 520px at 50% 18%,rgba(255,62,62,.13),transparent 60%)}
+    #coming-soon .cs-eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--acc);margin-bottom:24px}
+    #coming-soon .cs-title{font-size:clamp(3rem,12vw,8rem);font-weight:700;letter-spacing:-.05em;text-transform:uppercase;line-height:.88}
+    #coming-soon .cs-title span{color:var(--acc)}
+    #coming-soon .cs-sub{max-width:48ch;color:var(--soft);margin:26px 0 0;font-size:1.05rem;line-height:1.7}
+    #coming-soon .cs-news{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+    #coming-soon .cs-news input{background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r);padding:14px 16px;min-width:250px;color:var(--ink)}
+    #coming-soon .cs-news input:focus{outline:none;border-color:var(--acc-line)}
+    #coming-soon .cs-socials{display:flex;gap:22px;margin-top:30px;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+    #coming-soon .cs-socials a{color:var(--soft)}#coming-soon .cs-socials a:hover{color:var(--acc)}
+    #coming-soon .cs-foot{position:absolute;bottom:20px;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  </style>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"ProfessionalService","name":"The Dutty Brush",
    "description":"Warhammer and tabletop miniature painting commission studio.","url":"https://theduttybrush.com/",
@@ -30,6 +45,21 @@
   </script>
 </head>
 <body>
+
+  <!-- ===== COMING SOON GATE (default for the public; bypass with ?preview) ===== -->
+  <div id="coming-soon">
+    <span class="cs-eyebrow">Warhammer &amp; tabletop miniature painting</span>
+    <h1 class="cs-title">PAINT<br><span>LIKE HELL.</span></h1>
+    <p class="cs-sub">The forge is heating up. Commissions reopen shortly — drop your email to get first dibs on slots and the free recipe drops.</p>
+    <form class="cs-news" id="cs-news"><input type="email" id="cs-email" placeholder="you@email.com" aria-label="Email" required><button class="btn btn-acc" type="submit">Notify me</button></form>
+    <div class="cs-socials">
+      <a href="mailto:commissions@theduttybrush.com">Email</a>
+      <a href="https://instagram.com/duttyclem" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@theduttybrush" target="_blank" rel="noopener">TikTok</a>
+    </div>
+    <div class="cs-foot">© <span data-year>2026</span> The Dutty Brush · theduttybrush.com</div>
+  </div>
+  <script>(function(){try{var p=new URLSearchParams(location.search);if(p.has('preview'))localStorage.setItem('tdb_preview','1');if(p.has('exit'))localStorage.removeItem('tdb_preview');if(localStorage.getItem('tdb_preview')){var el=document.getElementById('coming-soon');if(el)el.parentNode.removeChild(el);}}catch(e){}})();</script>
 
   <div class="ticker"><div class="run">
     <span><b>Commissions OPEN</b></span><span>// 2 slots this month</span><span>insured both ways</span><span>UK · ships worldwide</span><span>recipes free in The Vault</span><span>no slapchop · no batch farms</span>
