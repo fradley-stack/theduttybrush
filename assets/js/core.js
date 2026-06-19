@@ -96,10 +96,10 @@ export function normalizeProject(p = {}) {
 
 /** Flatten a Supabase row (with nested images/paints) into the UI shape. */
 function mapRow(r) {
-  const gallery = (r.project_images ?? [])
+  const gallery = (r.tdb_project_images ?? [])
     .slice().sort((a, b) => a.sort - b.sort).map((i) => i.url);
   const paints = {};
-  (r.project_paints ?? []).slice().sort((a, b) => a.sort - b.sort)
+  (r.tdb_project_paints ?? []).slice().sort((a, b) => a.sort - b.sort)
     .forEach((p) => { paints[p.stage] = p.paints; });
   return {
     id: r.id, slug: r.slug, title: r.title, faction: r.faction, category: r.category,
@@ -109,14 +109,14 @@ function mapRow(r) {
 
 const PROJECT_SELECT =
   'id,slug,title,faction,category,progress,notes,cover_url,is_published,sort,' +
-  'project_images(url,alt,sort),project_paints(stage,paints,sort)';
+  'tdb_project_images(url,alt,sort),tdb_project_paints(stage,paints,sort)';
 
 /** Primary read path: Supabase. Falls back to the committed data.json snapshot. */
 export async function fetchProjects({ includeUnpublished = false } = {}) {
   const sb = getSupabase();
   if (sb) {
     try {
-      let q = sb.from('projects').select(PROJECT_SELECT).order('sort', { ascending: false });
+      let q = sb.from('tdb_projects').select(PROJECT_SELECT).order('sort', { ascending: false });
       if (!includeUnpublished) q = q.eq('is_published', true);
       const { data, error } = await q;
       if (error) throw error;
@@ -147,7 +147,7 @@ export async function fetchTestimonials() {
   const sb = getSupabase();
   if (!sb) return [];
   try {
-    const { data, error } = await sb.from('testimonials')
+    const { data, error } = await sb.from('tdb_testimonials')
       .select('quote,author,handle').eq('is_published', true).order('sort', { ascending: false });
     if (error) throw error;
     return data ?? [];
@@ -159,7 +159,7 @@ export async function fetchReactions() {
   const sb = getSupabase();
   if (!sb) return [];
   try {
-    const { data, error } = await sb.from('reactions').select('kind,label,count').order('kind');
+    const { data, error } = await sb.from('tdb_reactions').select('kind,label,count').order('kind');
     if (error) throw error;
     return data ?? [];
   } catch { return []; }
@@ -169,28 +169,28 @@ export async function fetchReactions() {
 export async function bumpReaction(kind) {
   const sb = getSupabase();
   if (!sb) return null;
-  const { data, error } = await sb.rpc('bump_reaction', { k: kind });
+  const { data, error } = await sb.rpc('tdb_bump_reaction', { k: kind });
   return error ? null : data;
 }
 
 export async function subscribe(email) {
   const sb = getSupabase();
   if (!sb) throw new Error('Newsletter unavailable');
-  const { error } = await sb.from('subscribers').insert({ email });
+  const { error } = await sb.from('tdb_subscribers').insert({ email });
   if (error && error.code !== '23505') throw error;   // ignore "already subscribed"
 }
 
 export async function submitRecipeRequest(request, email = null) {
   const sb = getSupabase();
   if (!sb) throw new Error('Requests unavailable');
-  const { error } = await sb.from('recipe_requests').insert({ request, email });
+  const { error } = await sb.from('tdb_recipe_requests').insert({ request, email });
   if (error) throw error;
 }
 
 export async function submitCommission(payload) {
   const sb = getSupabase();
   if (!sb) throw new Error('Form unavailable');
-  const { error } = await sb.from('commissions').insert(payload);
+  const { error } = await sb.from('tdb_commissions').insert(payload);
   if (error) throw error;
 }
 

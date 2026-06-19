@@ -32,7 +32,7 @@ export function initAdmin(ctx) {
   async function applySession(s) {
     session = s;
     if (session) {
-      const { data: ok, error } = await sb.rpc('is_admin');
+      const { data: ok, error } = await sb.rpc('tdb_is_admin');
       if (error || !ok) {
         session = null;
         toast('That account is not a studio admin.', 'err');
@@ -203,16 +203,16 @@ export function initAdmin(ctx) {
 
   /* ----------------------------------------------------- write children -- */
   async function replaceChildRows(projectId, gallery, paints) {
-    await sb.from('project_images').delete().eq('project_id', projectId);
-    await sb.from('project_paints').delete().eq('project_id', projectId);
+    await sb.from('tdb_project_images').delete().eq('project_id', projectId);
+    await sb.from('tdb_project_paints').delete().eq('project_id', projectId);
     if (gallery.length) {
       const rows = gallery.map((url, sort) => ({ project_id: projectId, url, sort }));
-      const { error } = await sb.from('project_images').insert(rows);
+      const { error } = await sb.from('tdb_project_images').insert(rows);
       if (error) throw error;
     }
     if (paints.length) {
       const rows = paints.map((p, sort) => ({ project_id: projectId, stage: p.stage, paints: p.paints, sort }));
-      const { error } = await sb.from('project_paints').insert(rows);
+      const { error } = await sb.from('tdb_project_paints').insert(rows);
       if (error) throw error;
     }
   }
@@ -238,12 +238,12 @@ export function initAdmin(ctx) {
       };
       let projectId = currentId;
       if (projectId) {
-        const { error: e1 } = await sb.from('projects').update(core).eq('id', projectId);
+        const { error: e1 } = await sb.from('tdb_projects').update(core).eq('id', projectId);
         if (e1) throw e1;
       } else {
         let slug = slugify(form.title) || `project-${Date.now()}`;
         if (ctx.getProjects().some((p) => p.slug === slug)) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
-        const { data, error: e2 } = await sb.from('projects')
+        const { data, error: e2 } = await sb.from('tdb_projects')
           .insert({ ...core, slug, sort: Math.floor(Date.now() / 1000) })
           .select('id,slug').single();
         if (e2) throw e2;
@@ -267,7 +267,7 @@ export function initAdmin(ctx) {
     if (!confirm(`Delete “${$('#f-title').value}”? This removes it and its photos/recipe.`)) return;
     setBusy(true);
     try {
-      const { error } = await sb.from('projects').delete().eq('id', currentId);
+      const { error } = await sb.from('tdb_projects').delete().eq('id', currentId);
       if (error) throw error;
       await ctx.reload();
       resetForm();
@@ -313,7 +313,7 @@ export function initAdmin(ctx) {
 
   // -- Commissions --
   async function renderCommissions(c) {
-    const { data, error } = await sb.from('commissions').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('tdb_commissions').select('*').order('created_at', { ascending: false });
     if (error) throw error;
     if (!data.length) { c.replaceChildren(emptyMsg('No commission requests yet.')); return; }
     c.replaceChildren(...data.map((x) => el('div', { class: 'card', style: 'padding:20px; margin-bottom:14px;' }, [
@@ -327,14 +327,14 @@ export function initAdmin(ctx) {
       el('p', { class: 'spec-notes', text: x.brief || '(no brief)' }),
       el('div', { style: 'display:flex; gap:12px; align-items:center; margin-top:14px;' }, [
         el('label', { class: 'eyebrow', text: 'Status', style: 'margin:0;' }),
-        statusSelect('commissions', x, STATUSES), deleteButton('commissions', x.id, 'Delete this request?'),
+        statusSelect('tdb_commissions', x, STATUSES), deleteButton('tdb_commissions', x.id, 'Delete this request?'),
       ]),
     ])));
   }
 
   // -- Recipe requests --
   async function renderRequests(c) {
-    const { data, error } = await sb.from('recipe_requests').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('tdb_recipe_requests').select('*').order('created_at', { ascending: false });
     if (error) throw error;
     if (!data.length) { c.replaceChildren(emptyMsg('No recipe requests yet.')); return; }
     c.replaceChildren(...data.map((r) => el('div', { class: 'card', style: 'padding:18px; margin-bottom:12px;' }, [
@@ -343,14 +343,14 @@ export function initAdmin(ctx) {
       ]),
       r.email ? el('div', { style: 'margin-top:6px;' }, [el('a', { href: `mailto:${r.email}`, style: 'color:var(--acc); font-size:.85rem;', text: r.email })]) : null,
       el('div', { style: 'display:flex; gap:12px; align-items:center; margin-top:12px;' }, [
-        statusSelect('recipe_requests', r, RQ_STATUSES), deleteButton('recipe_requests', r.id, 'Delete this request?'),
+        statusSelect('tdb_recipe_requests', r, RQ_STATUSES), deleteButton('tdb_recipe_requests', r.id, 'Delete this request?'),
       ]),
     ])));
   }
 
   // -- Subscribers --
   async function renderSubscribers(c) {
-    const { data, error } = await sb.from('subscribers').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('tdb_subscribers').select('*').order('created_at', { ascending: false });
     if (error) throw error;
     if (!data.length) { c.replaceChildren(emptyMsg('No subscribers yet.')); return; }
     const copy = el('button', { class: 'btn btn-ghost btn-sm', text: `Copy all ${data.length} emails` });
@@ -364,14 +364,14 @@ export function initAdmin(ctx) {
       ]),
       ...data.map((s) => el('div', { class: 'card', style: 'padding:12px 16px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:12px;' }, [
         el('div', {}, [el('a', { href: `mailto:${s.email}`, style: 'color:var(--tx)', text: s.email }), el('div', { class: 'eyebrow', style: 'margin-top:4px;', text: when(s.created_at) })]),
-        deleteButton('subscribers', s.id, 'Remove this subscriber?'),
+        deleteButton('tdb_subscribers', s.id, 'Remove this subscriber?'),
       ])),
     );
   }
 
   // -- Testimonials (CRUD; powers the public testimonials section) --
   async function renderTestimonials(c) {
-    const { data, error } = await sb.from('testimonials').select('*').order('sort', { ascending: false });
+    const { data, error } = await sb.from('tdb_testimonials').select('*').order('sort', { ascending: false });
     if (error) throw error;
 
     const fQuote = el('textarea', { rows: '2', placeholder: 'What they said…' });
@@ -386,8 +386,8 @@ export function initAdmin(ctx) {
       const payload = { quote: fQuote.value.trim(), author: fAuthor.value.trim(), handle: fHandle.value.trim() || null, sort: parseInt(fSort.value, 10) || 0, is_published: fPub.checked };
       if (!payload.quote || !payload.author) { toast('Quote and author required', 'err'); return; }
       const res = editTestiId
-        ? await sb.from('testimonials').update(payload).eq('id', editTestiId)
-        : await sb.from('testimonials').insert(payload);
+        ? await sb.from('tdb_testimonials').update(payload).eq('id', editTestiId)
+        : await sb.from('tdb_testimonials').insert(payload);
       if (res.error) { toast(res.error.message, 'err'); return; }
       toast('Testimonial saved', 'ok'); reset(); renderTestimonials(c);
     });
@@ -417,7 +417,7 @@ export function initAdmin(ctx) {
             t.handle ? el('span', { class: 'eyebrow', style: 'margin-left:8px;', text: t.handle }) : null,
             el('span', { class: 'eyebrow', style: 'margin-left:8px;', text: t.is_published ? '· published' : '· hidden' }),
           ]),
-          el('div', { style: 'display:flex; gap:8px;' }, [edit, deleteButton('testimonials', t.id, 'Delete this testimonial?')]),
+          el('div', { style: 'display:flex; gap:8px;' }, [edit, deleteButton('tdb_testimonials', t.id, 'Delete this testimonial?')]),
         ]),
       ]);
     }) : [emptyMsg('No testimonials yet — add your first above.')];
@@ -427,12 +427,12 @@ export function initAdmin(ctx) {
 
   // -- Reactions --
   async function renderReactions(c) {
-    const { data, error } = await sb.from('reactions').select('*').order('kind');
+    const { data, error } = await sb.from('tdb_reactions').select('*').order('kind');
     if (error) throw error;
     const reset = el('button', { class: 'btn btn-ghost danger btn-sm', text: 'Reset all' });
     reset.addEventListener('click', async () => {
       if (!confirm('Reset all reaction counts to 0?')) return;
-      const { error: e } = await sb.from('reactions').update({ count: 0 }).gte('count', 0);
+      const { error: e } = await sb.from('tdb_reactions').update({ count: 0 }).gte('count', 0);
       if (e) return toast(e.message, 'err');
       toast('Counts reset', 'ok'); renderReactions(c);
     });
@@ -446,13 +446,13 @@ export function initAdmin(ctx) {
   }
 
   const TABS = [
-    ['commissions', 'Commissions', renderCommissions],
+    ['tdb_commissions', 'Commissions', renderCommissions],
     ['requests', 'Requests', renderRequests],
-    ['subscribers', 'Subscribers', renderSubscribers],
-    ['testimonials', 'Testimonials', renderTestimonials],
-    ['reactions', 'Reactions', renderReactions],
+    ['tdb_subscribers', 'Subscribers', renderSubscribers],
+    ['tdb_testimonials', 'Testimonials', renderTestimonials],
+    ['tdb_reactions', 'Reactions', renderReactions],
   ];
-  let activeTab = 'commissions';
+  let activeTab = 'tdb_commissions';
 
   function buildTabs() {
     const bar = $('#dash-tabs');
@@ -464,7 +464,7 @@ export function initAdmin(ctx) {
   }
   async function selectTab(key) {
     activeTab = key;
-    if (key === 'testimonials') editTestiId = null;
+    if (key === 'tdb_testimonials') editTestiId = null;
     buildTabs();
     const c = $('#dash-content');
     c.replaceChildren(el('p', { class: 'eyebrow', text: 'Loading…' }));
