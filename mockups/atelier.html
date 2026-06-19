@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dutty Brush — Concept A · ATELIER</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3efe6; --paper-2:#ece7da; --ink:#1a1714; --soft:#5b554b; --faint:#9a9286;
+    --line:#d9d2c4; --gold:#9a7b3f; --ox:#7d2b22;
+    --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0} html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  .eyebrow{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.02;letter-spacing:-.01em}
+  .serif-it{font-style:italic;font-weight:400}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:80px}
+  .brand{font-family:var(--serif);font-size:1.45rem;letter-spacing:-.01em}
+  .brand b{font-weight:600}
+  .nav-links{display:flex;gap:34px;font-size:.82rem;color:var(--soft)}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:2px;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;transition:.25s}
+  .btn-ink{background:var(--ink);color:var(--paper)} .btn-ink:hover{background:var(--ox)}
+  .btn-line{border:1px solid var(--ink)} .btn-line:hover{background:var(--ink);color:var(--paper)}
+
+  /* hero */
+  .hero{padding:clamp(48px,8vw,110px) 0 clamp(40px,6vw,80px)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:center}
+  .hero h1{font-size:clamp(3rem,7.5vw,6.4rem)}
+  .hero .lede{margin-top:28px;max-width:42ch;font-size:1.15rem;color:var(--soft)}
+  .hero .actions{margin-top:38px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .plate{position:relative;background:var(--paper-2);padding:18px;border:1px solid var(--line)}
+  .plate img{width:100%;aspect-ratio:4/5;object-fit:cover}
+  .plate .cap{display:flex;justify-content:space-between;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:14px}
+  .rule{height:1px;background:var(--line);margin:0}
+  .marq{display:flex;gap:48px;padding:22px 0;font-family:var(--serif);font-style:italic;color:var(--faint);font-size:1.1rem;white-space:nowrap;overflow:hidden}
+
+  /* section */
+  .sec{padding:clamp(60px,9vw,120px) 0}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:clamp(32px,5vw,56px);flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(2.2rem,5vw,3.6rem)}
+  .sec-head p{max-width:34ch;color:var(--soft)}
+
+  /* gallery: editorial asymmetric */
+  .gal{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(16px,2.4vw,30px)}
+  .work{grid-column:span 6}
+  .work.tall{grid-column:span 6}
+  .work.wide{grid-column:span 6}
+  .work .frame{overflow:hidden;background:var(--paper-2)}
+  .work img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.16,1,.3,1);filter:saturate(.96)}
+  .work:hover img{transform:scale(1.04)}
+  .work.tall .frame{aspect-ratio:4/5} .work.wide .frame{aspect-ratio:1/1}
+  .label{display:flex;justify-content:space-between;gap:16px;padding-top:16px;border-top:1px solid var(--line);margin-top:16px}
+  .label .t{font-family:var(--serif);font-size:1.25rem}
+  .label .m{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:right}
+  @media(max-width:780px){.work,.work.tall,.work.wide{grid-column:span 12}.hero-grid{grid-template-columns:1fr}.nav-links{display:none}}
+
+  /* vault editorial list */
+  .vault{background:var(--ink);color:var(--paper)}
+  .vault .eyebrow{color:var(--gold)}
+  .vault h2{color:var(--paper)}
+  .vault .sec-head p{color:#b8b0a2}
+  .entry{display:grid;grid-template-columns:64px 1fr auto;gap:24px;align-items:center;padding:26px 0;border-top:1px solid #34302a;transition:.3s}
+  .entry:last-child{border-bottom:1px solid #34302a}
+  .entry:hover{padding-left:10px}
+  .entry .no{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:1.3rem}
+  .entry .ti{font-family:var(--serif);font-size:1.6rem;font-weight:400}
+  .entry .su{font-size:.8rem;color:#9a9286;margin-top:4px}
+  .entry .go{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#b8b0a2}
+
+  /* tiers */
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+  .tier{padding:32px 26px;border-right:1px solid var(--line)}
+  .tier:last-child{border-right:0}
+  .tier .p{font-family:var(--serif);font-size:2.2rem;margin:6px 0 2px}
+  .tier .per{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .tier h3{font-size:1.15rem;margin-top:18px;font-weight:500}
+  .tier p{font-size:.86rem;color:var(--soft);margin-top:8px}
+  @media(max-width:780px){.tiers{grid-template-columns:1fr 1fr}.tier{border-bottom:1px solid var(--line)}}
+
+  /* cta */
+  .cta{text-align:center;padding:clamp(60px,9vw,120px) 0}
+  .cta h2{font-size:clamp(2.6rem,7vw,5rem)}
+  .foot{border-top:1px solid var(--line);padding:46px 0;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.78rem;color:var(--faint)}
+  .tag{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);position:fixed;bottom:14px;left:14px;background:var(--paper-2);border:1px solid var(--line);padding:7px 11px;border-radius:2px;z-index:30}
+</style>
+</head>
+<body>
+<div class="tag">Concept A · Atelier</div>
+
+<header class="nav"><div class="wrap">
+  <div class="brand">The <b>Dutty</b> Brush</div>
+  <nav class="nav-links"><a href="#work">Work</a><a href="#vault">The Vault</a><a href="#commissions">Commissions</a><a href="#contact">Contact</a></nav>
+  <a class="btn btn-line" href="#contact">Commission</a>
+</div></header>
+
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <span class="eyebrow">Miniature painting · est. studio</span>
+    <h1>Small things,<br><span class="serif-it">painted</span> with<br>enormous care.</h1>
+    <p class="lede">A one‑bench studio painting Warhammer and tabletop miniatures — from battle‑ready armies to display pieces fit for a cabinet. And the recipes behind every one.</p>
+    <div class="actions">
+      <a class="btn btn-ink" href="#contact">Start a commission</a>
+      <a class="btn btn-line" href="#work">View the work</a>
+    </div>
+  </div>
+  <figure class="plate">
+    <img src="../assets/img/featured.jpg" alt="A display-grade painted Space Marine">
+    <figcaption class="cap"><span>Plate I — Mortis Tactical</span><span>Display grade · 32mm</span></figcaption>
+  </figure>
+</div></section>
+
+<div class="rule"></div>
+<div class="wrap"><div class="marq">Edge highlights · Glazed transitions · OSL · True metallics · Freehand · Object‑source lighting · Weathering · Wet‑blending · Scenic basing · Edge highlights · Glazed transitions</div></div>
+<div class="rule"></div>
+
+<section class="sec" id="work"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow">Selected work</span><h2>The portfolio</h2></div>
+    <p>Shot like the objects they are — multiple angles, macro detail, honest light.</p>
+  </div>
+  <div class="gal">
+    <article class="work tall"><div class="frame"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_900/v1772549499/hpsbmiawe7xb28qle8ac.jpg" alt="Dark Angel"></div><div class="label"><span class="t serif-it">Dark Angel</span><span class="m">Adeptus Astartes<br>Display</span></div></article>
+    <article class="work tall"><div class="frame"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_900/v1772587362/lpeppqxxdyo3kxwll586.png" alt="Saturnine Praetor"></div><div class="label"><span class="t serif-it">Saturnine Praetor</span><span class="m">Imperial Fists<br>In progress</span></div></article>
+    <article class="work wide"><div class="frame"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_900/v1772554708/aavsoxdehbwl6tjkxyi7.jpg" alt="Night Lord"></div><div class="label"><span class="t serif-it">Night Lord</span><span class="m">Chaos<br>Tabletop+</span></div></article>
+    <article class="work wide"><div class="frame"><img src="../assets/img/featured.jpg" alt="Mortis Tactical"></div><div class="label"><span class="t serif-it">Mortis Tactical</span><span class="m">Salamanders<br>Display</span></div></article>
+  </div>
+</div></section>
+
+<section class="vault sec" id="vault"><div class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow">The Vault — free</span><h2>Field notes &amp; recipes</h2></div>
+    <p>Every scheme I paint, written down and given away. You can't get something for nothing — so here's the something.</p>
+  </div>
+  <div>
+    <div class="entry"><span class="no">01</span><div><div class="ti">Imperial Fist gold, four ways</div><div class="su">Golden brown → golden yellow, with magenta recesses</div></div><span class="go">Read →</span></div>
+    <div class="entry"><span class="no">02</span><div><div class="ti">Weathered ceramite green</div><div class="su">Zenithal + glaze, sponge chipping, oil pin‑wash</div></div><span class="go">Read →</span></div>
+    <div class="entry"><span class="no">03</span><div><div class="ti">Night Lords lightning, by hand</div><div class="su">Freehand bolts over a blue‑black blend</div></div><span class="go">Read →</span></div>
+  </div>
+</div></section>
+
+<section class="sec" id="commissions"><div class="wrap">
+  <div class="sec-head"><div><span class="eyebrow">Commissions</span><h2>Four standards</h2></div><p>Priced per infantry model; larger pieces scale. A firm quote follows your brief.</p></div>
+  <div class="tiers">
+    <div class="tier"><span class="per">from / model</span><div class="p">£10</div><h3>Tabletop</h3><p>Clean, cohesive, game‑ready.</p></div>
+    <div class="tier"><span class="per">from / model</span><div class="p">£22</div><h3>Tabletop+</h3><p>Blends, detail, themed bases.</p></div>
+    <div class="tier"><span class="per">from / model</span><div class="p">£50</div><h3>Display</h3><p>Glazing, OSL, weathering.</p></div>
+    <div class="tier"><span class="per">quote</span><div class="p">£120+</div><h3>Character</h3><p>Centrepieces, full collaboration.</p></div>
+  </div>
+</div></section>
+
+<section class="cta" id="contact"><div class="wrap">
+  <span class="eyebrow">Commissions open</span>
+  <h2>Let's get yours <span class="serif-it">on the bench.</span></h2>
+  <div class="actions" style="justify-content:center;margin-top:32px"><a class="btn btn-ink" href="mailto:commissions@theduttybrush.com">Email a brief</a><a class="btn btn-line" href="#">Instagram</a></div>
+</div></section>
+
+<footer class="foot wrap"><span>The Dutty Brush — hand‑painted in the studio</span><span>© 2026 · theduttybrush.com</span></footer>
+</body>
+</html>

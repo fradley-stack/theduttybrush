@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dutty Brush — Redesign Concepts</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0c0c0e;--ink:#f2f2ee;--soft:#9a9a92;--line:#262630;--acc:#ff3e3e}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Space Grotesk",sans-serif;line-height:1.6;padding:clamp(40px,7vw,90px) 24px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .mono{font-family:"JetBrains Mono",monospace}
+  h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:700;letter-spacing:-.03em;line-height:1}
+  .sub{color:var(--soft);max-width:60ch;margin-top:18px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--acc);margin-bottom:18px;display:block}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:clamp(36px,5vw,60px)}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#111118;transition:.3s;display:flex;flex-direction:column}
+  .card:hover{border-color:var(--acc);transform:translateY(-4px)}
+  .card .shot{aspect-ratio:4/5;overflow:hidden;background:#000;border-bottom:1px solid var(--line)}
+  .card .shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .card .body{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card .k{font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+  .card h2{font-size:1.5rem;font-weight:700;letter-spacing:-.01em}
+  .card p{color:var(--soft);font-size:.92rem;flex:1}
+  .card .go{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+  .note{margin-top:48px;color:var(--soft);font-size:.86rem;border-left:2px solid var(--acc);padding-left:16px;max-width:70ch}
+</style>
+</head>
+<body><div class="wrap">
+  <span class="eyebrow">The Dutty Brush · full redesign</span>
+  <h1>Three directions.</h1>
+  <p class="sub">Built from the 4‑perspective audit — work‑first, proof‑heavy, premium. Each is a ground‑up rethink, not a reskin. Open one, then tell me which to take all the way (or mix).</p>
+  <div class="grid">
+    <a class="card" href="atelier.html">
+      <div class="shot"><img src="previews/atelier.png" alt="Atelier concept"></div>
+      <div class="body"><span class="k">Concept A</span><h2>Atelier</h2><p>Light, editorial, museum‑grade. Warm paper, high‑contrast serif, huge photography, gallery whitespace. The work treated as fine art. Maximum premium.</p><span class="go">Open Atelier →</span></div>
+    </a>
+    <a class="card" href="reliquary.html">
+      <div class="shot"><img src="previews/reliquary.png" alt="Reliquary concept"></div>
+      <div class="body"><span class="k">Concept B</span><h2>Reliquary</h2><p>Elevated gothic codex. Ink + aged gold, inscriptional caps, illuminated framing, ornament. Leans into the lore grandeur — refined, not generic dark.</p><span class="go">Open Reliquary →</span></div>
+    </a>
+    <a class="card" href="protocol.html">
+      <div class="shot"><img src="previews/protocol.png" alt="Protocol concept"></div>
+      <div class="body"><span class="k">Concept C</span><h2>Protocol</h2><p>Brutalist / Swiss. Oversized type, hard grid, mono data, one electric accent, index‑numbered work. Confident design‑studio energy. Memorable.</p><span class="go">Open Protocol →</span></div>
+    </a>
+  </div>
+  <p class="note">All three bake in the audit fixes: work‑first with macro/multi‑angle galleries, clear pricing, the free recipe Vault as the community hook, and a strong commission funnel. Imagery shown is your existing work as placeholder — the real depth comes from your Instagram archive.</p>
+</div></body>
+</html>

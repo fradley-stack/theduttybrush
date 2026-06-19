@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dutty Brush — Concept C2 · PROTOCOL / FORGE</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0a0a; --bg-2:#15110f; --panel:#181311; --ink:#f4efe8; --soft:#938a82; --faint:#5c554f;
+    --line:#2b2420; --line-2:#3a322c; --acc:#ff3e3e; --acc-d:#c62f2f; --acc-ink:#fff;
+    --soft:#a59c93;
+    --disp:"Space Grotesk",sans-serif; --mono:"IBM Plex Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0} html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--disp);line-height:1.5;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 480px at 78% -8%,rgba(255,62,62,.10),transparent 60%)}
+  body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.45;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
+  main,header,footer{position:relative;z-index:2}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1340px;margin:0 auto;padding:0 22px}
+  .mono{font-family:var(--mono)}
+  .label{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+  .acc{color:var(--acc)}
+  h1,h2,h3{font-weight:700;line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line-2);transition:.16s;color:var(--ink)}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .btn-acc{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:500} .btn-acc:hover{background:var(--acc-d);border-color:var(--acc-d);color:#fff}
+
+  /* ticker */
+  .ticker{background:var(--acc);color:#fff;overflow:hidden;border-bottom:1px solid var(--acc-d)}
+  .ticker .run{display:flex;gap:42px;white-space:nowrap;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;padding:8px 0;animation:run 34s linear infinite}
+  .ticker .run b{font-weight:600}
+  @keyframes run{to{transform:translateX(-50%)}}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-weight:700;letter-spacing:-.02em;text-transform:uppercase;font-size:1.02rem;display:flex;align-items:center;gap:9px}
+  .logo .sq{width:11px;height:11px;background:var(--acc)}
+  .nav-links{display:flex;gap:2px}
+  .nav-links a{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);padding:8px 11px}
+  .nav-links a:hover{color:var(--acc)}
+
+  /* hero */
+  .hero{border-bottom:1px solid var(--line)}
+  .hero .meta{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+  .hero .meta b{color:var(--ink);font-weight:500}
+  .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:0}
+  .hero-grid .l{padding:clamp(22px,3vw,44px) 30px clamp(28px,3vw,44px) 0;border-right:1px solid var(--line)}
+  .hl{font-size:clamp(3rem,9.5vw,8.4rem);letter-spacing:-.05em}
+  .hl .red{color:var(--acc)}
+  .hero-grid .l p{max-width:46ch;color:var(--soft);font-size:1.04rem;margin-top:22px}
+  .hero-grid .actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+  .flog{margin-top:26px;border:1px solid var(--line);font-family:var(--mono);font-size:.66rem;color:var(--soft)}
+  .flog div{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .flog div:last-child{border-bottom:0}
+  .flog b{color:var(--ink);font-weight:500}
+  .flog .ok{color:var(--acc)}
+  .hero-grid .r{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr}
+  .hero-grid .r a{position:relative;overflow:hidden;border-left:1px solid var(--line);border-bottom:1px solid var(--line);background:#000;aspect-ratio:1}
+  .hero-grid .r a:nth-child(odd){border-left:0}
+  .hero-grid .r img{width:100%;height:100%;object-fit:cover;filter:contrast(1.02) brightness(.98);transition:.4s}
+  .hero-grid .r a:hover img{filter:none;transform:scale(1.04)}
+  @media(max-width:880px){.hero-grid{grid-template-columns:1fr}.hero-grid .l{border-right:0;padding-right:0}.hero-grid .r{border-top:1px solid var(--line)}.nav-links{display:none}}
+
+  /* work marquee */
+  .strip{border-bottom:1px solid var(--line);overflow:hidden;background:var(--bg-2)}
+  .strip .run{display:flex;gap:0;animation:run 40s linear infinite}
+  .strip a{flex:0 0 auto;width:200px;height:150px;border-right:1px solid var(--line);overflow:hidden;background:#000}
+  .strip img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.9);transition:.4s}
+  .strip a:hover img{filter:none}
+
+  /* section */
+  .sec{border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:clamp(36px,5vw,64px) 0 24px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(1.9rem,5.5vw,4rem)}
+  .sec-head p{max-width:34ch;color:var(--soft);font-family:var(--mono);font-size:.78rem}
+
+  /* work index 4col */
+  .index{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+  .cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+  .cell:nth-child(4n){border-right:0}
+  .cell .img{aspect-ratio:1;overflow:hidden;background:#000}
+  .cell img{width:100%;height:100%;object-fit:cover;filter:contrast(1.02) brightness(.96);transition:.4s}
+  .cell:hover img{filter:none;transform:scale(1.04)}
+  .cell .meta{display:flex;justify-content:space-between;align-items:baseline;padding:11px 13px;gap:8px}
+  .cell .no{font-family:var(--mono);font-size:.62rem;color:var(--acc)}
+  .cell .nm{font-weight:700;font-size:.92rem;text-transform:uppercase;letter-spacing:-.01em}
+  .cell .fc{font-family:var(--mono);font-size:.54rem;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);text-align:right}
+  @media(max-width:880px){.index{grid-template-columns:1fr 1fr}.cell:nth-child(4n){border-right:1px solid var(--line)}.cell:nth-child(2n){border-right:0}}
+
+  /* rate table */
+  .ptable{border-top:1px solid var(--line)}
+  .prow{display:grid;grid-template-columns:54px 1.3fr 1.4fr 120px;gap:14px;align-items:center;padding:22px 8px;border-bottom:1px solid var(--line);transition:.18s}
+  .prow:hover{background:var(--bg-2);padding-left:16px}
+  .prow .no{font-family:var(--mono);font-size:.7rem;color:var(--acc)}
+  .prow .tn{font-size:1.5rem;font-weight:700;text-transform:uppercase}
+  .prow .ds{font-family:var(--mono);font-size:.72rem;color:var(--soft)}
+  .prow .pr{text-align:right;font-size:1.4rem;font-weight:700}
+  .prow .pr small{font-family:var(--mono);font-size:.54rem;color:var(--soft);display:block;font-weight:400;letter-spacing:.06em;text-transform:uppercase}
+  @media(max-width:680px){.prow{grid-template-columns:38px 1fr auto}.prow .ds{display:none}}
+
+  /* vault */
+  .vault{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+  .vcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 20px;transition:.18s}
+  .vcell:nth-child(3n){border-right:0}
+  .vcell:hover{background:rgba(255,62,62,.06);box-shadow:inset 3px 0 0 var(--acc)}
+  .vno{font-family:var(--mono);font-size:.68rem;color:var(--acc)}
+  .vcell h3{font-size:1.35rem;margin:12px 0 7px;text-transform:none;letter-spacing:-.01em}
+  .vmono{font-family:var(--mono);font-size:.72rem;color:var(--soft)}
+  @media(max-width:680px){.vault{grid-template-columns:1fr}.vcell{border-right:0}}
+
+  /* process */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+  .step{border-right:1px solid var(--line);padding:26px 20px}
+  .step:last-child{border-right:0}
+  .step .sn{font-family:var(--mono);font-size:.7rem;color:var(--acc)}
+  .step h3{font-size:1.15rem;margin:12px 0 8px;text-transform:none}
+  .step p{color:var(--soft);font-size:.86rem}
+  @media(max-width:680px){.steps{grid-template-columns:1fr 1fr}.step:nth-child(2n){border-right:0}}
+
+  /* painter */
+  .painter{display:grid;grid-template-columns:.7fr 1.3fr;border-top:1px solid var(--line)}
+  .painter .ph{border-right:1px solid var(--line);background:#000;position:relative;min-height:280px;overflow:hidden}
+  .painter .ph img{width:100%;height:100%;object-fit:cover;object-position:center}
+  .painter .ph .mk{position:absolute;bottom:0;left:0;background:var(--acc);color:#fff;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px}
+  .painter .tx{padding:clamp(28px,4vw,52px)}
+  .painter .tx h2{font-size:clamp(1.7rem,4vw,2.8rem)}
+  .painter .tx p{color:var(--soft);margin-top:16px;font-size:1.02rem;max-width:52ch}
+  .painter .tx p.mono{font-family:var(--mono);font-size:.78rem;color:var(--acc)}
+  @media(max-width:680px){.painter{grid-template-columns:1fr}.painter .ph{border-right:0;min-height:340px}}
+
+  .cta{padding:clamp(54px,9vw,120px) 0;text-align:center}
+  .cta h2{font-size:clamp(2.6rem,10vw,7rem)}
+  .foot{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+  .tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--acc);padding:7px 11px;position:fixed;bottom:14px;left:14px;z-index:30}
+</style>
+</head>
+<body>
+<div class="tag">Concept C2 · Protocol / Forge</div>
+
+<div class="ticker"><div class="run">
+  <span><b>Commissions OPEN</b></span><span>// 2 slots this month</span><span>200+ models forged</span><span>UK · ships worldwide</span><span>insured both ways</span><span>recipes free in the Vault</span><span><b>Commissions OPEN</b></span><span>// 2 slots this month</span><span>200+ models forged</span><span>UK · ships worldwide</span><span>insured both ways</span><span>recipes free in the Vault</span>
+</div></div>
+
+<header class="nav"><div class="wrap">
+  <div class="logo"><span class="sq"></span>THE DUTTY BRUSH</div>
+  <nav class="nav-links"><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="#vault">Vault</a><a href="#process">Process</a><a href="#studio">Studio</a></nav>
+  <a class="btn btn-acc" href="#contact">Commission →</a>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="meta"><span>The Dutty Brush — Miniature Painting</span><span>Status: <b class="acc">● OPEN</b></span><span>40K + any system</span><span>EST. / hand-painted</span></div>
+  <div class="hero-grid">
+    <div class="l">
+      <h1 class="hl">PAINT<br><span class="red">LIKE HELL.</span></h1>
+      <p>Battle-ready armies and display-grade centrepieces, painted by hand to a fixed standard. No slapchop. No batch farms. And every recipe's open-source.</p>
+      <div class="actions"><a class="btn btn-acc" href="#contact">Start a commission</a><a class="btn" href="#work">Index of work →</a></div>
+      <div class="flog">
+        <div><span>// queue</span><b>2 slots open</b></div>
+        <div><span>// turnaround</span><b>~6–8 wks / 40 models</b></div>
+        <div><span>// status</span><b class="ok">accepting briefs</b></div>
+      </div>
+    </div>
+    <div class="r">
+      <a href="#work"><img src="../assets/img/work/work-01.jpg" alt=""></a>
+      <a href="#work"><img src="../assets/img/work/work-07.jpg" alt=""></a>
+      <a href="#work"><img src="../assets/img/work/work-04.jpg" alt=""></a>
+      <a href="#work"><img src="../assets/img/work/work-10.jpg" alt=""></a>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" id="work"><div class="wrap">
+  <div class="sec-head"><h2>Index of work</h2><p>// shot in mono. hover to develop. each piece — multiple angles + macro.</p></div>
+</div>
+<div class="wrap"><div class="index">
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-01.jpg" alt=""></div><div class="meta"><div><div class="no">001</div><div class="nm">Salamander</div></div><div class="fc">Astartes<br>Display</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-04.jpg" alt=""></div><div class="meta"><div><div class="no">002</div><div class="nm">Blood Angel</div></div><div class="fc">Astartes<br>Tabletop+</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-07.jpg" alt=""></div><div class="meta"><div><div class="no">003</div><div class="nm">Crimson Fist</div></div><div class="fc">Astartes<br>Display</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-12.jpg" alt=""></div><div class="meta"><div><div class="no">004</div><div class="nm">Night Lord</div></div><div class="fc">Chaos<br>Tabletop+</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-02.jpg" alt=""></div><div class="meta"><div><div class="no">005</div><div class="nm">Imperial Fist</div></div><div class="fc">Astartes<br>Display</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-09.jpg" alt=""></div><div class="meta"><div><div class="no">006</div><div class="nm">Word Bearer</div></div><div class="fc">Chaos<br>Tabletop+</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-10.jpg" alt=""></div><div class="meta"><div><div class="no">007</div><div class="nm">Dark Angel</div></div><div class="fc">Astartes<br>Display</div></div></div>
+  <div class="cell"><div class="img"><img src="../assets/img/work/work-11.jpg" alt=""></div><div class="meta"><div><div class="no">008</div><div class="nm">Flesh Tearer</div></div><div class="fc">Astartes<br>Display</div></div></div>
+</div></div></section>
+
+<section class="sec" id="pricing"><div class="wrap">
+  <div class="sec-head"><h2>Rate card</h2><p>// per infantry model. larger scale up. firm quote on brief.</p></div>
+  <div class="ptable">
+    <div class="prow"><div class="no">T1</div><div class="tn">Tabletop</div><div class="ds">3-colour + shade · clean edges · textured base</div><div class="pr">£10<small>/ model</small></div></div>
+    <div class="prow"><div class="no">T2</div><div class="tn">Tabletop+</div><div class="ds">layered highlights · sub-assembly detail · themed base</div><div class="pr">£22<small>/ model</small></div></div>
+    <div class="prow"><div class="no">T3</div><div class="tn">Display</div><div class="ds">glazing · OSL · freehand · weathering · scenic base</div><div class="pr">£50<small>/ model</small></div></div>
+    <div class="prow"><div class="no">T4</div><div class="tn">Character</div><div class="ds">bespoke scheme · NMM · custom plinth · revisions</div><div class="pr">£120<small>from / quote</small></div></div>
+  </div>
+</div></section>
+
+<section class="sec" id="vault"><div class="wrap">
+  <div class="sec-head"><h2>The Vault <span class="acc">// open source</span></h2><p>// every recipe, free. can't get something for nothing — here's the something.</p></div>
+</div>
+<div class="wrap"><div class="vault">
+  <div class="vcell"><div class="vno">R/01</div><h3>Imperial Fist Gold</h3><div class="vmono">brown→yellow blend · grey-blue bounce · magenta recess</div></div>
+  <div class="vcell"><div class="vno">R/02</div><h3>Weathered Ceramite</h3><div class="vmono">zenithal · glaze · sponge chip · oil pin-wash</div></div>
+  <div class="vcell"><div class="vno">R/03</div><h3>Night Lord Lightning</h3><div class="vmono">freehand bolts · blue-black blend · edge spark</div></div>
+</div></div></section>
+
+<section class="sec" id="process"><div class="wrap">
+  <div class="sec-head"><h2>How it runs</h2><p>// grey plastic in, shelf-worthy out. insured both ways.</p></div>
+</div>
+<div class="wrap"><div class="steps">
+  <div class="step"><div class="sn">01</div><h3>Brief &amp; quote</h3><p>Faction, count, tier, scheme. Firm price + a slot, in writing.</p></div>
+  <div class="step"><div class="sn">02</div><h3>Deposit &amp; send</h3><p>30% books it. Pack as guided — insured both directions.</p></div>
+  <div class="step"><div class="sn">03</div><h3>On the bench</h3><p>WIP shots as squads come off. One revision on display tiers.</p></div>
+  <div class="step"><div class="sn">04</div><h3>Delivered</h3><p>Sealed, based, foam-packed, tracked. Balance before dispatch.</p></div>
+</div></div></section>
+
+<section class="sec" id="studio"><div class="painter">
+  <div class="ph"><img src="../assets/img/avatar.jpg" alt="The Dutty Brush"><span class="mk">The painter</span></div>
+  <div class="tx">
+    <p class="mono">// one bench. one obsessive.</p>
+    <h2 style="margin-top:12px">Forged, not farmed.</h2>
+    <p>No production line, no outsourced batches — every model painted by hand, by me, to the tier you pick. Same care whether it's a 40-man line squad or a single grail piece.</p>
+    <p>I give the recipes away because I'd rather lift the whole hobby than gatekeep it. If you'd rather I just paint it for you — that's what the bench is for.</p>
+  </div>
+</div></section>
+
+<section class="cta" id="contact"><div class="wrap">
+  <div class="label" style="margin-bottom:16px">// commissions open · 2 slots</div>
+  <h2>Send the <span class="acc">brief.</span></h2>
+  <div style="display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap"><a class="btn btn-acc" href="mailto:commissions@theduttybrush.com">commissions@theduttybrush.com</a><a class="btn" href="#">Instagram →</a></div>
+</div></section>
+
+<footer class="foot wrap"><span>THE DUTTY BRUSH © 2026</span><span>HAND-PAINTED · UK · WORLDWIDE</span><span>THEDUTTYBRUSH.COM</span></footer>
+</body>
+</html>

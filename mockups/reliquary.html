@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dutty Brush — Concept B · RELIQUARY</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b0e; --ink-2:#13121a; --panel:#16141c; --line:#2a2630;
+    --parch:#ece3cf; --soft:#b3a98f; --faint:#6f6757;
+    --gold:#c9a24a; --gold-2:#e7cd86; --ox:#7a1f1f;
+    --disp:"Cinzel",serif; --body:"EB Garamond",Georgia,serif; --mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0} html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--parch);font-family:var(--body);font-size:1.06rem;line-height:1.7;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(1100px 600px at 50% -12%,#1b1722 0%,transparent 60%),radial-gradient(700px 500px at 100% 0,rgba(201,162,74,.06),transparent 55%)}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+  h1,h2,h3{font-family:var(--disp);font-weight:800;line-height:1.05;letter-spacing:.02em;text-transform:uppercase}
+  .gold{color:var(--gold)}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+  .orn{display:flex;align-items:center;justify-content:center;gap:18px;color:var(--gold);font-size:.9rem}
+  .orn::before,.orn::after{content:"";height:1px;width:90px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .orn::after{background:linear-gradient(270deg,transparent,var(--gold))}
+
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold);transition:.3s;background:transparent}
+  .btn:hover{background:var(--gold);color:var(--ink)}
+  .btn-solid{background:var(--gold);color:var(--ink)} .btn-solid:hover{background:var(--gold-2);border-color:var(--gold-2)}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:84px}
+  .crest{display:flex;align-items:center;gap:14px}
+  .crest .seal{width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);overflow:hidden;box-shadow:0 0 0 3px rgba(201,162,74,.12)}
+  .crest .seal img{width:100%;height:100%;object-fit:cover;filter:sepia(.3) saturate(1.1)}
+  .crest .nm{font-family:var(--disp);font-weight:600;letter-spacing:.12em;font-size:1.05rem}
+  .nav-links{display:flex;gap:32px;font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft)}
+  .nav-links a:hover{color:var(--gold)}
+
+  /* hero */
+  .hero{text-align:center;padding:clamp(56px,9vw,120px) 0 clamp(40px,6vw,80px);position:relative}
+  .hero .eyebrow{display:block;margin-bottom:26px}
+  .hero h1{font-size:clamp(3rem,9vw,7rem);letter-spacing:.04em}
+  .hero h1 .sm{display:block;font-size:.34em;letter-spacing:.5em;color:var(--soft);margin-top:18px;font-weight:400}
+  .hero .lede{max-width:54ch;margin:30px auto 0;color:var(--soft);font-size:1.2rem;font-style:italic}
+  .hero .actions{margin-top:40px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .reliquary{margin:clamp(40px,6vw,72px) auto 0;max-width:520px;position:relative;padding:22px}
+  .reliquary::before{content:"";position:absolute;inset:0;border:1px solid var(--gold);opacity:.5}
+  .reliquary::after{content:"";position:absolute;inset:9px;border:1px solid rgba(201,162,74,.25)}
+  .reliquary .corner{position:absolute;width:18px;height:18px;border:2px solid var(--gold)}
+  .reliquary img{width:100%;aspect-ratio:1/1;object-fit:cover;position:relative}
+  .reliquary .plaque{position:relative;text-align:center;margin-top:18px;font-family:var(--mono);font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+
+  .sec{padding:clamp(60px,9vw,120px) 0}
+  .sec-head{text-align:center;margin-bottom:clamp(36px,5vw,60px)}
+  .sec-head .eyebrow{display:block;margin-bottom:18px}
+  .sec-head h2{font-size:clamp(2.2rem,5.5vw,3.8rem)}
+  .sec-head p{max-width:50ch;margin:18px auto 0;color:var(--soft);font-style:italic}
+
+  /* cabinet of work */
+  .cabinet{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,28px)}
+  .relic{position:relative;background:var(--panel);border:1px solid var(--line);padding:14px;transition:.4s}
+  .relic:hover{border-color:var(--gold);transform:translateY(-4px)}
+  .relic .f{position:relative;overflow:hidden;aspect-ratio:3/4;background:#000}
+  .relic img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.02);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+  .relic:hover img{transform:scale(1.05)}
+  .relic .name{font-family:var(--disp);font-weight:600;font-size:1.05rem;letter-spacing:.06em;margin-top:14px}
+  .relic .meta{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-top:6px}
+  @media(max-width:820px){.cabinet{grid-template-columns:1fr 1fr}.nav-links{display:none}}
+  @media(max-width:520px){.cabinet{grid-template-columns:1fr}}
+
+  /* codex (vault) */
+  .codex{background:linear-gradient(180deg,rgba(201,162,74,.05),transparent 30%),var(--ink-2);border-block:1px solid var(--line)}
+  .folio{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px)}
+  .leaf{border:1px solid var(--line);background:rgba(255,255,255,.02);padding:30px;position:relative}
+  .leaf .drop{font-family:var(--disp);font-weight:800;color:var(--gold);font-size:2.4rem;float:left;line-height:.8;margin:6px 14px 0 0}
+  .leaf h3{font-size:1.3rem;letter-spacing:.04em}
+  .leaf p{color:var(--soft);margin-top:10px}
+  .leaf .read{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:16px;display:inline-block}
+  @media(max-width:720px){.folio{grid-template-columns:1fr}}
+
+  /* tithe (pricing) */
+  .tithe{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .rank{border:1px solid var(--line);padding:30px 24px;text-align:center;transition:.3s}
+  .rank:hover{border-color:var(--gold)}
+  .rank .price{font-family:var(--disp);font-weight:800;color:var(--gold);font-size:2rem;margin-bottom:6px}
+  .rank h3{font-size:1.1rem;letter-spacing:.06em}
+  .rank .per{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+  @media(max-width:720px){.tithe{grid-template-columns:1fr 1fr}}
+
+  .cta{text-align:center;padding:clamp(64px,10vw,130px) 0}
+  .cta h2{font-size:clamp(2.6rem,7vw,5.2rem)}
+  .foot{border-top:1px solid var(--line);padding:48px 0;text-align:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:7px 11px;position:fixed;bottom:14px;left:14px;z-index:30}
+</style>
+</head>
+<body>
+<div class="tag">Concept B · Reliquary</div>
+
+<header class="nav"><div class="wrap">
+  <div class="crest"><span class="seal"><img src="../assets/img/avatar.jpg" alt=""></span><span class="nm">The Dutty Brush</span></div>
+  <nav class="nav-links"><a href="#work">The Cabinet</a><a href="#vault">The Codex</a><a href="#tithe">Commissions</a><a href="#contact">Petition</a></nav>
+  <a class="btn" href="#contact">Commission</a>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <span class="eyebrow">Warhammer &amp; tabletop · painted to order</span>
+  <h1>The Dutty <span class="gold">Brush</span><span class="sm">Relics, rendered in paint</span></h1>
+  <p class="lede">A studio for the grim and the glorious — armies marshalled for war, characters enshrined for the cabinet, and the recipes laid bare for all who would learn.</p>
+  <div class="actions"><a class="btn btn-solid" href="#contact">Commission a piece</a><a class="btn" href="#work">Enter the cabinet</a></div>
+  <figure class="reliquary">
+    <span class="corner" style="top:0;left:0;border-right:0;border-bottom:0"></span><span class="corner" style="top:0;right:0;border-left:0;border-bottom:0"></span>
+    <span class="corner" style="bottom:0;left:0;border-right:0;border-top:0"></span><span class="corner" style="bottom:0;right:0;border-left:0;border-top:0"></span>
+    <img src="../assets/img/featured.jpg" alt="A venerated display miniature">
+    <figcaption class="plaque">✦ Mortis Tactical · Display Grade ✦</figcaption>
+  </figure>
+</div></section>
+
+<section class="sec" id="work"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Cabinet</span><h2>Works in <span class="gold">reverence</span></h2><p>Each piece framed and lit as the relic it is — multiple aspects, macro detail, true colour.</p></div>
+  <div class="cabinet">
+    <article class="relic"><div class="f"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_800/v1772549499/hpsbmiawe7xb28qle8ac.jpg" alt="Dark Angel"></div><div class="name">Dark Angel</div><div class="meta">Adeptus Astartes · Display</div></article>
+    <article class="relic"><div class="f"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_800/v1772587362/lpeppqxxdyo3kxwll586.png" alt="Saturnine Praetor"></div><div class="name">Saturnine Praetor</div><div class="meta">Imperial Fists · In progress</div></article>
+    <article class="relic"><div class="f"><img src="https://res.cloudinary.com/detnqdxoz/image/upload/f_auto,q_auto,w_800/v1772554708/aavsoxdehbwl6tjkxyi7.jpg" alt="Night Lord"></div><div class="name">Night Lord</div><div class="meta">Chaos · Tabletop+</div></article>
+  </div>
+</div></section>
+
+<section class="codex sec" id="vault"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">The Codex · freely given</span><h2>Recipes of the <span class="gold">faithful</span></h2><p>You cannot get something for nothing — so here is the something. The exact method behind every model, transcribed.</p></div>
+  <div class="folio">
+    <article class="leaf"><span class="drop">I</span><h3>Imperial Fist Gold</h3><p>A blend from golden brown to golden yellow on the light, grey‑blue in the bounce, magenta in the deepest recesses.</p><span class="read">Read the leaf →</span></article>
+    <article class="leaf"><span class="drop">II</span><h3>Weathered Ceramite</h3><p>Zenithal undercoat, glazed greens, sponged chipping and an oil pin‑wash to ground it in the mud of war.</p><span class="read">Read the leaf →</span></article>
+  </div>
+  <div class="orn" style="margin-top:40px">✦</div>
+</div></section>
+
+<section class="sec" id="tithe"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow">Commissions</span><h2>Four <span class="gold">ranks</span> of service</h2><p>Per infantry model; greater works scale. A firm quote is set to your brief.</p></div>
+  <div class="tithe">
+    <div class="rank"><div class="price">£10</div><h3>Tabletop</h3><div class="per">per model</div></div>
+    <div class="rank"><div class="price">£22</div><h3>Tabletop+</h3><div class="per">per model</div></div>
+    <div class="rank"><div class="price">£50</div><h3>Display</h3><div class="per">per model</div></div>
+    <div class="rank"><div class="price">£120+</div><h3>Character</h3><div class="per">by quote</div></div>
+  </div>
+</div></section>
+
+<section class="cta" id="contact"><div class="wrap">
+  <span class="eyebrow">The petition</span>
+  <h2>Bring me your <span class="gold">grey plastic.</span></h2>
+  <p class="lede" style="margin-bottom:34px">It returns to you as something worth keeping.</p>
+  <div class="actions" style="justify-content:center"><a class="btn btn-solid" href="mailto:commissions@theduttybrush.com">Email a brief</a><a class="btn" href="#">Instagram</a></div>
+</div></section>
+
+<footer class="foot">The Dutty Brush · Studio MMXXVI · theduttybrush.com</footer>
+</body>
+</html>
